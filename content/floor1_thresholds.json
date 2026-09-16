@@ -1,0 +1,93 @@
+{
+  "schema_version": "0.1",
+  "floor": {
+    "id": "thresholds",
+    "index": 1,
+    "rows": 4,
+    "boss": "first_door"
+  },
+  "player": {
+    "id": "delver",
+    "max_hp": 20,
+    "core_dice": 4,
+    "starting_gear": ["old_field_coat"],
+    "ability": {
+      "id": "field_adjustment",
+      "uses_per_encounter": 1,
+      "action": "bump_player_die",
+      "delta_options": [-1, 1]
+    },
+    "techniques": {
+      "3": [
+        {"id": "steady_hand", "effect": "field_adjustment_plus_one_use"},
+        {"id": "long_odds", "effect": "first_margin1_plus2_spoils"}
+      ]
+    }
+  },
+  "xp": {
+    "normal": 1,
+    "elite": 2,
+    "boss": 3,
+    "thresholds": {"2": 3, "3": 7, "4": 12, "5": 18, "6": 25}
+  },
+  "level_up": {"max_hp": 2, "heal": 2},
+  "enemies": {
+    "latchling": {"name":"Latchling","hp":5,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":1,"rule":null},
+    "turnback": {"name":"Turnback","hp":5,"dice":3,"instinct":"TIGHT","xp":1,"coins":2,"pressure":2,"rule":"REFUSAL"},
+    "unadmitted": {"name":"Unadmitted","hp":6,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":2,"rule":"NO_ADJUSTMENTS"},
+    "doorwake": {"name":"Doorwake","hp":6,"dice":3,"instinct":"WIDE","xp":1,"coins":2,"pressure":2,"rule":null},
+    "toll_eater": {"name":"Toll Eater","hp":6,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":2,"rule":"TAKE_YOUR_CUT"},
+    "passage_clerk": {"name":"Passage Clerk","hp":5,"dice":3,"instinct":"TIGHT","xp":1,"coins":2,"pressure":2,"rule":"DUPLICATE_FILING"},
+    "seal_whelp": {"name":"Seal-Whelp","hp":7,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":3,"rule":"REACTION_SEAL"},
+    "misaddressed_visitor": {"name":"Misaddressed Visitor","hp":6,"dice":3,"instinct":"ODD","xp":1,"coins":2,"pressure":2,"rule":null}
+  },
+  "elites": {
+    "threshold_warden": {"name":"Threshold Warden","hp":8,"dice":3,"instinct":"STRONGEST","xp":2,"coins":4,"pressure":4,"rule":"INSPECTION","elite":true},
+    "seal_bearer": {"name":"Seal-Bearer","hp":8,"dice":3,"instinct":"STRONGEST","xp":2,"coins":4,"pressure":4,"rule":"COUNTERSEAL","elite":true}
+  },
+  "boss": {
+    "id":"first_door",
+    "name":"The First Door",
+    "hp":18,
+    "xp":3,
+    "coins":6,
+    "clear_heal":2,
+    "states":[
+      {"id":"closed","hp_min":13,"hp_max":18,"dice":3,"instinct":"TIGHT","rule":"SEALED"},
+      {"id":"ajar","hp_min":4,"hp_max":12,"dice":3,"instinct":"STRONGEST","rule":"DRAFT"},
+      {"id":"open","hp_min":1,"hp_max":3,"dice":4,"instinct":"STRONGEST","rule":"BOTH_WAYS"}
+    ]
+  },
+  "items": {
+    "bent_knife":{"name":"Bent Knife","cat":"gear","slot":"weapon","tier":1,"price":5,"tags":["fight","certainty"]},
+    "twin_nails":{"name":"Twin Nails","cat":"gear","slot":"weapon","tier":1,"price":6,"tags":["fight","doubles","pattern"]},
+    "breaching_bar":{"name":"Breaching Bar","cat":"gear","slot":"weapon","tier":2,"price":9,"tags":["damage","high_face"]},
+    "work_apron":{"name":"Work Apron","cat":"gear","slot":"armor","tier":1,"price":5,"tags":["defense"]},
+    "proof_vest":{"name":"Proof Vest","cat":"gear","slot":"armor","tier":2,"price":9,"tags":["defense"]},
+    "inside_out_lining":{"name":"Inside-Out Lining","cat":"gear","slot":"armor","tier":2,"price":8,"tags":["defense","margin1"]},
+    "brass_buckle":{"name":"Brass Buckle","cat":"gear","slot":"utility","tier":1,"price":5,"tags":["tie","fight"]},
+    "small_change_purse":{"name":"Small Change Purse","cat":"gear","slot":"utility","tier":1,"price":5,"tags":["economy"]},
+    "mirror_shard":{"name":"Mirror Shard","cat":"artifact","tier":1,"price":6,"tags":["flip","certainty"]},
+    "loaded_question":{"name":"Loaded Question","cat":"artifact","tier":1,"price":6,"tags":["spoils","doubles","pattern"]},
+    "false_bottom":{"name":"False Bottom","cat":"artifact","tier":2,"price":9,"tags":["spoils","low_face","greed"]},
+    "hidden_hand":{"name":"The Hidden Hand","cat":"artifact","tier":2,"price":10,"tags":["interference","certainty"]},
+    "ash_ledger":{"name":"Ash Ledger","cat":"artifact","tier":1,"price":6,"tags":["economy","damage_taken"]},
+    "opposite_number":{"name":"Opposite Number","cat":"artifact","tier":2,"price":8,"tags":["spoils","pattern"]},
+    "brass_caliper":{"name":"Brass Caliper","cat":"artifact","tier":1,"price":7,"tags":["spoils","bump"]},
+    "red_thread":{"name":"Red Thread","cat":"artifact","tier":1,"price":6,"tags":["healing","margin1"]},
+    "carbon_paper":{"name":"Carbon Paper","cat":"artifact","tier":2,"price":9,"tags":["copy","pattern","certainty"]},
+    "stuck_key":{"name":"Stuck Key","cat":"artifact","tier":2,"price":9,"tags":["lock","greed"]},
+    "receipt_nowhere":{"name":"Receipt From Nowhere","cat":"artifact","tier":1,"price":6,"tags":["economy","shop"]},
+    "blank_face":{"name":"Blank Face","cat":"artifact","tier":3,"price":13,"tags":["transmute","certainty","high_face","low_face"]},
+    "redacted_slip":{"name":"Redacted Slip","cat":"contraband","tier":1,"price":3,"tags":["reroll"]},
+    "counterfeit_seal":{"name":"Counterfeit Seal","cat":"contraband","tier":1,"price":3,"tags":["set4"]},
+    "wire_cutter":{"name":"Wire Cutter","cat":"contraband","tier":1,"price":4,"tags":["interference"]},
+    "carbon_copy":{"name":"Carbon Copy","cat":"contraband","tier":1,"price":4,"tags":["copy"]},
+    "emergency_key":{"name":"Emergency Key","cat":"contraband","tier":2,"price":5,"tags":["healing"]},
+    "temporary_injunction":{"name":"Temporary Injunction","cat":"contraband","tier":2,"price":5,"tags":["ignore_rule"]}
+  },
+  "boss_draft_pool":["breaching_bar","proof_vest","false_bottom","hidden_hand","opposite_number","carbon_paper","stuck_key","blank_face"],
+  "spoils":{"capture":"final_blow","bands":{"1":[2,4],"2":[5,7],"3":[8,10],"4":[11,12]}},
+  "inventory":{"gear_slots":["weapon","armor","utility"],"artifact_slots":4,"contraband_slots":2},
+  "economy":{"coins":{"normal":2,"elite":4,"boss":6},"skip_draft":2,"heal_4_hp_cost":4}
+}
