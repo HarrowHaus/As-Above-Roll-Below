@@ -8,7 +8,7 @@ export class DescentScene extends Scene {
 
   create():void {
     const width=this.scale.width,height=this.scale.height;
-    this.cameras.main.setBackgroundColor(0x0e12);
+    this.cameras.main.setBackgroundColor(0x0b0e12);
     const state=clientRun.state;
 
     if(state.phase==="RUN_DEATH"||state.phase==="RUN_VICTORY"){
@@ -90,7 +90,7 @@ export class DescentScene extends Scene {
 
   private renderEnd(victory:boolean,width:number,height:number):void {
     this.add.text(width/2,height*0.32,victory?"THRESHOLD CLEARED":"THE BELOW KEEPS THE RECORD",{
-      fontFamily:"Georgia, serif",fontSize:`${Math.max(28,Math.min(46,width*0.08))}px`,color:"#eee6d5",align:"center",wordWrap:{width:width*0.86}
+      fontFamily:"Georgia, serif",fontSize:`${Math.max(28,Math.min(46,width*0.08))}px`,color:"#eee6d5",align:"center",wordWrap:{width*0.86}
     }).setOrigin(0.5);
     const state=clientRun.state;
     this.add.text(width/2,height*0.48,`LV ${state.progression.level} • ${state.progression.hp}/${state.progression.maxHp} HP • ¢ ${state.economy.coins}\nSEED ${clientRun.currentSeed}`,{
