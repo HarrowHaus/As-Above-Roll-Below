@@ -4,108 +4,96 @@
 
 ## Core interaction
 
-Every combat round:
-
-1. The monster rolls first and visibly locks dice according to its Instinct.
-2. The player rolls **4d6**.
-3. The player may use build-granted manipulation.
-4. The player commits exactly **2 Fight Dice**.
-5. The remaining **2 dice are potential Spoils**.
-6. Compare locked totals.
+1. Monster rolls first and locks according to visible Instinct.
+2. Player rolls **4d6**.
+3. Player may use build-granted manipulation.
+4. Player commits exactly **2 Fight Dice**.
+5. Remaining **2 dice are potential Spoils**.
+6. Compare totals.
 7. **Damage equals the winning margin.**
 
-If the player wins the clash, the monster loses HP equal to the difference and that round's leftover pair qualifies as Spoils. If the monster wins, the player loses HP equal to the difference and earns no Spoils from that round. A tie deals no damage.
+The same good die that keeps you alive is also the die you want to leave behind for better loot.
 
-The same high die that keeps you alive is also the die you want to leave behind for reward.
+---
 
-## Current status
+## Current production status
 
-### Combat foundation — validated for continued production
+The project has moved past mechanics-toy iteration into formal preproduction.
 
-The contested-dice / margin-damage loop has passed its first mathematical and interactive prototype gate and is the working combat canon.
+### Combat
+Validated enough to treat contested rolls + margin damage as working canon.
 
-`prototypes/combat-v1/index.html` tests enemy-first visible rolls, deterministic Instinct, player 4d6/commit-two, margin damage, BUMP/FLIP, and Spoils capture.
+### Run systems
+Leveling, XP, Loot Drafts, Gear/Artifacts/Contraband, Coins, Shop, Elite/Boss rewards, route generation, item duplication rules, and meta progression now have implementation-facing specifications.
 
-### Systems architecture — active validation
+### World / research
+The Below premise, provenance rules, humor/tone, original ecology, terminology, research candidate pool, and verified-reference workflow are established.
 
-The progression/economy layer now has a canonical first pass in `docs/SYSTEMS_ARCHITECTURE.md`.
+### Art
+Pixel-first, dark-fun-creepy direction is active. Front-facing gameplay dice are canonical and the asset-production pipeline requires actual game-ready outputs rather than presentation art.
 
-Core rule:
+---
+
+# Canonical design stack
+
+Read approximately in this order.
+
+## Foundation
+- `docs/DECISION_LEDGER.md` — what is LOCKED / PROVISIONAL / DEFERRED / REJECTED.
+- `docs/GAME_DESIGN_BIBLE.md` — overall design pillars and game promise.
+- `docs/MASTER_SYSTEMS_SPEC.md` — authoritative baseline rules contract.
+- `docs/COMBAT_MODEL.md` — contested-roll math and combat validation.
+
+## Systems research / progression
+- `docs/REFERENCE_GAME_RESEARCH.md` — comparative research across relevant roguelikes/dice/loot games.
+- `docs/SYSTEMS_ARCHITECTURE.md` — leveling, Spoils, inventory, Shop and reward architecture.
+- `docs/LOOT_AND_ECONOMY_SPEC.md` — exact Loot Draft generation, tier weights, shop prices, salvage and Elite/Boss reward rules.
+- `docs/RUN_STRUCTURE_AND_GENERATION_SPEC.md` — Floor graph, route constraints, seeded generation, Events/Shops/Elites.
+- `docs/BALANCE_AND_TELEMETRY_SPEC.md` — numerical targets, simulation policies and metrics.
+- `docs/UI_UX_FLOW_SPEC.md` — screen/state flow and information contract.
+- `docs/IMPLEMENTATION_ARCHITECTURE.md` — deterministic simulation modules, effect engine, schemas and tests.
+- `docs/CONTENT_SCOPE_AND_AUTHORING_SPEC.md` — vertical-slice/full-game content targets and authoring order.
+
+## World / content research
+- `docs/CONTENT_RESEARCH_BIBLE.md`
+- `docs/DICE_LORE.md`
+- `docs/BELOW_ECOLOGY.md`
+- `docs/TERMINOLOGY.md`
+- `docs/research/CORPUS_INVENTORY.md`
+- `docs/research/REFERENCE_CANDIDATES_001.md`
+- `docs/research/verified/`
+
+## Art / production
+- `docs/ART_BIBLE.md`
+- `docs/DICE_DESIGN_BIBLE.md`
+- `docs/ASSET_PRODUCTION_SPEC.md`
+- `docs/VERTICAL_SLICE_ASSET_MANIFEST.md`
+
+## Next authoring gate
+- `docs/VERTICAL_SLICE_CONTENT.md` — now needs to be populated with the actual Floor I rules/content using the locked systems above.
+
+---
+
+# Design rules worth remembering
+
+> **ROLL FOUR. COMMIT TWO. WHAT REMAINS MAY BECOME YOURS.**
 
 > **Levels keep you alive. Loot makes you weird.**
 
-Current systems target:
-
-- six run-only Player Levels;
-- normal / elite / boss XP values;
-- +2 Max HP and heal 2 on ordinary level-up;
-- character Technique choices at Levels 3 and 5;
-- Best Successful Spoils drives a three-offer Loot Draft;
-- Gear / Artifact / Contraband roles remain distinct;
-- limited inventory creates replacement pressure;
-- one run currency: Coins;
-- Shops mix persistent build pieces, Contraband, and healing;
-- Elites raise Loot Draft quality by one band.
-
-The next interactive prototype is a **systems-complete fight loop** rather than another art mockup.
-
-### Content / Research — first B-stage gate passed
-
-The world premise, provenance system, humor rules, rights/sensitivity controls, first 50 reference candidates, original Below ecology, terminology, dice lore, and an initial verified-reference set are in the repo.
-
-Central world rule:
-
 > **The Below preserves versions. It does not certify them.**
 
-A thing appearing Below is not proof that the corresponding Above-world claim was literally true.
+> **If an art asset cannot be isolated, cleaned, exported and used in the browser game, it is concept art—not production art.**
 
-### Art / Asset Production — active C stage
+---
 
-The lead visual direction is **pixel-first, dark-fun-creepy, and dice-forward**.
+# Next production sequence
 
-Every approved art decision is constrained by one production rule:
+1. Populate `VERTICAL_SLICE_CONTENT.md` with actual Floor I content and numbers.
+2. Author the first complete item/effect data set against `IMPLEMENTATION_ARCHITECTURE.md`.
+3. Run headless simulations across thousands of seeds and strategy policies.
+4. Adjust Floor I numbers/economy without changing the core architecture.
+5. Produce the minimal runtime art/audio pack required by the approved Floor I content.
+6. Implement the proper vertical slice.
+7. Automated tests → playtest → balance → polish.
 
-> **If it cannot be isolated, cleaned, downsampled, animated, exported, and used in the actual browser game, it is concept art—not production art.**
-
-Front-facing single-face gameplay dice are canonical. Isometric dice are retained only for marketing/reference use.
-
-## Repository map
-
-### Core design
-- `docs/GAME_DESIGN_BIBLE.md` — canonical systems and design pillars.
-- `docs/COMBAT_MODEL.md` — contested-dice simulations, balance envelope, remaining tuning questions.
-- `docs/SYSTEMS_ARCHITECTURE.md` — leveling, Spoils, Loot Drafts, inventory, Coins, Shop, Elite/Boss reward structure.
-- `docs/CONTENT_RESEARCH_BIBLE.md` — world, sourcing, humor, provenance, rights, and sensitivity canon.
-- `docs/DICE_LORE.md` — diegetic explanation of casting, locking, Fight Dice, and Spoils.
-- `docs/BELOW_ECOLOGY.md` — Residues, Convergences, Natives, and original Below content rules.
-- `docs/TERMINOLOGY.md` — canonical vocabulary.
-
-### Art / production
-- `docs/ART_BIBLE.md` — pixel-first production visual system.
-- `docs/DICE_DESIGN_BIBLE.md` — front-facing dice materials, states, animation, sound, and export design.
-- `docs/ASSET_PRODUCTION_SPEC.md` — source→runtime pipeline and game-ready definition.
-- `docs/VERTICAL_SLICE_ASSET_MANIFEST.md` — required visual/audio asset inventory for Floor I.
-- `docs/VERTICAL_SLICE_CONTENT.md` — Floor I gameplay/content specification scaffold.
-
-### Research
-- `docs/research/CORPUS_INVENTORY.md` — discovery-source map.
-- `docs/research/REFERENCE_CANDIDATES_001.md` — first 50 candidate subjects plus holds/exclusions.
-- `docs/research/verified/` — independently sourced reference records.
-
-### Prototypes
-- `prototypes/combat-v1/` — contested-dice combat laboratory.
-- `prototypes/mechanics-v0/` — superseded first mechanics prototype.
-
-## Production order
-
-A. Core Game Design — stable enough to proceed  
-A1. Combat validation — first gate passed  
-A2. Run systems / loot / leveling — **active validation**  
-B. Content / Research Bible — first gate passed; continues alongside authoring  
-C. Art Bible + production pipeline — first visual pipeline proven  
-D. Vertical Slice Content Sheet  
-Then: full asset population → implementation → automated testing → playtesting → balance → polish.
-
-## Design rule
-
-Strip away the art, names, and jokes. Put four dice on the screen and ask the player to choose two. If that decision is not interesting, nothing else can save the game.
+The next implementation is not another exploratory toy. It should be built from the written content/spec package.
