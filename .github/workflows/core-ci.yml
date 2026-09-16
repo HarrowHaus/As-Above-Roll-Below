@@ -1,0 +1,33 @@
+name: Core Engine CI
+
+on:
+  push:
+    paths:
+      - "engine/core/**"
+      - "engine/sim/**"
+      - ".github/workflows/core-ci.yml"
+  pull_request:
+    paths:
+      - "engine/core/**"
+      - "engine/sim/**"
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: engine/core/package.json
+      - name: Install core tooling
+        working-directory: engine/core
+        run: npm install --no-audit --no-fund
+      - name: Build and test core
+        working-directory: engine/core
+        run: npm test
+      - name: Headless simulator smoke test
+        if: hashFiles('engine/sim/package.json') != ''
+        working-directory: engine/sim
+        run: npm test
