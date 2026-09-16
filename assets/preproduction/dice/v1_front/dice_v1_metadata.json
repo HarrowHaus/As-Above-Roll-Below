@@ -1,0 +1,17 @@
+{
+  "version": "1.0-front",
+  "native_size": [48, 48],
+  "settled_view": "front_facing_single_face",
+  "opposites": {"1": 6, "2": 5, "3": 4, "4": 3, "5": 2, "6": 1},
+  "pip_grid": "canonical_3x3",
+  "atlas_size": [288, 192],
+  "atlas_layout": {
+    "row_0": ["die_player_bonecast_face_1", "die_player_bonecast_face_2", "die_player_bonecast_face_3", "die_player_bonecast_face_4", "die_player_bonecast_face_5", "die_player_bonecast_face_6"],
+    "row_1": ["die_enemy_ironcast_face_1", "die_enemy_ironcast_face_2", "die_enemy_ironcast_face_3", "die_enemy_ironcast_face_4", "die_enemy_ironcast_face_5", "die_enemy_ironcast_face_6"],
+    "row_2": ["die_state_focus", "die_state_fight", "die_state_spoils", "die_state_enemy_locked", "die_state_persistent_lock", "die_state_disabled"],
+    "row_3": ["die_fx_bump_up", "die_fx_bump_down", "die_fx_flip_mid", "die_fx_spoils_qualify"]
+  },
+  "frame_size": [48, 48],
+  "pivot": [24, 24],
+  "production_note": "Deterministic front-facing master template; V0 isometric gameplay geometry deprecated."
+}
