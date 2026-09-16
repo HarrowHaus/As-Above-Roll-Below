@@ -22,76 +22,46 @@ The same high die that keeps you alive is also the die you want to leave behind 
 
 ### Combat foundation — validated for continued production
 
-The contested-dice / margin-damage loop has passed its first mathematical and interactive prototype gate and is now working combat canon.
+The contested-dice / margin-damage loop has passed its first mathematical and interactive prototype gate and is the working combat canon.
 
-`prototypes/combat-v1/index.html` tests:
-
-- enemy-first visible rolls and deterministic Instinct;
-- player 4d6 / commit exactly two;
-- margin-based HP damage;
-- 2d6 normal versus 3d6/highest-two elite pressure;
-- BUMP and FLIP manipulation;
-- competing Spoils-capture rules for later tuning.
-
-The remaining Spoils-capture detail may change during balance, but the contested-roll foundation is no longer treated as an unresolved concept.
-
-The original **ROLL / LOOT / REGRET** prototype is preserved under `prototypes/mechanics-v0/` as design history only.
+`prototypes/combat-v1/index.html` tests enemy-first visible rolls, deterministic Instinct, player 4d6/commit-two, margin damage, BUMP/FLIP, and competing Spoils-capture rules.
 
 ### Content / Research — first B-stage gate passed
 
-The repo now contains:
+The world premise, provenance system, humor rules, rights/sensitivity controls, first 50 reference candidates, original Below ecology, terminology, dice lore, and an initial verified-reference set are in the repo.
 
-- world premise and epistemic rules;
-- provenance / rights / sensitivity taxonomy;
-- humor and narrator rules;
-- first 50 reference candidates;
-- ten verified reference records;
-- dice/casting lore grounded in historical lot/divination research without pretending the fantasy system is historical fact;
-- original Below ecology and terminology;
-- Floor I motif comparison;
-- **THRESHOLDS** as the preferred vertical-slice motif;
-- first original Floor I manifestation seeds, including the preferred original boss concept **The First Door**.
-
-A central world rule is locked:
+Central world rule:
 
 > **The Below preserves versions. It does not certify them.**
 
 A thing appearing Below is not proof that the corresponding Above-world claim was literally true.
 
-### Art / Visual Development — C stage active
+### Art / Asset Production — active C stage
 
-`docs/ART_BIBLE.md` now defines:
+The lead visual direction is now **pixel-first, dark-fun-creepy, and dice-forward** rather than painterly illustration.
 
-- painterly-ink illustration language;
-- value and palette system;
-- desktop/mobile combat staging;
-- player/monster model-sheet requirements;
-- Below-native anatomy principles;
-- dice-state visual grammar;
-- UI and typography direction;
-- Floor I environment language;
-- controlled key-pose / 2D transform animation strategy;
-- source/runtime asset dimensions;
-- Krita/Inkscape cleanup workflow;
-- PixiJS-oriented browser rendering recommendation;
-- deterministic image-processing and atlas strategy;
-- generated-asset provenance and QA gates.
+Every approved art decision is constrained by one production rule:
 
-The next C deliverable is the first visual-direction sheet, followed by dice/UI studies and only then recurring character model sheets.
+> **If it cannot be isolated, cleaned, downsampled, animated, exported, and used in the actual browser game, it is concept art—not production art.**
+
+The first production target is the dice family: Bonecast player dice, Ironcast enemy dice, modular state overlays, and manipulation tests.
 
 ## Repository map
 
 ### Core design
-- `docs/GAME_DESIGN_BIBLE.md` — canonical system design and locked pillars.
-- `docs/COMBAT_MODEL.md` — validated contested-dice foundation, simulations, balance envelope, remaining tuning questions.
+- `docs/GAME_DESIGN_BIBLE.md` — canonical systems and design pillars.
+- `docs/COMBAT_MODEL.md` — contested-dice simulations, balance envelope, remaining tuning questions.
 - `docs/CONTENT_RESEARCH_BIBLE.md` — world, sourcing, humor, provenance, rights, and sensitivity canon.
 - `docs/DICE_LORE.md` — diegetic explanation of casting, locking, Fight Dice, and Spoils.
 - `docs/BELOW_ECOLOGY.md` — Residues, Convergences, Natives, and original Below content rules.
 - `docs/TERMINOLOGY.md` — canonical vocabulary.
-- `docs/FLOOR_MOTIF_CANDIDATES.md` — Floor I motif comparison and THRESHOLDS recommendation.
-- `docs/FLOOR_I_ORIGINAL_SEEDS.md` — original threshold manifestations and First Door boss seed.
-- `docs/ART_BIBLE.md` — active visual-production specification.
-- `docs/VERTICAL_SLICE_CONTENT.md` — Floor I specification scaffold for D stage.
+
+### Art / production
+- `docs/ART_BIBLE.md` — pixel-first production visual system.
+- `docs/DICE_DESIGN_BIBLE.md` — dice materials, faces, states, animation, sound, and export design.
+- `docs/ASSET_PRODUCTION_SPEC.md` — source→runtime pipeline and game-ready definition.
+- `docs/VERTICAL_SLICE_ASSET_MANIFEST.md` — required visual/audio asset inventory for Floor I.
+- `docs/VERTICAL_SLICE_CONTENT.md` — Floor I gameplay/content specification scaffold.
 
 ### Research
 - `docs/research/CORPUS_INVENTORY.md` — discovery-source map.
@@ -99,17 +69,17 @@ The next C deliverable is the first visual-direction sheet, followed by dice/UI 
 - `docs/research/verified/` — independently sourced reference records.
 
 ### Prototypes
-- `prototypes/combat-v1/` — current combat laboratory.
+- `prototypes/combat-v1/` — current contested-dice combat laboratory.
 - `prototypes/mechanics-v0/` — superseded first mechanics prototype.
 
 ## Production order
 
 A. Game Design Bible — complete enough to proceed  
 A1. Combat validation — first gate passed  
-B. Content / Research Bible — first gate passed; verification continues in parallel  
-C. Art Bible / visual development — **active**  
+B. Content / Research Bible — first gate passed; continues alongside content authoring  
+C. Art Bible + production pipeline — **active**  
 D. Vertical Slice Content Sheet  
-Then: assets → implementation → automated testing → playtesting → balance → polish.
+Then: game-ready assets → implementation → automated testing → playtesting → balance → polish.
 
 ## Design rule
 
