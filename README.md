@@ -1,6 +1,6 @@
 # As Above, Roll Below
 
-**As Above, Roll Below** is a solo browser dice roguelite in preproduction.
+**As Above, Roll Below** is a solo browser dice roguelite in formal preproduction.
 
 ## Core interaction
 
@@ -24,7 +24,25 @@ The project has moved past mechanics-toy iteration into formal preproduction.
 Validated enough to treat contested rolls + margin damage as working canon.
 
 ### Run systems
-Leveling, XP, Loot Drafts, Gear/Artifacts/Contraband, Coins, Shop, Elite/Boss rewards, route generation, item duplication rules, and meta progression now have implementation-facing specifications.
+Leveling, XP, Loot Drafts, Gear/Artifacts/Contraband, Coins, Shop, Elite/Boss rewards, route generation, item duplication rules, meta progression, timing windows, effect architecture, balance metrics, and UI information rules have implementation-facing specifications.
+
+### Floor I content
+`docs/VERTICAL_SLICE_CONTENT.md` now contains the first full authored content pass for **Floor I — THRESHOLDS**:
+
+- The Delver + Techniques
+- 8 normal enemies
+- 2 Elites
+- The First Door boss
+- 8 Gear
+- 12 Artifacts
+- 6 Contraband
+- 3 Events
+- Shop rules
+- Boss Draft
+- map/content constraints
+- simulation questions
+
+This content is ready for headless validation, not yet declared balanced/final.
 
 ### World / research
 The Below premise, provenance rules, humor/tone, original ecology, terminology, research candidate pool, and verified-reference workflow are established.
@@ -54,6 +72,9 @@ Read approximately in this order.
 - `docs/IMPLEMENTATION_ARCHITECTURE.md` — deterministic simulation modules, effect engine, schemas and tests.
 - `docs/CONTENT_SCOPE_AND_AUTHORING_SPEC.md` — vertical-slice/full-game content targets and authoring order.
 
+## Floor I authoring
+- `docs/VERTICAL_SLICE_CONTENT.md` — authored Floor I rules/content pass ready for simulation.
+
 ## World / content research
 - `docs/CONTENT_RESEARCH_BIBLE.md`
 - `docs/DICE_LORE.md`
@@ -68,9 +89,6 @@ Read approximately in this order.
 - `docs/DICE_DESIGN_BIBLE.md`
 - `docs/ASSET_PRODUCTION_SPEC.md`
 - `docs/VERTICAL_SLICE_ASSET_MANIFEST.md`
-
-## Next authoring gate
-- `docs/VERTICAL_SLICE_CONTENT.md` — now needs to be populated with the actual Floor I rules/content using the locked systems above.
 
 ---
 
@@ -88,12 +106,13 @@ Read approximately in this order.
 
 # Next production sequence
 
-1. Populate `VERTICAL_SLICE_CONTENT.md` with actual Floor I content and numbers.
-2. Author the first complete item/effect data set against `IMPLEMENTATION_ARCHITECTURE.md`.
-3. Run headless simulations across thousands of seeds and strategy policies.
-4. Adjust Floor I numbers/economy without changing the core architecture.
-5. Produce the minimal runtime art/audio pack required by the approved Floor I content.
-6. Implement the proper vertical slice.
-7. Automated tests → playtest → balance → polish.
+1. Encode the authored Floor I content into implementation-facing structured data.
+2. Build the headless deterministic simulation/effect resolver subset needed by Floor I.
+3. Simulate thousands of seeded Floors under Safe / Greedy / Balanced policies.
+4. Tune enemy HP/dice, XP cadence, Loot-band frequencies, prices, healing, Elite value, and outlier items without changing the core architecture.
+5. Freeze Floor I systems/content v1 after the simulation gate.
+6. Produce only the runtime art/audio required by that approved content.
+7. Implement the proper vertical slice.
+8. Automated tests → human playtest → balance → polish.
 
-The next implementation is not another exploratory toy. It should be built from the written content/spec package.
+The next implementation is **not another exploratory toy**. It is a vertical slice built from the written, simulated content/spec package.
