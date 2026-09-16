@@ -1,11 +1,11 @@
 # Combat Model
 
-**Status:** A1 validation document  
-**Purpose:** mathematically test the contested-roll combat before Floor I content is authored.
+**Status:** A1 first validation gate passed — contested-roll foundation is working canon; Spoils capture and final Floor tuning remain under validation.  
+**Purpose:** preserve the mathematical basis, prototype findings, and remaining balance questions for the core combat system.
 
 ---
 
-## Canonical candidate loop
+## Canonical combat foundation
 
 1. Monster rolls first.
 2. Monster visibly locks dice according to deterministic Instinct.
@@ -19,6 +19,8 @@
 10. If both combatants remain alive, repeat.
 
 No fixed Threat number. No separate baseline monster Damage stat. No parallel heart/Resolve system.
+
+This foundation has now survived the first mathematical pass and an interactive browser prototype and should be treated as the working combat canon. Future balance work may change HP values, enemy pools, Instincts, reward thresholds, manipulation costs, or Spoils capture. It should not casually replace the contested-roll / margin-damage loop without evidence from playtesting.
 
 ---
 
@@ -58,7 +60,7 @@ The player always has 4d6 available and may choose the best pair for pure surviv
 
 `4d6 keep-highest-two` is boss/exception territory, not a normal enemy default.
 
-This is desirable because enemy difficulty can be made visible through dice behavior rather than hidden numeric inflation.
+Enemy difficulty can therefore be made visible through dice behavior rather than hidden numeric inflation.
 
 ---
 
@@ -82,7 +84,7 @@ These are not intended player presets. They are balance probes.
 
 ## Fight-level simulation findings
 
-The following are Monte Carlo balance probes using the current candidate rule that the encounter remembers the best successful Spoils result.
+The following are Monte Carlo balance probes using the candidate rule that the encounter remembers the best successful Spoils result.
 
 ### Baseline monster — 2d6
 
@@ -184,46 +186,50 @@ These are not yet Floor I content values. They define the region worth authoring
 
 ---
 
-## Why the greed curve is promising
+## Why the greed curve is working
 
-The current model naturally creates a tradeoff without adding another resource:
+The model naturally creates a tradeoff without another resource:
 
 - SAFE play kills faster and takes less damage but produces mediocre Spoils.
 - GREEDY-WIN play leaves strong dice for Spoils, deals smaller winning margins, extends fights, and exposes the player to more future monster rolls.
 
-The extra exposure is important. Greed is not punished by a synthetic meter; it creates its own danger by increasing combat duration.
+The extra exposure is the critical property. Greed is not punished by a synthetic meter; it creates its own danger through combat duration and smaller margins.
+
+This relationship is the reason the core mechanic has been approved for continued development.
 
 ---
 
-## Spoils rule under validation
+## Spoils rule still under validation
 
-### Current candidate
+### Candidate A — BEST SUCCESS
 
-Each damaging player win produces a qualifying Spoils Pair. The game automatically remembers the **best successful Spoils Pair** seen during the encounter. That pair determines the post-combat reward.
+Each damaging player win produces a qualifying Spoils Pair. The game remembers the **best successful Spoils Pair** seen during the encounter.
 
-### Benefit
+Benefits:
+- earlier greedy decisions matter in multi-round fights;
+- no manual banking UI;
+- strong reward contrast between safe and greedy strategies.
 
-- earlier greedy decisions continue to matter in multi-round fights;
-- no extra banking UI or inventory action;
-- strong reward contrast between safe and greedy strategies;
-- creates memorable `I kept the sixes and barely survived` decisions.
+Risk:
+- players may deliberately choose low-margin wins to extend weak fights and gain additional chances at premium Spoils.
 
-### Risk
+### Candidate B — FINAL BLOW
 
-Players may intentionally choose low-margin wins to extend a weak fight and gain additional chances at premium Spoils.
+Only the Spoils Pair on the killing blow determines reward.
 
-This may be acceptable if the extra rounds themselves create sufficient risk, but it must be tested rather than assumed.
+Benefits:
+- eliminates most intentional farming/stalling;
+- extremely easy to explain.
 
-### Anti-stall options if playtesting shows abuse
+Risk:
+- earlier successful greedy decisions can become economically irrelevant;
+- boss fights may feel oddly dependent on the final roll.
 
-Prefer the lightest possible solution:
+### Decision rule
 
-1. keep normal enemy HP low enough that safe farming windows are naturally limited;
-2. use final successful Spoils Pair instead of best pair;
-3. apply escalating enemy pressure after excessive rounds;
-4. use first successful Spoils Pair as the encounter's locked reward.
+Do not invent a third economy unless both simple options fail.
 
-Do not introduce another currency or manual loot-banking subsystem unless simpler options fail.
+The current combat prototype exposes both modes so future testing can compare behavior directly.
 
 ---
 
@@ -233,7 +239,7 @@ Baseline:
 
 **Tie = 0 damage, no Spoils qualification, next round.**
 
-Items and monsters may create exceptions, e.g. a weapon that turns ties into chip damage, but ties are inert by default.
+Items and monsters may create explicit exceptions, but ties are inert by default.
 
 ---
 
@@ -241,7 +247,7 @@ Items and monsters may create exceptions, e.g. a weapon that turns ties into chi
 
 Instinct must be visible and deterministic.
 
-Candidate reusable Instincts:
+Reusable Instinct seeds:
 
 - STRONGEST — highest two
 - LOWEST — lowest two
@@ -251,7 +257,7 @@ Candidate reusable Instincts:
 - EVEN — prefers even dice
 - TIGHT — pair with smallest difference
 
-Instinct is both balance and personality. A monster should feel different because it uses the shared dice language differently, not because it owns hidden AI logic.
+Instinct is balance and personality simultaneously. A monster should feel different because it uses the shared dice language differently, not because it owns hidden AI logic.
 
 ---
 
@@ -272,7 +278,7 @@ Because margin damage amplifies small total changes, even `+1` is meaningful. En
 
 ---
 
-## Next validation pass
+## Remaining A1/A2 tuning tasks
 
 Before Floor I numbers are frozen, test:
 
@@ -281,9 +287,11 @@ Before Floor I numbers are frozen, test:
 - healing frequency;
 - Gear that reduces margin damage by 1;
 - one BUMP per encounter;
-- one FLIP per encounter;
+- FLIP cadence by build/item source;
 - exact Spoils reward frequencies;
-- whether best-Spoils creates real stalling in interactive play;
+- BEST SUCCESS versus FINAL BLOW behavioral effects;
 - authored boss dice patterns rather than generic best-two scaling.
+
+These are tuning questions, not reasons to reopen the entire combat architecture.
 
 The goal is not mathematical symmetry. The goal is repeated decisions where safety and reward visibly compete.
