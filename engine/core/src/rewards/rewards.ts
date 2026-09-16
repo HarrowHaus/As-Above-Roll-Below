@@ -93,6 +93,21 @@ export function generateLootDraft(
     if(persistentCount()<2) forcePersistent(2,2);
   }
   if(band===1 && offers.every((offer)=>offer.type==="COINS")) forcePersistent(0,1);
-
   return {score,band,offers};
+}
+
+/** Boss rewards are authored premium pools, not ordinary Spoils generation. */
+export function generateBossDraft(
+  eligibleItemIds:readonly string[],
+  registry:ItemRegistry,
+  inventory:InventoryState,
+  rng:RngStream,
+):LootDraft {
+  const pool=eligibleItemIds
+    .map((id)=>registry[id])
+    .filter((item):item is ItemDefinition=>item!==undefined)
+    .filter((item)=>persistent(item)&&item.tier>=2&&isOrdinaryOfferEligible(inventory,item));
+  if(pool.length<3) throw new Error(`Boss Draft requires at least 3 eligible premium persistent items; found ${pool.length}`);
+  const selected=rng.shuffle(pool).slice(0,3);
+  return {score:12,band:4,offers:selected.map((item)=>({type:"ITEM" as const,itemId:item.id}))};
 }
