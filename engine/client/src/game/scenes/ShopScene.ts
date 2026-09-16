@@ -25,10 +25,11 @@ export class ShopScene extends Scene {
 
   private renderOffer(offer:ShopItemOffer,x:number,y:number):void {
     const item=floor1ItemRegistry[offer.itemId];if(!item)throw new Error(`Unknown shop item ${offer.itemId}`);
+    const effectivePrice=clientRun.shopPrice(offer),discount=offer.price-effectivePrice;
     const bg=this.add.rectangle(0,0,205,285,0x151b20).setStrokeStyle(2,0x46535d).setInteractive({useHandCursor:true});
     const title=this.add.text(0,-95,item.displayName.toUpperCase(),{fontFamily:"Georgia, serif",fontSize:"18px",color:"#eee6d5",align:"center",wordWrap:{width:180}}).setOrigin(0.5);
     const kind=this.add.text(0,-42,`${item.category} • T${item.tier}`,{fontFamily:"monospace",fontSize:"11px",color:"#a9b5bb"}).setOrigin(0.5);
-    const price=this.add.text(0,50,`${offer.price} COINS`,{fontFamily:"monospace",fontSize:"16px",color:"#dcb258"}).setOrigin(0.5);
+    const price=this.add.text(0,48,discount>0?`${effectivePrice} COINS\nRECEIPT −${discount}`:`${effectivePrice} COINS`,{fontFamily:"monospace",fontSize:"15px",color:"#dcb258",align:"center"}).setOrigin(0.5);
     const action=this.add.text(0,108,clientRun.shopItemSold(offer.itemId)?"SOLD":"BUY",{fontFamily:"monospace",fontSize:"12px",color:"#e4ded2"}).setOrigin(0.5);
     const container=this.add.container(x,y,[bg,title,kind,price,action]);if(clientRun.shopItemSold(offer.itemId))container.setAlpha(0.32);
     bg.on("pointerdown",()=>this.buy(offer));bg.on("pointerover",()=>{if(!clientRun.shopItemSold(offer.itemId))bg.setStrokeStyle(3,0xd1aa59);});bg.on("pointerout",()=>bg.setStrokeStyle(2,0x46535d));this.cardObjects.set(offer.itemId,container);
@@ -36,9 +37,9 @@ export class ShopScene extends Scene {
 
   private buy(offer:ShopItemOffer):void {
     if(clientRun.shopItemSold(offer.itemId))return;
-    if(clientRun.state.economy.coins<offer.price){this.statusText.setText("Not enough Coins.");return;}
+    if(clientRun.state.economy.coins<clientRun.shopPrice(offer)){this.statusText.setText("Not enough Coins.");return;}
     const plan=clientRun.planLootItem(offer.itemId);if(plan.requiresReplacement){this.showReplacement(offer,plan.replacementCandidates);return;}
-    clientRun.buyShopItem(offer);this.markSold(offer.itemId);this.statusText.setText("Purchased.");this.refreshHeader();
+    clientRun.buyShopItem(offer);this.markSold(offer.itemId);this.statusText.setText("Purchased.");this.refreshHeader();this.scene.restart();
   }
 
   private showReplacement(offer:ShopItemOffer,candidates:readonly string[]):void {
