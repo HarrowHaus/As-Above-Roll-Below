@@ -28,6 +28,28 @@ export interface EnemyDefinition {
   readonly xp: number;
   readonly coins: number;
   readonly tags?: readonly string[];
+  readonly ruleIds?: readonly string[];
+  readonly elite?: boolean;
+  readonly rewardBandUplift?: number;
+}
+
+export interface BossPhaseDefinition {
+  readonly id: string;
+  readonly minHp: number;
+  readonly maxHp: number;
+  readonly dicePool: number;
+  readonly instinct: EnemyInstinct;
+  readonly ruleIds?: readonly string[];
+}
+
+export interface BossDefinition {
+  readonly id: string;
+  readonly maxHp: number;
+  readonly xp: number;
+  readonly coins: number;
+  readonly clearHeal: number;
+  readonly phases: readonly BossPhaseDefinition[];
+  readonly tags?: readonly string[];
 }
 
 export interface CombatantState {
