@@ -12,6 +12,7 @@ export const loadedQuestionEffect: EffectDefinition = {id:"artifact:loaded-quest
 export const falseBottomEffect: EffectDefinition = {id:"artifact:false-bottom:low-spoils",sourceId:"artifact:false-bottom",timing:"SPOILS_MODIFICATION",priority:410,condition:{type:"spoils_score_at_most",value:5},actions:[{type:"add_spoils_score",value:2,cap:12}]};
 export const oppositeNumberEffect: EffectDefinition = {id:"artifact:opposite-number:opposites",sourceId:"artifact:opposite-number",timing:"SPOILS_MODIFICATION",priority:420,condition:{type:"spoils_opposites"},actions:[{type:"add_spoils_score",value:3,cap:12}]};
 export const redThreadEffect: EffectDefinition = {id:"artifact:red-thread:margin1-heal",sourceId:"artifact:red-thread",timing:"DAMAGE_MODIFICATION",priority:400,condition:{type:"margin_exact",value:1},actions:[{type:"heal_player",value:1}],maxUsesPerEncounter:1};
+export const longOddsEffect: EffectDefinition = {id:"technique:long-odds:margin1-spoils",sourceId:"technique:long-odds",timing:"SPOILS_MODIFICATION",priority:350,condition:{type:"margin_exact",value:1},actions:[{type:"add_spoils_score",value:2,cap:12}],maxUsesPerEncounter:1};
 
 export const tollEaterGreedTaxEffect: EffectDefinition = {id:"enemy:toll-eater:take-your-cut",sourceId:"enemy:toll-eater",timing:"FIGHT_MODIFICATION",priority:100,condition:{type:"spoils_score_at_least",value:9},actions:[{type:"add_fight",value:-1}]};
 export const passageClerkDuplicateFilingEffect: EffectDefinition = {id:"enemy:passage-clerk:duplicate-filing",sourceId:"enemy:passage-clerk",timing:"FIGHT_MODIFICATION",priority:100,condition:{type:"fight_dice_doubles"},actions:[{type:"add_enemy_fight",value:2}]};
@@ -22,6 +23,6 @@ export const firstDoorBothWaysEffect: EffectDefinition = {id:"rule:first-door:bo
 
 export const floor1EffectRegistry: Readonly<Record<string,EffectDefinition>> = Object.fromEntries([
   bentKnifeEffect,twinNailsEffect,breachingBarEffect,workApronEffect,proofVestEffect,insideOutLiningEffect,brassBuckleEffect,
-  loadedQuestionEffect,falseBottomEffect,oppositeNumberEffect,redThreadEffect,
+  loadedQuestionEffect,falseBottomEffect,oppositeNumberEffect,redThreadEffect,longOddsEffect,
   tollEaterGreedTaxEffect,passageClerkDuplicateFilingEffect,sealWhelpReactionEffect,turnbackRefusalEffect,firstDoorAjarDraftEffect,firstDoorBothWaysEffect,
 ].map((effect)=>[effect.id,effect]));
