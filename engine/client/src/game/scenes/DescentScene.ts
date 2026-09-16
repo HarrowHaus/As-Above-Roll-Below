@@ -8,7 +8,7 @@ export class DescentScene extends Scene {
 
   create():void {
     const width=this.scale.width,height=this.scale.height;
-    this.cameras.main.setBackgroundColor(0x0b0e12);
+    this.cameras.main.setBackgroundColor(0x0e12);
     const state=clientRun.state;
 
     if(state.phase==="RUN_DEATH"||state.phase==="RUN_VICTORY"){
@@ -52,17 +52,27 @@ export class DescentScene extends Scene {
       fontFamily:"monospace",fontSize:`${Math.max(10,Math.min(15,width*0.026))}px`,color:"#7f8b92"
     }).setOrigin(0.5);
 
-    if(clientRun.hasEmergencyKey&&hp.hp<hp.maxHp){
-      const button=this.add.rectangle(width/2,height*0.89,Math.min(width*0.66,310),44,0x18302d).setStrokeStyle(1,0x66a494).setInteractive({useHandCursor:true});
-      this.add.text(width/2,height*0.89,"USE EMERGENCY KEY • HEAL 4",{fontFamily:"monospace",fontSize:"11px",color:"#d7eee8"}).setOrigin(0.5);
-      button.on("pointerdown",()=>{clientRun.useEmergencyKey();this.scene.restart();});
+    const canUseKey=clientRun.hasEmergencyKey&&hp.hp<hp.maxHp;
+    if(canUseKey){
+      const keyButton=this.add.rectangle(width/2,height*0.88,Math.min(width*0.72,330),46,0x18302d).setStrokeStyle(1,0x66a494).setInteractive({useHandCursor:true});
+      this.add.text(width/2,height*0.88,"USE EMERGENCY KEY • HEAL 4",{fontFamily:"monospace",fontSize:"11px",color:"#d7eee8"}).setOrigin(0.5);
+      keyButton.on("pointerdown",()=>{clientRun.useEmergencyKey();this.scene.restart();});
+
+      const descendButton=this.add.rectangle(width/2,height*0.95,Math.min(width*0.5,240),42,0x242b31).setStrokeStyle(1,0x68747c).setInteractive({useHandCursor:true});
+      this.add.text(width/2,height*0.95,"DESCEND",{fontFamily:"monospace",fontSize:"11px",color:"#eee6d5"}).setOrigin(0.5);
+      descendButton.on("pointerdown",()=>this.enterNext());
+      return;
     }
 
     this.time.delayedCall(520,()=>{
       if(!this.scene.isActive())return;
-      const node=clientRun.enterNextDepth();
-      this.routeNode(node.type);
+      this.enterNext();
     });
+  }
+
+  private enterNext():void {
+    const node=clientRun.enterNextDepth();
+    this.routeNode(node.type);
   }
 
   private routeCurrentPhase():void {
