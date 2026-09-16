@@ -1,0 +1,22 @@
+{
+  "best": {
+    "safe":{"runs":1000,"clear_rate":0.985,"mean_final_hp":20.266,"mean_rounds":16.383,"mean_hp_loss":5.435,"mean_coins":15.686,"mean_level":2.903,"mean_xp":6.85,"mean_elites":0,"loot_band_frequency":{"1":0.23825417201540436,"2":0.5409499358151476,"3":0.20949935815147624,"4":0.011296534017971758}},
+    "balanced":{"runs":1000,"clear_rate":0.909,"mean_final_hp":14.492,"mean_rounds":26.899,"mean_hp_loss":11.415,"mean_coins":17.363,"mean_level":2.861,"mean_xp":8.163,"mean_elites":1.581,"loot_band_frequency":{"1":0.003878975950349108,"2":0.09749159555210758,"3":0.4561675717610551,"4":0.44246185673648825}},
+    "greedy":{"runs":1000,"clear_rate":0.67,"mean_final_hp":9.335,"mean_rounds":33.534,"mean_hp_loss":15.209,"mean_coins":16.41,"mean_level":2.602,"mean_xp":7.486,"mean_elites":1.759,"loot_band_frequency":{"1":0.0007874015748031496,"2":0.049343832020997375,"3":0.38241469816272966,"4":0.5674540682414698}}
+  },
+  "first2": {
+    "safe":{"runs":1000,"clear_rate":0.986,"mean_final_hp":20.237,"mean_rounds":16.422,"mean_hp_loss":5.473,"mean_coins":15.752,"mean_level":2.905,"mean_xp":6.856,"mean_elites":0,"loot_band_frequency":{"1":0.25808106721395585,"2":0.5374551051821447,"3":0.19343252950230888,"4":0.011031298101590559}},
+    "balanced":{"runs":1000,"clear_rate":0.912,"mean_final_hp":14.702,"mean_rounds":27.11,"mean_hp_loss":11.221,"mean_coins":17.362,"mean_level":2.863,"mean_xp":8.154,"mean_elites":1.573,"loot_band_frequency":{"1":0.025129533678756477,"2":0.1849740932642487,"3":0.4606217616580311,"4":0.32927461139896375}},
+    "greedy":{"runs":1000,"clear_rate":0.624,"mean_final_hp":8.601,"mean_rounds":34.577,"mean_hp_loss":15.773,"mean_coins":16.239,"mean_level":2.556,"mean_xp":7.313,"mean_elites":1.738,"loot_band_frequency":{"1":0.019453207150368034,"2":0.18953732912723448,"3":0.42875920084121977,"4":0.36225026288117773}}
+  },
+  "first": {
+    "safe":{"runs":1000,"clear_rate":0.984,"mean_final_hp":20.417,"mean_rounds":16.449,"mean_hp_loss":5.225,"mean_coins":16.1,"mean_level":2.914,"mean_xp":6.866,"mean_elites":0,"loot_band_frequency":{"1":0.4259070005109862,"2":0.45503321410321923,"3":0.11216147164026571,"4":0.006898313745528871}},
+    "balanced":{"runs":1000,"clear_rate":0.919,"mean_final_hp":14.755,"mean_rounds":27.271,"mean_hp_loss":11.227,"mean_coins":17.565,"mean_level":2.87,"mean_xp":8.174,"mean_elites":1.572,"loot_band_frequency":{"1":0.12150259067357513,"2":0.2896373056994819,"3":0.3572538860103627,"4":0.23160621761658032}},
+    "greedy":{"runs":1000,"clear_rate":0.602,"mean_final_hp":7.938,"mean_rounds":35.464,"mean_hp_loss":16.36,"mean_coins":16.334,"mean_level":2.525,"mean_xp":7.216,"mean_elites":1.716,"loot_band_frequency":{"1":0.11573952016873187,"2":0.29870814658581596,"3":0.3495913524914316,"4":0.23596098075402056}}
+  },
+  "final": {
+    "safe":{"runs":1000,"clear_rate":0.981,"mean_final_hp":20.18,"mean_rounds":16.573,"mean_hp_loss":5.531,"mean_coins":15.702,"mean_level":2.905,"mean_xp":6.844,"mean_elites":0,"loot_band_frequency":{"1":0.3896436811074084,"2":0.4503973340169187,"3":0.15201230453729814,"4":0.007946680338374775}},
+    "balanced":{"runs":1000,"clear_rate":0.898,"mean_final_hp":14.314,"mean_rounds":27.9,"mean_hp_loss":11.52,"mean_coins":17.724,"mean_level":2.847,"mean_xp":8.134,"mean_elites":1.589,"loot_band_frequency":{"1":0.24308249288854408,"2":0.34238427721748127,"3":0.27489009568140677,"4":0.13964313421256788}},
+    "greedy":{"runs":1000,"clear_rate":0.583,"mean_final_hp":7.612,"mean_rounds":35.904,"mean_hp_loss":16.641,"mean_coins":16.375,"mean_level":2.519,"mean_xp":7.189,"mean_elites":1.707,"loot_band_frequency":{"1":0.20953378732320588,"2":0.3619696176008381,"3":0.28522786799371397,"4":0.143268727082242}}
+  }
+}
