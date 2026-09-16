@@ -13,7 +13,7 @@ export class LootScene extends Scene {
     this.add.text(50,92,boss?"THE FIRST DOOR YIELDS ONE PREMIUM BUILD PIECE.":`FINAL-BLOW SCORE ${draft.score}  •  REWARD BAND ${draft.band}`,{fontFamily:"monospace",fontSize:"14px",color:"#d9b35a",letterSpacing:1});
     this.add.text(50,125,"Choose one. The other two are gone.",{fontFamily:"monospace",fontSize:"13px",color:"#87939b"});
     draft.offers.forEach((offer,index)=>this.renderOffer(offer,250+index*390,325));
-    if(clientRun.lootCanSkip)this.button(640,620,220,48,"SKIP ALL → +2 COINS",()=>{clientRun.skipLoot();this.goAfterLoot();},0x1a2328,0x8a6b38);
+    if(clientRun.lootCanSkip)this.button(640,620,220,48,"SKIP ALL → COINS",()=>{clientRun.skipLoot();this.goAfterLoot();},0x1a2328,0x8a6b38);
   }
 
   private renderOffer(offer:LootOffer,x:number,y:number):void {
