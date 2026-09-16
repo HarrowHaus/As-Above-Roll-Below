@@ -8,6 +8,7 @@ export * from "./combat/manipulation-reactions.js";
 export * from "./combat/cast-constraints.js";
 export * from "./procgen/floor.js";
 export * from "./procgen/run.js";
+export * from "./procgen/descent.js";
 export * from "./procgen/encounter.js";
 export * from "./procgen/event.js";
 export * from "./run/run-state.js";
