@@ -1,0 +1,1 @@
+The full V1 source/export pack is also available as a generated ZIP in the current ChatGPT project session. Runtime implementation should use the canonical 48×48 atlas + metadata once the atlas binary is checked into the repo or regenerated from the deterministic template.
