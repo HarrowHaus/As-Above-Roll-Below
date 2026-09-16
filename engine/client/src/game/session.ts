@@ -35,6 +35,7 @@ import {
   type InventoryTakePlan,
   type LootDraft,
   type LootOffer,
+  type RngStream,
   type RunState,
   type ShopItemOffer,
   type ShopStock,
@@ -60,6 +61,8 @@ class ClientRunSession {
   get state(): RunState { return this.run; }
   get currentSeed(): number { return this.seed; }
   get availableNodes(): readonly FloorNode[] { return availableRunNodes(this.run); }
+
+  stream(name: string): RngStream { return this.rng.stream(name); }
 
   reset(newSeed = this.seed + 1): void {
     this.seed = newSeed;
