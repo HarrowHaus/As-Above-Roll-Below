@@ -50,6 +50,9 @@ class ClientRunSession {
   private seed = 831_991;
   private rng = new RngService(this.seed);
   private run = createRunState(this.seed, [thresholdsFloor], { startingGear: { ARMOR: "work-apron" } });
+  private shopSold = new Set<string>();
+  private preparedEncounters = new Map<string,EnemyDefinition>();
+  private revealNextRequested = false;
 
   currentEnemy: EnemyDefinition | null = null;
   currentEvent: EventDefinition | null = null;
@@ -63,6 +66,8 @@ class ClientRunSession {
   get availableNodes(): readonly FloorNode[] { return availableRunNodes(this.run); }
 
   stream(name: string): RngStream { return this.rng.stream(name); }
+  shopItemSold(itemId:string):boolean { return this.shopSold.has(itemId); }
+  revealedEncounter(nodeId:string):EnemyDefinition|null { return this.preparedEncounters.get(nodeId)??null; }
 
   reset(newSeed = this.seed + 1): void {
     this.seed = newSeed;
@@ -74,6 +79,9 @@ class ClientRunSession {
     this.pendingLoot = null;
     this.pendingEventOffers = [];
     this.technique = null;
+    this.shopSold.clear();
+    this.preparedEncounters.clear();
+    this.revealNextRequested = false;
   }
 
   enterNode(nodeId: string): FloorNode {
@@ -88,10 +96,12 @@ class ClientRunSession {
     this.pendingEventOffers = [];
 
     if (node.type === "COMBAT" || node.type === "ELITE") {
+      const prepared=this.preparedEncounters.get(node.id);
       const pool = node.type === "ELITE" ? floor1Elites : floor1NormalEnemies;
-      const enemy = selectEncounter(pool, this.run.encounterHistory, this.rng.stream("encounter:floor:0"));
+      const enemy = prepared ?? selectEncounter(pool, this.run.encounterHistory, this.rng.stream("encounter:floor:0"));
       this.currentEnemy = enemy;
       this.run = withEncounterHistory(this.run, enemy.id, enemy.instinct);
+      this.preparedEncounters.delete(node.id);
     } else if (node.type === "BOSS") {
       this.currentEnemy = bossPhaseAsEnemy(firstDoor, firstDoor.maxHp);
     } else if (node.type === "EVENT") {
@@ -100,6 +110,7 @@ class ClientRunSession {
       this.run = withEventHistory(this.run, event.id);
     } else if (node.type === "SHOP") {
       this.currentShop = generateShopStock(floor1ItemRegistry, this.run.inventory, this.rng.stream("shop:floor:0"));
+      this.shopSold.clear();
     }
     return node;
   }
@@ -128,9 +139,8 @@ class ClientRunSession {
   finishCombatVictory(playerHp: number, finalSpoils: number | null): "LOOT" | "MAP" | "VICTORY" {
     if (!this.currentEnemy) throw new Error("Cannot finish combat without an enemy");
     let progression = { ...this.run.progression, hp: playerHp };
-    let economy = addCoins(this.run.economy, this.currentEnemy.coins);
-    const xp = grantXp(progression, this.currentEnemy.xp);
-    progression = xp.state;
+    const economy = addCoins(this.run.economy, this.currentEnemy.coins);
+    progression = grantXp(progression, this.currentEnemy.xp).state;
     this.run = withRunResources(this.run, { progression, economy });
 
     if (this.run.phase === "BOSS") {
@@ -140,13 +150,7 @@ class ClientRunSession {
     }
 
     const score = finalSpoils ?? 2;
-    this.pendingLoot = generateLootDraft(
-      score,
-      floor1ItemRegistry,
-      this.run.inventory,
-      this.rng.stream("loot:floor:0"),
-      this.currentEnemy.rewardBandUplift ?? 0,
-    );
+    this.pendingLoot = generateLootDraft(score,floor1ItemRegistry,this.run.inventory,this.rng.stream("loot:floor:0"),this.currentEnemy.rewardBandUplift ?? 0);
     return "LOOT";
   }
 
@@ -162,11 +166,8 @@ class ClientRunSession {
   }
 
   takeLootOffer(offer: LootOffer, replacementItemId?: string): void {
-    if (offer.type === "COINS") {
-      this.run = withRunResources(this.run, { economy: addCoins(this.run.economy, offer.amount) });
-    } else {
-      this.takeItem(offer.itemId, replacementItemId);
-    }
+    if (offer.type === "COINS") this.run = withRunResources(this.run, { economy: addCoins(this.run.economy, offer.amount) });
+    else this.takeItem(offer.itemId, replacementItemId);
     this.pendingLoot = null;
     this.run = completeRunNode(this.run);
   }
@@ -186,9 +187,11 @@ class ClientRunSession {
   }
 
   buyShopItem(offer: ShopItemOffer, replacementItemId?: string): void {
+    if(this.shopSold.has(offer.itemId)) throw new Error(`${offer.itemId} is already sold`);
     if (this.run.economy.coins < offer.price) throw new Error("Insufficient Coins");
     this.run = withRunResources(this.run, { economy: spendCoins(this.run.economy, offer.price) });
     this.takeItem(offer.itemId, replacementItemId);
+    this.shopSold.add(offer.itemId);
   }
 
   buyShopHealing(): void {
@@ -198,6 +201,7 @@ class ClientRunSession {
 
   leaveShop(): void {
     this.currentShop = null;
+    this.shopSold.clear();
     this.run = completeRunNode(this.run);
   }
 
@@ -213,6 +217,7 @@ class ClientRunSession {
     );
     this.run = withRunResources(this.run, resolved.state);
     this.pendingEventOffers = [...resolved.itemOffers];
+    this.revealNextRequested = this.revealNextRequested || resolved.revealNextEncounter;
     if (this.run.progression.hp <= 0) {
       this.run = defeatRun(this.run);
       return [];
@@ -229,6 +234,17 @@ class ClientRunSession {
     this.currentEvent = null;
     this.pendingEventOffers = [];
     this.run = completeRunNode(this.run);
+    if(this.revealNextRequested){this.prepareReachableEncounters();this.revealNextRequested=false;}
+  }
+
+  private prepareReachableEncounters():void {
+    this.preparedEncounters.clear();
+    for(const node of availableRunNodes(this.run)){
+      if(node.type!=="COMBAT"&&node.type!=="ELITE") continue;
+      const pool=node.type==="ELITE"?floor1Elites:floor1NormalEnemies;
+      const enemy=selectEncounter(pool,this.run.encounterHistory,this.rng.stream(`encounter:revealed:${node.id}`));
+      this.preparedEncounters.set(node.id,enemy);
+    }
   }
 }
 
