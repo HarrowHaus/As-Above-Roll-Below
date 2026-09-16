@@ -28,6 +28,7 @@ export interface CombatActionResult {
 
 function replaceDie(state: CombatState, id: DieId, value: DieValue): CombatState {
   const die=findDie(state.playerRoll,id);
+  if(die.locked) throw new Error(`Die ${die.id} is LOCKED`);
   const next=withValue(die,value);
   return {...state,playerRoll:state.playerRoll.map((candidate)=>candidate.id===id?next:candidate)};
 }
