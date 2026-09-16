@@ -1,0 +1,45 @@
+export interface ItemText { rule:string; flavor:string; }
+export interface EnemyText { ruleName?:string; rule?:string; flavor:string; }
+
+export const itemText:Readonly<Record<string,ItemText>>={
+  "bent-knife":{rule:"If your two Fight Dice are different, +1 Fight.",flavor:"Bent on purpose. Nobody remembers whose."},
+  "twin-nails":{rule:"If your Fight Dice are doubles, +2 Fight.",flavor:"Same length. Same rust. Different coffins."},
+  "breaching-bar":{rule:"When your raw Fight is 10+, deal +2 damage after a win.",flavor:"FOR EMERGENCY EGRESS FROM PLACES WITH NO EXITS."},
+  "work-apron":{rule:"The first time you would take damage each encounter, reduce it by 1.",flavor:"Every stain has a department number."},
+  "proof-vest":{rule:"The first time you would take damage each encounter, reduce it by 2.",flavor:"PROOF OF WHAT is not included."},
+  "inside-out-lining":{rule:"Once per encounter, if you lose by exactly 1, reduce that damage by 1.",flavor:"The label is on the outside. So is the pocket."},
+  "brass-buckle":{rule:"On a tie, deal 1 damage to the enemy.",flavor:"Fastens nothing currently recognized as clothing."},
+  "small-change-purse":{rule:"The first Loot Draft you skip each run gives +2 additional Coins.",flavor:"Contains exactly the amount you were short last time."},
+  "mirror-shard":{rule:"Once per encounter, FLIP one eligible die: 1↔6, 2↔5, 3↔4.",flavor:"The reflection remembers the other result."},
+  "loaded-question":{rule:"If your successful Spoils Dice are doubles, +2 Spoils, maximum 12.",flavor:"Answer yes or yes."},
+  "false-bottom":{rule:"If successful Spoils is 5 or less before this effect, +2 Spoils, maximum 12.",flavor:"Empty, unless you check whether empty has a basement."},
+  "hidden-hand":{rule:"Once per encounter, lower the enemy's highest locked die by 1.",flavor:"No relation to the visible hand."},
+  "ash-ledger":{rule:"The first time you take damage each encounter, gain 1 Coin.",flavor:"Losses carried forward."},
+  "opposite-number":{rule:"If successful Spoils Dice are opposite d6 faces, +3 Spoils, maximum 12.",flavor:"You have never met. You have the same extension."},
+  "brass-caliper":{rule:"Once per encounter after choosing Fight Dice, BUMP one eligible Spoils Die by ±1.",flavor:"Measures the part that isn't there yet."},
+  "red-thread":{rule:"Once per encounter, when you win by exactly 1 Margin, HEAL 1.",flavor:"Tied to something on the other side. Do not pull to check."},
+  "carbon-paper":{rule:"Once per encounter, COPY one eligible player die onto another.",flavor:"PRESS HARD. THIRD COPY RETAINED BELOW."},
+  "stuck-key":{rule:"After a successful non-final round, you may carry one Spoils Die into the next cast LOCKED.",flavor:"It fits. That is the problem."},
+  "receipt-from-nowhere":{rule:"The first item bought in each Shop costs 2 fewer Coins, minimum 1.",flavor:"THANK YOU FOR YOUR PREVIOUS PURCHASE TOMORROW."},
+  "blank-face":{rule:"Once per encounter, change one eligible player die to 1 or 6.",flavor:"The missing side is whichever side you need."},
+  "redacted-slip":{rule:"Consume: REROLL one eligible selected player die.",flavor:"The useful part has been removed for your convenience."},
+  "counterfeit-seal":{rule:"Consume: set one eligible selected player die to 4.",flavor:"Authenticity pending."},
+  "wire-cutter":{rule:"Consume: lower the enemy's highest locked die by 1.",flavor:"There is always a wire if you call something a wire."},
+  "carbon-copy":{rule:"Consume: COPY one eligible selected player die onto another. Select SOURCE, then TARGET.",flavor:"The copy is legally the original until noticed."},
+  "emergency-key":{rule:"Consume outside combat: HEAL 4 HP.",flavor:"BREAK GLASS. THERE IS NO GLASS."},
+  "temporary-injunction":{rule:"Consume before manipulating this cast: ignore the enemy's non-boss rule for this round.",flavor:"Effective until somebody notices jurisdiction."},
+};
+
+export const enemyText:Readonly<Record<string,EnemyText>>={
+  "thresholds:latchling":{flavor:"It has never seen a door it couldn't make worse."},
+  "thresholds:turnback":{ruleName:"REFUSAL",rule:"On a tie, HEAL 1 HP.",flavor:"You have already been asked to leave."},
+  "thresholds:unadmitted":{ruleName:"HELD AT DESK",rule:"At the start of each cast, your lowest die is FIXED.",flavor:"Your appointment cannot be located because you have arrived for it."},
+  "thresholds:doorwake":{flavor:"The part of a doorway that keeps dreaming after the door is gone."},
+  "thresholds:toll-eater":{ruleName:"TAKE YOUR CUT",rule:"If your chosen Spoils total is 9+, you get −1 Fight this round.",flavor:"Exact change accepted. Incorrect change also accepted."},
+  "thresholds:passage-clerk":{ruleName:"DUPLICATE FILING",rule:"If your Fight Dice are doubles, it gains +2 Enemy Fight this round.",flavor:"One copy for the office. One copy for the office."},
+  "thresholds:seal-whelp":{ruleName:"REACTION SEAL",rule:"The first time you manipulate a die each round, it gains +1 Enemy Fight.",flavor:"Tamper evident. Evidence extremely pleased about this."},
+  "thresholds:misaddressed-visitor":{flavor:"It was sent here by mistake and has decided the mistake is you."},
+  "thresholds:threshold-warden":{ruleName:"HELD EVIDENCE",rule:"At the start of each cast, your highest die is FIXED.",flavor:"Nothing personal. Your passage has been selected for additional passage."},
+  "thresholds:seal-bearer":{ruleName:"COUNTERSEAL",rule:"The first time you manipulate each round, BUMP its lowest locked die +1.",flavor:"Every seal authenticates the previous seal, which authenticates this one."},
+  "thresholds:first-door":{ruleName:"THE FIRST DOOR",rule:"Its rule changes as its HP falls. CLOSED resists interference; AJAR punishes greed; OPEN makes ties hurt both sides.",flavor:"Nobody remembers installing it. Everybody remembers being told not to open it."},
+};
