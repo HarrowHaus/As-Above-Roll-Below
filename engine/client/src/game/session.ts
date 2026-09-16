@@ -8,7 +8,7 @@ import {
   buyHealing,
   completeRunNode,
   consumeContraband,
-  createRunState,
+  createDescentRunState,
   defeatRun,
   enterRunNode,
   firstDoor,
@@ -32,7 +32,7 @@ import {
   selectEvent,
   skippedDraftCoinAward,
   spendCoins,
-  thresholdsFloor,
+  thresholdsDescent,
   withEncounterHistory,
   withEventHistory,
   withRunResources,
@@ -56,7 +56,7 @@ export type LootKind="NORMAL"|"BOSS";
 class ClientRunSession {
   private seed=831_991;
   private rng=new RngService(this.seed);
-  private run=createRunState(this.seed,[thresholdsFloor],{startingGear:{ARMOR:"work-apron"}});
+  private run=createDescentRunState(this.seed,[thresholdsDescent],{startingGear:{ARMOR:"work-apron"}});
   private shopSold=new Set<string>();
   private preparedEncounters=new Map<string,EnemyDefinition>();
   private revealNextRequested=false;
@@ -78,6 +78,8 @@ class ClientRunSession {
   get lootCanSkip():boolean{return this.pendingLootKind!=="BOSS";}
   get technique():TechniqueId|null{return this.techniques[0]??null;}
   get hasEmergencyKey():boolean{return this.run.inventory.contraband.includes("emergency-key");}
+  get currentDepth():number{return this.run.visitedNodeIds.length+(this.run.currentNodeId?1:1);}
+  get totalDepths():number{return this.run.floors[this.run.floorIndex]?.nodes.length??0;}
 
   stream(name:string):RngStream{return this.rng.stream(name);}
   hasTechnique(id:TechniqueId):boolean{return this.techniques.includes(id);}
@@ -85,8 +87,14 @@ class ClientRunSession {
   revealedEncounter(nodeId:string):EnemyDefinition|null{return this.preparedEncounters.get(nodeId)??null;}
 
   reset(newSeed=this.seed+1):void {
-    this.seed=newSeed;this.rng=new RngService(this.seed);this.run=createRunState(this.seed,[thresholdsFloor],{startingGear:{ARMOR:"work-apron"}});
+    this.seed=newSeed;this.rng=new RngService(this.seed);this.run=createDescentRunState(this.seed,[thresholdsDescent],{startingGear:{ARMOR:"work-apron"}});
     this.currentEnemy=null;this.currentEvent=null;this.currentShop=null;this.pendingLoot=null;this.pendingLootKind=null;this.pendingEventOffers=[];this.techniques=[];this.shopSold.clear();this.preparedEncounters.clear();this.revealNextRequested=false;this.purseBonusUsed=false;this.receiptDiscountUsed=false;
+  }
+
+  enterNextDepth():FloorNode {
+    const next=this.availableNodes;
+    if(next.length!==1)throw new Error(`Descent expected exactly one next Depth, got ${next.length}`);
+    return this.enterNode(next[0]!.id);
   }
 
   enterNode(nodeId:string):FloorNode {
@@ -120,7 +128,7 @@ class ClientRunSession {
     this.run=withRunResources(this.run,{progression,inventory});
   }
 
-  finishCombatVictory(playerHp:number,finalSpoils:number|null):"LOOT"|"MAP"|"VICTORY" {
+  finishCombatVictory(playerHp:number,finalSpoils:number|null):"LOOT"|"DESCEND"|"VICTORY" {
     if(!this.currentEnemy)throw new Error("Cannot finish combat without an enemy");let progression={...this.run.progression,hp:playerHp};const economy=addCoins(this.run.economy,this.currentEnemy.coins);progression=grantXp(progression,this.currentEnemy.xp).state;this.run=withRunResources(this.run,{progression,economy});
     if(this.run.phase==="BOSS"){this.run=withRunResources(this.run,{progression:heal(this.run.progression,firstDoor.clearHeal)});this.pendingLoot=generateBossDraft(floor1BossDraftItemIds,floor1ItemRegistry,this.run.inventory,this.rng.stream("boss:reward"));this.pendingLootKind="BOSS";return "LOOT";}
     const score=finalSpoils??2;this.pendingLoot=generateLootDraft(score,floor1ItemRegistry,this.run.inventory,this.rng.stream("loot:floor:0"),this.currentEnemy.rewardBandUplift??0);this.pendingLootKind="NORMAL";return "LOOT";
