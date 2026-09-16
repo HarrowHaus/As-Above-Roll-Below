@@ -1,101 +1,72 @@
 # As Above, Roll Below — Master Systems Spec
 
-**Version:** 0.1  
-**Status:** canonical preproduction systems contract
+**Version:** 0.2  
+**Status:** canonical preproduction systems contract  
+**Supersedes:** v0.1 and any older prototype rule where they conflict
 
-This document defines the complete baseline rules underneath content, art, and implementation. If another design document conflicts with this one, this one wins unless explicitly superseded by a later decision log entry.
+This document defines the baseline rules underneath content, art, simulation, and implementation. `DECISION_LEDGER.md` records the evidence/status behind these decisions.
 
 ---
 
-# 1. Core loop
-
-## Combat loop
+# 1. Core combat contract
 
 1. Encounter begins.
 2. Enemy rolls visible dice.
-3. Enemy locks according to deterministic Instinct.
-4. Player rolls exactly 4d6.
-5. Player may use legal manipulation.
-6. Player commits exactly 2 Fight Dice.
-7. Remaining 2 dice become the current Spoils Pair.
-8. UI previews deterministic modifiers and margin.
+3. Enemy locks dice according to visible deterministic **Instinct**.
+4. Player rolls exactly **4d6**.
+5. Player may use legal build-granted manipulation.
+6. Player commits exactly **2 Fight Dice**.
+7. The remaining exactly **2 dice are the current Spoils Pair**.
+8. UI previews deterministic modifiers and the resulting margin.
 9. Player confirms.
-10. Higher Fight total deals damage equal to the winning margin.
-11. Tie deals 0 baseline damage.
-12. A damaging player win records the current Spoils Score.
-13. If both remain alive, next round.
-14. On victory: XP + Coins + Loot Draft.
-15. On death: run ends.
+10. Higher Fight total deals HP damage equal to the winning margin, plus any explicitly triggered additional damage.
+11. A tie deals 0 baseline damage unless an effect says otherwise.
+12. If both combatants survive, begin another round.
+13. On enemy death, resolve the encounter's **Final-Blow Spoils**.
 
-## Run loop
-
-choose character → Floor route → encounter/event/shop → reward/build change → level thresholds → elite/boss → next Floor → final boss → run summary → horizontal unlock checks → new run.
+There is no hidden hit/miss roll after COMMIT.
 
 ---
 
-# 2. Player run state
+# 2. Final-Blow Spoils — LOCKED
 
-The baseline player has only these universal numerical run stats:
+The encounter reward is determined by the two uncommitted dice on the **final damaging player win that defeats the enemy**.
 
-- **Current HP**
-- **Max HP**
-- **Level**
-- **XP**
-- **Coins**
+`Base Spoils Score = final uncommitted die A + final uncommitted die B`
 
-No universal baseline stats for Strength, Dexterity, Armor, Crit, Luck, Mana, Sanity, Stamina, Encumbrance, Accuracy, Evasion, or elemental resistance.
+Then deterministic Spoils modifiers resolve.
 
-Those concepts may exist as item/enemy rules only when they create a concrete dice decision.
+Losses and ties never qualify Spoils.
 
-## Starting values — production target
+Earlier successful rounds do **not** store or improve reward quality.
 
-- Level: 1
-- XP: 0
-- Max HP: 20
-- Current HP: 20
-- Coins: 0
-- Core Dice: 4d6
-- Gear slots: Weapon / Armor / Utility
-- Artifact slots: 4
-- Contraband slots: 2
-- Technique slots: 2 earned through run Level
+## Why this replaced Best Successful Spoils
 
----
+Simulation Gate V1 showed Best Successful Spoils materially overproduced premium rewards and rewarded prolonging fights:
 
-# 3. Enemy stat contract
+- Balanced Band IV with Best Successful: **34.7%**
+- Balanced Band IV with Final Blow: **11.0%**
 
-Every enemy record contains:
+Final Blow preserves the central decision on the most consequential combat roll while keeping Band IV genuinely premium.
 
-- id
-- display_name
-- tier: normal / tough / elite / boss
-- max_hp
-- dice_count
-- Instinct
-- primary_rule
-- optional phase/state rules
-- XP reward
-- Coin reward
-- Loot modifiers
-- tags
-- content/provenance reference
+See `simulation/floor1/SIMULATION_GATE_REPORT.md`.
 
-There is no baseline Attack stat and no baseline Damage stat. Enemy damage emerges from the contested margin.
+## Reward bands
 
-## Dice-pressure bands
+- **2–4:** Band I
+- **5–7:** Band II
+- **8–10:** Band III
+- **11–12:** Band IV
 
-- ordinary baseline: 2d6 lock both
-- specialist/tough: 3d6 with authored non-maximizing Instinct or compensating weakness
-- elite baseline pressure: 3d6 strongest-two or equivalent
-- boss: custom authored dice engine; never `more dice = boss` as the only mechanic
+The player's build may visibly modify the final Spoils Score, normally clamped to 12.
 
 ---
 
-# 4. Fight calculation
+# 3. Fight calculation
 
 `Raw Fight = committed die A + committed die B`
 
-`Player Fight = Raw Fight + deterministic Gear/Artifact/Technique modifiers`
+`Player Fight = Raw Fight + deterministic player modifiers`
 
 `Enemy Fight = sum(enemy locked dice) + deterministic encounter modifiers`
 
@@ -103,62 +74,50 @@ There is no baseline Attack stat and no baseline Damage stat. Enemy damage emerg
 
 Resolution:
 
-- Margin > 0: enemy loses Margin HP, then additional triggered damage resolves.
-- Margin < 0: player loses abs(Margin) HP after mitigation.
-- Margin = 0: no baseline damage; tie-trigger effects may resolve.
+- Margin > 0 → enemy loses Margin HP, then additional triggered damage.
+- Margin < 0 → player loses abs(Margin) HP after mitigation.
+- Margin = 0 → no baseline damage; tie effects may resolve.
 
-## Ordering rule
-
-All deterministic bonuses relevant to the commitment must be previewable before CONFIRM.
-
-Triggered effects that are intentionally conditional on resolution may resolve afterward, but their trigger condition and effect text must be visible.
+All deterministic arithmetic relevant to the current commitment must be previewable before confirmation.
 
 ---
 
-# 5. Spoils system
+# 4. Universal player run state
 
-Every round where the player deals baseline/triggered combat damage after winning the comparison creates one successful Spoils Pair.
+The baseline player has only:
 
-`Base Spoils Score = uncommitted die A + uncommitted die B`
+- Current HP
+- Max HP
+- Level
+- XP
+- Coins
 
-Then deterministic Spoils modifiers resolve.
+Starting target:
 
-Score is clamped to the supported reward range unless an Artifact explicitly creates an overcap mechanic.
+- Level 1
+- XP 0
+- Max HP 20
+- Current HP 20
+- Coins 0
+- Core Dice 4d6
 
-## Current encounter capture rule
-
-The encounter remembers the **highest successful adjusted Spoils Score** achieved before the enemy dies.
-
-Losses and ties do not qualify Spoils by default.
-
-## Reward bands
-
-- 2–4: Band I
-- 5–7: Band II
-- 8–10: Band III
-- 11–12: Band IV
-
-Final fiction-facing band names are content work, not systems work.
-
-## Open validation
-
-Best Successful Spoils remains canonical for production planning but is still subject to replacement if actual play reveals low-risk intentional stalling.
+Do not introduce universal Strength, Dexterity, Crit, Luck, Mana, Stamina, Sanity, Armor Rating, Accuracy, Evasion, elemental-resistance, Encumbrance, Hunger, or Durability systems without a formal amendment.
 
 ---
 
-# 6. Player Level
+# 5. Run Level
 
-Run Level resets each run.
+Run Level resets every run.
 
-Target range: Level 1–6.
+Target range: **Level 1–6**.
 
-XP source:
+XP:
 
 - Normal: 1
 - Elite: 2
 - Boss: 3
 
-Target cumulative thresholds:
+Cumulative thresholds:
 
 - L2: 3
 - L3: 7
@@ -166,131 +125,181 @@ Target cumulative thresholds:
 - L5: 18
 - L6: 25
 
-On every level:
+Every Level:
 
 - Max HP +2
 - heal 2 HP
 
-At L3 and L5:
+Levels 3 and 5 additionally grant one of two character-specific Techniques.
 
-- choose 1 of 2 character-specific Techniques
+**Level never automatically adds universal Fight.**
 
-Level does not automatically increase universal Fight.
-
----
-
-# 7. Build categories
-
-## Gear
-
-Slots: 3 fixed functional slots.
-
-- Weapon: changes how the player wins / damage output.
-- Armor: changes consequences of losing / mitigation.
-- Utility: economy, tie rules, conditional support, non-damage fight rules.
-
-Gear should be the most immediately understandable build category.
-
-## Artifacts
-
-Slots: 4.
-
-Artifacts are the main systemic identity layer.
-
-They may alter:
-
-- dice values
-- pattern meaning
-- manipulation limits
-- Spoils evaluation
-- Fight/Spoils relationship
-- economy
-- enemy interference
-- LOCK/persistence
-- trigger interactions
-
-Artifacts should usually use shared verbs/triggers rather than hard-coded pairwise combos.
-
-## Contraband
-
-Slots: 2.
-
-Single-use tactical items.
-
-Contraband should solve visible states rather than provide vague long-term bonuses.
-
-Examples of role:
-
-- force/set/reroll one player die
-- lower one enemy die
-- negate a rule for one round
-- heal
-- preserve/restore a resource
-
-## Techniques
-
-Character-specific, gained only at Level milestones.
-
-Maximum ordinary run count: 2.
-
-Techniques modify character identity, not inventory capacity.
+> Levels keep you alive. Loot makes you weird.
 
 ---
 
-# 8. Duplicate and stacking policy
+# 6. Build categories and slots
 
-Vertical slice / baseline release rule:
+## Gear — 3 fixed slots
 
-- Gear: unique; duplicate copies do not stack.
-- Artifacts: unique; duplicate copies do not stack.
-- Contraband: duplicates may occupy separate slots only if the exact item is allowed to repeat.
-- Techniques: unique.
+- Weapon
+- Armor
+- Utility
 
-If later content permits stacking, every stackable effect must declare an explicit stacking rule:
+Gear primarily answers: **How do I fight or survive the margin?**
 
-- linear
-- diminishing/hyperbolic
-- additional charges
-- increased trigger count
-- capped
+## Artifacts — 4 slots
 
-There is no implicit stacking behavior.
+Primary rule-changing build layer.
 
----
+Artifacts may reinterpret/manipulate dice, patterns, Spoils, economy, LOCK, enemy interference, and trigger relationships.
 
-# 9. Manipulation vocabulary
+Artifacts primarily answer: **What do my dice mean now?**
 
-Canonical verbs:
+## Contraband — 2 slots
 
-## BUMP
-Increase or decrease one player die by 1 within 1–6.
+Single-use tactical intervention.
 
-## FLIP
-Change to the physical opposite:
-1↔6, 2↔5, 3↔4.
+Contraband primarily answers: **How do I escape this specific bad state?**
 
-## LOCK
-Preserve a die/state into a later timing window.
+## Techniques — 2 earned milestones
 
-## COPY
-Change target die to match a source die.
-
-## TRANSMUTE
-Change a specified face/value into another according to an effect.
-
-## MARK
-Attach a temporary property recognized by other effects.
-
-## REROLL
-Roll the target die again and replace its value. REROLL is not a baseline player action; it appears only through content.
-
-Every effect must declare target restrictions and timing.
+Character-specific and outside inventory.
 
 ---
 
-# 10. Timing windows
+# 7. Duplicate / replacement contract
 
-Every combat effect belongs to a defined timing window.
+Baseline:
+
+- Gear unique; no implicit stacking.
+- Artifacts unique; no implicit stacking.
+- Techniques unique.
+- Contraband repetition allowed only when the item definition permits it.
+
+Taking a persistent item into a full category requires replacement or cancellation.
+
+Persistent replacement salvage:
+
+`floor(base shop price × 0.5)`
+
+No backpack hoarding.
+
+---
+
+# 8. Canonical dice verbs
+
+- **BUMP:** ±1 within 1–6.
+- **FLIP:** physical opposite `1↔6, 2↔5, 3↔4`.
+- **LOCK:** preserve a die/state into a later timing window.
+- **COPY:** target becomes source value.
+- **TRANSMUTE:** explicitly set/change according to effect.
+- **MARK:** attach a temporary property.
+- **REROLL:** roll again; never a universal baseline action.
+
+Every effect defines timing and target legality.
+
+---
+
+# 9. Enemy contract
+
+Every enemy definition requires:
+
+- ID / display name
+- encounter class
+- Max HP
+- dice pool
+- Instinct
+- primary rule
+- XP
+- Coins
+- pressure band
+- tags
+- content/provenance reference when applicable
+
+No baseline Attack or Damage stat. Damage emerges from margin.
+
+Pressure guidance:
+
+- 2d6 lock both → ordinary baseline
+- 3d6 authored/non-maximizing Instinct → specialist/tough
+- 3d6 strongest-two → approximately Elite pressure
+- bosses → authored stateful dice engines
+
+A normal gets one primary rule. An Elite gets one strong rule or two tightly coupled simple rules. A Boss gets one major rule per state/phase.
+
+---
+
+# 10. Reward cadence
+
+## Normal victory
+XP + Coins → three-offer Loot Draft → level check → route.
+
+## Elite victory
+Elite XP + Coins → Loot Draft with **+1 reward band**, capped at IV → level check → route.
+
+## Boss victory
+Boss XP + Coins + small fixed heal → premium three-offer Boss Draft → Floor transition.
+
+---
+
+# 11. Loot Draft contract
+
+Every standard combat victory presents exactly **3 offers** generated from Final-Blow Spoils quality.
+
+Player may:
+
+- take one offer;
+- inspect replacement before confirming;
+- cancel replacement and choose another offer;
+- skip the entire draft for **+2 Coins**.
+
+Categories:
+
+- Gear
+- Artifact
+- Contraband
+- Coin Cache
+- future authored special rewards
+
+Exact generation weights/prices live in `LOOT_AND_ECONOMY_SPEC.md`.
+
+The generator prevents literal duplicate non-stackable offers and structurally unusable content; it does **not** secretly counterpick or complete the player's build.
+
+---
+
+# 12. Economy
+
+One ordinary run currency: **Coins**.
+
+Baseline encounter awards:
+
+- Normal: 2
+- Elite: 4
+- Boss: 6
+
+Shop baseline:
+
+- 1 Gear
+- 2 Artifacts
+- 1 Contraband
+- Heal 4 HP service
+
+Price targets:
+
+- Tier I Contraband: 3–4
+- Tier I Gear: 5–6
+- Tier I Artifact: 6–7
+- Tier II persistent item: 8–10
+- Heal 4 HP: 4
+
+No baseline Shop reroll.
+
+---
+
+# 13. Timing windows
+
+Combat effects use explicit timing:
 
 1. Encounter Start
 2. Enemy Cast
@@ -303,341 +312,121 @@ Every combat effect belongs to a defined timing window.
 9. Win/Loss/Tie
 10. Damage Modification
 11. Damage Applied
-12. Spoils Qualification
+12. Final-Blow Spoils Qualification (only when this damaging win kills the enemy)
 13. Spoils Modification
-14. Round End
-15. Encounter Victory/Defeat
-16. Reward
+14. Round End / Encounter Victory
+15. Reward
 
-Effects may not use ambiguous timing phrases such as `after rolling` in implementation data. They must identify one canonical window.
-
----
-
-# 11. Status policy
-
-AARB does not need a traditional RPG status encyclopedia at baseline.
-
-Statuses exist only when they alter a clear future dice/commitment rule.
-
-Target maximum persistent combat statuses visible simultaneously: 3 per combatant.
-
-Status records require:
-
-- duration
-- stack behavior
-- timing window
-- exact rule
-- cleanse/expiry behavior
-
-Potential families:
-
-- Sealed: action/manipulation unavailable
-- Marked: targeted by another effect
-- Fixed: value cannot be manipulated
-- Burdened: specific value/pattern penalty
-
-Do not import poison/burn/freeze merely because other RPGs have them.
+No implementation data may depend on vague prose such as `after rolling`.
 
 ---
 
-# 12. Reward cadence
+# 14. Route / Floor baseline
 
-## Normal victory
-
-XP + Coins → Loot Draft → continue.
-
-## Elite victory
-
-Elite XP + Coins → elevated Loot Draft → continue.
-
-## Boss victory
-
-Boss XP + Coins + small fixed heal → Boss Draft → Floor transition.
-
-## Level threshold
-
-Level-up resolves after current Loot Draft to prevent Level presentation from interrupting the reward choice that combat generated.
-
-Exception: if tests show the order feels wrong, this is a UX-order decision, not a systems dependency.
-
----
-
-# 13. Loot Draft contract
-
-Every standard Loot Draft presents exactly 3 offers.
-
-Player may:
-
-- take one offer;
-- back out of an item requiring replacement and choose another offer;
-- skip the entire draft for fixed Coin value.
-
-The Spoils band changes quality composition, not number of offered choices.
-
-## Category roles
-
-The generator can offer:
-
-- Gear
-- Artifact
-- Contraband
-- Coin Cache
-- rare authored special reward later
-
-Reward generator must prevent impossible/meaningless offers where practical.
-
-Examples:
-
-- don't offer a duplicate non-stackable Artifact already owned;
-- don't offer a Contraband whose effect is invalid for the current game rules if it cannot ever be used;
-- boss drafts guarantee persistent build value.
-
----
-
-# 14. Economy
-
-Only ordinary run currency: Coins.
-
-Target encounter awards:
-
-- Normal: 2
-- Elite: 4
-- Boss: 6
-
-Skip Loot Draft: +2 Coins.
-
-Replaced Gear/Artifact: salvage roughly 50% of its base shop price, rounded down.
-
-## Shop baseline
-
-Offers:
-
-- 1 Gear
-- 2 Artifacts
-- 1 Contraband
-- healing service
-
-Price targets:
-
-- Contraband: 3–4
-- Tier I Gear: 5–6
-- Tier I Artifact: 6–7
-- Tier II persistent item: 8–10
-- Heal 4: 4
-
-No baseline shop reroll.
-
-If reroll is introduced after testing:
-
-`cost = 2 + rerolls previously used in this shop`.
-
----
-
-# 15. Item power tiers
-
-Internal content tiers are not automatically visible rarity colors.
-
-## Tier I — foundation
-
-One clear effect. Useful without synergy.
-
-## Tier II — build-shaping
-
-Meaningfully changes roll evaluation or creates an engine.
-
-## Tier III — run-defining
-
-Rare, strong, still leaves player decisions alive.
-
-A Tier III effect that makes the four dice irrelevant is a failed item.
-
----
-
-# 16. Encounter classes
-
-## Normal
-
-Tests baseline build and one primary rule.
-
-## Tough Normal
-
-One stronger dice profile or one more demanding rule.
-
-## Elite
-
-Optional/premium encounter with authored pressure and better reward expectation.
-
-## Boss
-
-Multi-state authored encounter with custom dice behavior and guaranteed premium reward.
-
-Enemy design budget:
-
-- normal: 1 primary rule
-- elite: 1 strong rule or 2 tightly related simple rules
-- boss: 1 major rule per state/phase
-
----
-
-# 17. Run structure target
-
-Full game target:
+Full-run production target:
 
 - 4 Floors
-- 25–35 minute successful run
-- roughly 8–11 normal combats
-- 1–3 elites
-- 2–4 events
-- 2–4 shops
-- 4 bosses
+- 4 visited pre-boss rooms + Boss per Floor
+- successful run target 25–35 minutes
+- roughly 8–11 normal combats, 1–3 Elites, 2–4 Events, 2–4 Shops, 4 Bosses
 
-Vertical slice target:
+Vertical slice:
 
-- 1 Floor
-- 8–12 minutes
-- 4–6 ordinary/special rooms before boss
-- enough rewards to create a recognizable build by boss
+- one constrained Floor
+- four pre-boss rows + Boss
+- mandatory first Combat
+- Event opportunity
+- Shop opportunity
+- optional Elite opportunity
+- 8–12 minute target after onboarding
 
----
-
-# 18. Route-map information
-
-Route node must show room category before selection.
-
-Baseline categories:
-
-- Combat
-- Elite
-- Event
-- Shop
-- Boss
-
-Later nodes may expose broad reward bias but should not reveal exact item identity.
-
-Route generation rules live in RUN_STRUCTURE_AND_GENERATION_SPEC.md.
+Exact graph/generator contract lives in `RUN_STRUCTURE_AND_GENERATION_SPEC.md`.
 
 ---
 
-# 19. Event design contract
-
-Events are short system decisions, not visual-novel branches.
-
-Each event has:
-
-- premise
-- 2–3 choices
-- exact consequence ranges
-- optional build-conditioned choices
-- content/provenance data
-
-Build tags may unlock alternate solutions, inspired structurally by FTL, but no player should require external lore knowledge to identify the mechanical consequence.
-
----
-
-# 20. Boss philosophy
+# 15. Boss philosophy
 
 Bosses do not dynamically inspect and disable the player's strongest build.
 
-Bosses may naturally challenge a strategy through their authored identity.
+Bosses use authored dice engines, states, clear previewed rules, escalation, and premium reward certainty.
 
-Boss goals:
-
-- custom dice behavior
-- state changes
-- recognizable escalation
-- strong visual/timing identity
-- reward certainty
-
-The player should be excited to deploy a broken build against the boss.
+The player should be excited to unleash a broken build on a boss.
 
 ---
 
-# 21. Death and restart
+# 16. Information contract
 
-At HP 0:
+Before COMMIT, the UI must expose enough authoritative information that deterministic outcomes are understandable:
 
-- encounter ends
-- run summary appears
-- horizontal unlock checks process
-- seed/build summary is available
-- primary action is GO AGAIN
-
-Restart friction target: one primary click/tap.
-
----
-
-# 22. Metaprogression
-
-Horizontal only as baseline.
-
-Unlock pool examples:
-
-- characters
-- Gear
-- Artifacts
-- Contraband
-- enemies
-- bosses
-- events
-- difficulty modifiers
-- challenge/daily modes
-- cosmetic dice families
-
-No permanent universal Fight increase.
-
-No permanent Max HP tree as the primary progression model.
-
----
-
-# 23. Accessibility / information contract
-
-The player never needs mental arithmetic for deterministic combat resolution.
-
-Before COMMIT show:
-
-- enemy locked dice and total
+- enemy locked dice + total
 - Instinct
 - player dice
 - selected Fight pair
-- current Spoils pair
-- deterministic Fight bonuses
+- current leftover Spoils pair
+- Fight modifiers
+- Enemy Fight modifiers
 - predicted margin
-- deterministic damage mitigation/additions
-- deterministic Spoils modifiers where known
+- deterministic damage/mitigation
+- deterministic Spoils modifiers relevant if this commitment would kill the enemy
 
-Inputs:
-
-- mouse
-- touch
-- keyboard
-
-Options:
-
-- reduced motion
-- faster animations
-- scalable text
-- separate SFX/music
-- color-independent state marks
-- numeric dice labels available in addition to pips
+Renderer never decides gameplay math.
 
 ---
 
-# 24. Canonical non-systems
+# 17. Deterministic implementation
 
-Do not add without a formal design amendment:
+Gameplay rules run independently of rendering.
 
-- mana
-- stamina
-- stress/sanity
-- crafting
-- durability
-- encumbrance
-- elemental resistance sheet
-- crit chance
-- dodge chance
-- loot weight
-- hunger
+Separate seeded RNG streams cover map, encounters, combat dice, rewards, Shop, Events, and cosmetic randomness.
+
+Same seed + same decisions must reproduce gameplay outcomes.
+
+Headless simulation is a first-class requirement.
+
+---
+
+# 18. Baseline statuses
+
+No traditional status encyclopedia.
+
+Statuses exist only when they change a clear future dice/commitment rule.
+
+Initial vocabulary may include FIXED, MARKED, SEALED and similar explicit states.
+
+Target maximum persistent visible combat statuses: 3 per combatant.
+
+---
+
+# 19. Metaprogression
+
+Horizontal by default:
+
+- characters
+- items
+- enemies
+- bosses
+- Events
+- modifiers/modes
+- cosmetics
+
+No permanent universal Fight ladder or mandatory Max-HP tree.
+
+---
+
+# 20. Explicit baseline rejects
+
+Do not casually reintroduce:
+
+- fixed monster Threat as primary combat
+- parallel Hearts/Resolve
+- universal reroll
+- universal CHEAT button
+- mana / stamina / stress / sanity
+- crafting / durability / encumbrance
+- crit/dodge/accuracy sheets
 - procedural affix soup
-- randomized accuracy after COMMIT
+- hidden randomness after COMMIT
+- unlimited inventory
+- **Best Successful Spoils**
 
-Every new universal resource must prove it creates decisions the existing systems cannot.
+See `DECISION_LEDGER.md` for the full status record.
