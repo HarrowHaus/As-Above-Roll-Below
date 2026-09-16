@@ -4,6 +4,7 @@ import { CombatScene } from "./scenes/CombatScene.js";
 import { LootScene } from "./scenes/LootScene.js";
 import { ShopScene } from "./scenes/ShopScene.js";
 import { EventScene } from "./scenes/EventScene.js";
+import { TechniqueScene } from "./scenes/TechniqueScene.js";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: AUTO,
@@ -13,7 +14,7 @@ const config: Phaser.Types.Core.GameConfig = {
   backgroundColor: "#0b0e12",
   pixelArt: true,
   roundPixels: true,
-  scene: [MapScene, CombatScene, LootScene, ShopScene, EventScene],
+  scene: [MapScene, CombatScene, LootScene, TechniqueScene, ShopScene, EventScene],
   scale: {
     mode: Scale.FIT,
     autoCenter: Scale.CENTER_BOTH,
