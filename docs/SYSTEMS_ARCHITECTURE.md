@@ -1,106 +1,50 @@
 # As Above, Roll Below — Systems Architecture
 
-**Version:** 0.1  
-**Status:** preproduction canon for the next systems demo  
-**Purpose:** define the progression/economy/reward systems beneath the art layer before full vertical-slice production.
+**Version:** 0.2  
+**Status:** canonical progression / economy architecture after Simulation Gate V1
 
 ---
 
-# 1. SYSTEMS THESIS
+# 1. Systems thesis
 
-The core combat is already unusual enough. The systems around it should use familiar roguelite grammar and create a clear rhythm:
+The core combat is already unusual enough. The systems around it use familiar roguelite grammar:
 
-**fight → earn Spoils → choose loot → level when earned → manage limited slots → spend Coins → take the next risk.**
-
-The central rule is:
+**fight → kill-roll Spoils → choose loot → level when earned → manage limited slots → spend Coins → choose next risk.**
 
 > **Levels keep you alive. Loot makes you weird.**
 
-Player Level provides predictable survivability and a very small number of character-technique decisions. Loot creates the actual build.
-
-This prevents static level scaling from replacing the four-dice decision.
+Level gives predictable endurance and sparse character Techniques. Loot creates the build.
 
 ---
 
-# 2. RESEARCH LESSONS ADOPTED
+# 2. Research lessons adopted
 
-The project borrows structural lessons, not surface mechanics.
+Structural lessons, not copied surface mechanics:
 
-## Slay the Spire
-Useful lesson:
-- ordinary combat repeatedly ends in a choice rather than a blind drop;
-- card rewards may be skipped;
-- elite risk is visibly associated with premium reward value.
-
-AARB application:
-- every standard victory opens a loot draft;
-- the player may refuse a reward;
-- elites guarantee stronger loot pressure.
-
-## Slice & Dice
-Useful lesson:
-- simple combat can support enormous build diversity;
-- progression cadence alternates meaningful post-fight improvement;
-- level-ups and items are separate reward concepts;
-- visible mechanics preserve puzzle readability.
-
-AARB application:
-- leveling remains distinct from loot;
-- rewards happen frequently;
-- the player should leave most fights mechanically different from how they entered.
-
-## Dicey Dungeons
-Useful lesson:
-- compact numerical levels can grant predictable survivability while selected milestones offer equipment choices;
-- equipment/dice manipulation defines play more than raw level number.
-
-AARB application:
-- Level grants small HP growth;
-- only selected levels grant character-technique choices;
-- no large passive Fight bonus is granted by ordinary leveling.
-
-## Balatro
-Useful lesson:
-- limited persistent slots create replacement pressure;
-- the run becomes memorable through interactions between a few persistent rule-changing pieces;
-- shops mix persistent build pieces, consumables, and economy decisions.
-
-AARB application:
-- Artifact/Gear slots are deliberately limited;
-- loot replacement is a real decision;
-- Shop contains persistent items, Contraband, and healing.
-
-## Hades
-Useful lesson:
-- route choice becomes meaningful when reward categories can be read before entering a chamber;
-- run-progress rewards and longer-term unlock resources can remain conceptually separate.
-
-AARB application:
-- later route-map implementation should expose room/reward category where useful without revealing exact contents.
+- **Slay the Spire:** ordinary fights should repeatedly end in meaningful choices; optional Elite risk deserves premium reward.
+- **Slice & Dice:** simple dice combat can support broad build depth if visible rules remain legible.
+- **Dicey Dungeons:** compact Level progression can support survivability while equipment/manipulation defines play.
+- **Balatro:** limited persistent slots create replacement pressure and interaction density.
+- **Hades / FTL:** route information and visible room identity make risk/value navigation meaningful.
+- **One Deck Dungeon:** one encounter can feed multiple progression vectors without requiring a huge stat sheet.
+- **Into the Breach:** enemy-first, deterministic information makes difficult decisions feel fair.
+- **Risk of Rain / Noita / Backpack Hero:** interaction rules and constraints matter more than raw rarity or passive percentage inflation.
 
 ---
 
-# 3. PLAYER LEVEL
+# 3. Player Level
 
-## Run-only level
-Player Level resets each run.
+Run-only range: **1–6**.
 
-Planned full-run range:
+XP:
 
-**Level 1 → Level 6**
+- Normal: 1
+- Elite: 2
+- Boss: 3
 
-Level does **not** directly add a universal +1 Fight each time.
+Cumulative thresholds:
 
-## XP awards
-- Normal encounter: **1 XP**
-- Elite encounter: **2 XP**
-- Floor Boss: **3 XP**
-- Noncombat rooms: normally **0 XP**
-
-## XP thresholds
-Cumulative XP required:
-
-| Level | Total XP |
+| Level | XP |
 |---|---:|
 | 1 | 0 |
 | 2 | 3 |
@@ -109,456 +53,271 @@ Cumulative XP required:
 | 5 | 18 |
 | 6 | 25 |
 
-The exact thresholds remain balance-tunable, but the six-level structure is the current production target.
+Every Level:
 
-## Every level
-On reaching a new Level:
+- Max HP +2
+- heal 2 HP
 
-- **Max HP +2**
-- **heal 2 HP**
+Levels 3 and 5 additionally grant a choice between two character-specific Techniques.
 
-Healing cannot exceed the new Max HP.
-
-This makes Level progression valuable without making the dice numerically irrelevant.
-
-## Technique levels
-At **Level 3** and **Level 5**, the player additionally chooses **1 of 2 character-specific Techniques**.
-
-Techniques are not random generic loot. They deepen the selected character's identity.
-
-They should modify:
-- manipulation economy;
-- Fight/Spoils interpretation;
-- defensive risk;
-- character-specific triggers.
-
-They should not become another 20-slot passive inventory.
-
-Maximum character Techniques gained in an ordinary run: **2**.
+Ordinary Level gain never grants universal Fight.
 
 ---
 
-# 4. WHY LEVEL DOES NOT DRIVE DAMAGE
+# 4. Final-Blow Spoils
 
-Margin damage already creates natural scaling through:
+**Canonical capture rule:** reward quality comes from the uncommitted pair on the damaging player win that kills the enemy.
 
-- enemy dice pools;
-- enemy Instinct;
-- player Gear;
-- player manipulation;
-- Artifacts;
-- encounter-specific rules.
+Earlier successful Spoils do not persist.
 
-Large automatic Fight bonuses from Level would:
+This replaced Best Successful Spoils after Simulation Gate V1:
 
-- make high-value Fight dice less necessary;
-- reduce the cost of leaving good values as Spoils;
-- flatten enemy dice differences;
-- turn late combat into predetermined arithmetic.
+- Balanced Band IV with Best Successful: **34.7%**
+- Balanced Band IV with Final Blow: **11.0%**
 
-Therefore ordinary Level progression is primarily **endurance + sparse technique evolution**.
+Final Blow removes the incentive to intentionally prolong a solved fight while preserving the essential greed question on the decisive roll.
 
----
+Spoils bands remain:
 
-# 5. SPOILS CAPTURE — CURRENT CANON FOR TESTING
+- 2–4 → Band I
+- 5–7 → Band II
+- 8–10 → Band III
+- 11–12 → Band IV
 
-Each damaging player win produces a **successful Spoils Pair** from the two uncommitted dice.
-
-The encounter remembers the **highest successful Spoils Score** achieved before the enemy dies.
-
-`Spoils Score = Spoils Die A + Spoils Die B`
-
-Possible range: **2–12**.
-
-Losses and ties do not qualify Spoils.
-
-## Why keep Best Successful Spoils
-
-It preserves the core decision across multi-round fights. Earlier greedy wins still matter.
-
-It also creates a self-balancing greed cost:
-
-- low-margin wins preserve better Spoils;
-- low-margin wins remove less monster HP;
-- longer fights expose the player to more enemy rolls;
-- extra exposure increases expected HP loss.
-
-The current balance model already shows this cost strongly.
-
-## Stall policy
-
-Do **not** add an anti-stall meter yet.
-
-If interactive play demonstrates that players can safely farm weak monsters for premium Spoils with trivial risk, test solutions in this order:
-
-1. lower normal enemy HP;
-2. first-two-success cap;
-3. Final Blow Spoils;
-4. authored enemy escalation after excessive rounds.
-
-Never add a second greed currency simply to police behavior the combat system can solve itself.
+Build effects may visibly modify the kill-roll score before band resolution.
 
 ---
 
-# 6. LOOT IS THE PRIMARY BUILD ENGINE
+# 5. Loot is the build engine
 
-Every standard combat victory produces:
+Every standard combat victory provides:
 
-1. XP;
-2. Coins;
-3. one **Loot Draft** generated from the encounter's Spoils Score.
+1. XP
+2. Coins
+3. a three-offer Loot Draft generated from Final-Blow Spoils
 
-The player chooses **one** offered result or skips the draft.
+Player chooses one or skips the whole Draft for +2 Coins.
 
-This means every fight can materially alter the run.
-
----
-
-# 7. LOOT DRAFT
-
-## Consistent interface
-Every normal Loot Draft shows **3 offers**.
-
-The Spoils Score changes the **quality composition**, not the number of buttons the player must learn.
-
-## Spoils bands
-
-### Score 2–4 — Tier I Draft
-Three offers from low/basic pools.
-
-Typical composition:
-- Contraband;
-- Tier I Gear;
-- Tier I Artifact;
-- Coin cache.
-
-No fight should end with literally nothing useful.
-
-### Score 5–7 — Tier II Draft
-Three offers from the standard pool.
-
-Rules:
-- at least one Gear or Artifact;
-- Tier II item chance enabled;
-- Contraband remains possible.
-
-### Score 8–10 — Tier III Draft
-Three stronger offers.
-
-Rules:
-- at least one Tier II Gear/Artifact;
-- no pure low-value filler;
-- increased Artifact weighting.
-
-### Score 11–12 — Tier IV / Improbable Draft
-Three premium offers.
-
-Rules:
-- guaranteed high-tier Gear or Artifact offer;
-- Tier III pool becomes eligible;
-- premium/strange content weighting increases.
-
-Final world-facing names for the four bands belong in the content pass.
+Every fight should have the potential to materially alter the run.
 
 ---
 
-# 8. LOOT TYPES
+# 6. Loot roles
 
-## Gear
-Traditional combat equipment.
+## Gear — 3 fixed slots
 
-Slots:
 - Weapon
 - Armor
 - Utility
 
-Purpose:
-- modify Fight totals/margins;
-- mitigate damage;
-- create understandable conditional combat bonuses.
+Gear answers: **How do I fight / survive?**
 
-Gear should usually answer:
+## Artifacts — 4 slots
 
-> **How do I fight?**
+Primary rule-changing layer.
 
-## Artifacts
-Primary rule-changing build system.
+Artifacts answer: **What do my dice mean now?**
 
-Slots: **4**.
+## Contraband — 2 slots
 
-Purpose:
-- reinterpret dice;
-- modify manipulation;
-- reward patterns;
-- alter Spoils;
-- create interactions between otherwise ordinary rolls.
+Single-use intervention.
 
-Artifacts should answer:
+Contraband answers: **How do I solve this immediate bad state?**
 
-> **What do my dice mean now?**
+## Coins
 
-## Contraband
-Single-use tactical intervention.
-
-Slots: **2**.
-
-Purpose:
-- solve one dangerous state;
-- force/manipulate a roll;
-- interfere with an enemy;
-- temporarily violate a normal rule.
-
-Contraband should answer:
-
-> **How do I get out of this specific mess?**
-
-## Coin Cache
-Immediate economy reward.
-
-Provides Coins and consumes no slot.
-
-Useful as a reward choice when offered items do not fit the current build.
+One ordinary run currency. Coin Cache may appear as a no-slot Loot offer.
 
 ---
 
-# 9. ITEM TIERS
+# 7. Internal item tiers
 
-Vertical-slice content uses only **Tier I / II / III** internally.
+## Tier I — foundation
+Simple, independently useful.
 
-These are power/complexity bands, not collectible rarity colors.
+## Tier II — build-shaping
+Changes priorities, patterns or manipulation economy.
 
-## Tier I
-Simple, useful, easy to evaluate.
+## Tier III — run-defining
+Rare and powerful but still leaves the four-dice decision alive.
 
-Examples:
-- conditional +1 Fight;
-- first incoming damage reduction;
-- one additional manipulation opportunity under a clear condition.
-
-## Tier II
-Build-shaping.
-
-Examples:
-- pattern engine;
-- Spoils reinterpretation;
-- persistent LOCK synergy;
-- stronger conditional combat effects.
-
-## Tier III
-Rare run-defining effects.
-
-Must still preserve the core four-dice decision.
-
-Tier III should feel illegal, not automatic.
+Tiers are mechanical authoring bands, not automatically player-visible rarity colors.
 
 ---
 
-# 10. SLOT PRESSURE AND REPLACEMENT
+# 8. Slot pressure and replacement
 
-Inventory remains intentionally small:
+Limits:
 
-- 3 Gear slots;
-- 4 Artifact slots;
-- 2 Contraband slots.
+- 3 Gear slots
+- 4 Artifact slots
+- 2 Contraband slots
 
-When taking an item into a full category:
+Taking persistent Loot into a full category requires replacement or choosing another offer.
 
-1. select an existing item to replace; or
-2. cancel and choose another Loot offer.
+Replaced Gear/Artifact salvages for roughly half base Shop price, rounded down.
 
-The replaced item is **salvaged for Coins** equal to roughly half its shop value, rounded down.
-
-This prevents backpack hoarding while making replacement less psychologically wasteful.
-
-The player may always skip the entire Loot Draft for a small fixed Coin reward.
-
-Provisional skip reward: **+2 Coins**.
+No backpack hoarding.
 
 ---
 
-# 11. COINS
+# 9. Coin economy
 
-Coins are the only ordinary run currency.
+Baseline combat awards:
 
-## Encounter awards
-Provisional:
-- Normal: **2 Coins**
-- Elite: **4 Coins**
-- Boss: **6 Coins**
+- Normal: 2
+- Elite: 4
+- Boss: 6
 
-These are separate from the Loot Draft so even a low Spoils result still advances shop economy.
-
-## Why Spoils does not also multiply Coin income
-Spoils already controls item quality. Making high Spoils simultaneously produce much stronger items and dramatically more money would over-reward the same decision twice.
+Spoils does not multiply these base Coin awards; reward quality and basic economy remain separate axes.
 
 ---
 
-# 12. SHOP
+# 10. Shop
 
-Baseline Shop inventory:
+Baseline stock:
 
-- 1 Gear;
-- 2 Artifacts;
-- 1 Contraband;
-- Healing service.
+- 1 Gear
+- 2 Artifacts
+- 1 Contraband
+- Heal 4 HP service
 
-Provisional prices:
+Price targets:
 
-- Contraband: **3–4 Coins**
-- Tier I Gear: **5–6 Coins**
-- Tier I Artifact: **6–7 Coins**
-- Tier II Gear/Artifact: **8–10 Coins**
-- Heal 4 HP: **4 Coins**
+- Contraband 3–4
+- Tier I Gear 5–6
+- Tier I Artifact 6–7
+- Tier II persistent 8–10
+- Heal 4 HP for 4 Coins
 
-A typical Floor should allow an average player to afford roughly **one meaningful purchase**, with more available to players who skip/salvage loot or route toward economy.
-
-No Shop reroll in the first systems demo. Add only if static inventory feels too arbitrary.
+No baseline Shop reroll until fixed-stock Shops have been human-tested.
 
 ---
 
-# 13. ELITE REWARDS
+# 11. Elite rewards
 
-Elites must justify optional risk.
+Elite victory:
 
-After an Elite victory:
+- 2 XP
+- 4 Coins
+- Final-Blow Spoils Draft raised **one band**, capped at IV
 
-- normal XP/Coins apply at elite rates;
-- Spoils still generates a 3-offer draft;
-- draft quality is raised by **one band**, capped at Tier IV.
+Optional premium risk must correspond to visible premium expected value.
 
-Therefore a mediocre elite Spoils result can still outperform an ordinary encounter reward.
-
-This mirrors the broader roguelite principle that visible optional danger should correspond to visible premium value.
+Simulation Gate V1 also promoted **Seal-Bearer** from WIDE to STRONGEST pressure because the former did not justify Elite reward uplift.
 
 ---
 
-# 14. BOSS REWARDS
+# 12. Boss rewards
 
-Bosses always grant:
+Boss victory always grants:
 
-- 3 XP;
-- 6 Coins;
-- small fixed healing after resolution (current target: 2 HP);
-- a **Boss Draft** of 3 premium build pieces.
+- 3 XP
+- 6 Coins
+- small fixed heal (current target 2 HP)
+- premium three-offer Boss Draft
 
-Boss reward quality does not completely depend on the killing blow or Spoils result.
+Boss reward cannot become worthless because the player used good dice to survive the killing round.
 
-Boss Spoils may improve the Boss Draft, but the player never defeats a Floor boss and receives garbage because survival required high Fight dice.
+Boss Spoils may influence future special weighting, but useful persistent reward value is guaranteed independently.
 
 ---
 
-# 15. CHARACTER TECHNIQUES
+# 13. Character Techniques
 
-Character Techniques are intentionally sparse.
+Sparse and identity-specific.
 
-For the Delver vertical-slice character, provisional Level 3 choices:
+Current Delver Level 3 pair:
 
 ### Steady Hand
-BUMP gains **1 additional use per encounter**.
+Field Adjustment/BUMP gains one additional use per encounter.
 
 ### Long Odds
-The first time each encounter you win by exactly 1, **+2 to that successful Spoils Score**, maximum 12.
+When the **final killing win** has margin exactly 1, +2 Final-Blow Spoils Score, maximum 12.
 
-Provisional Level 5 choices will be authored only after Level 3 choices survive playtesting.
-
-Technique text must remain one sentence where possible.
+Level 5 Technique wording remains provisional until the Level 3 pair is human-tested.
 
 ---
 
-# 16. REWARD CADENCE
+# 14. Reward cadence
 
-Target rhythm:
-
-### Normal combat
-fight → Loot Draft → continue
-
-### Level threshold reached
-fight → Loot Draft → Level panel → continue
+### Normal
+combat → Final-Blow Spoils → Loot Draft → level-up if earned → route
 
 ### Elite
-fight → elevated Loot Draft → continue
+combat → elevated Loot Draft → level-up if earned → route
 
 ### Shop
-spend/replace/heal → continue
+buy / replace / heal → route
 
 ### Boss
-fight → Boss Draft → Floor transition
+combat → Boss Draft → Floor transition
 
-Avoid stacking three unrelated reward screens after every ordinary fight.
+Do not stack redundant reward screens after ordinary fights.
 
 ---
 
-# 17. ROUTE INFORMATION — FUTURE MAP RULE
+# 15. Route information
 
-When the route map is implemented, the player should know the **room type** and, where appropriate, broad reward identity before committing.
+Map reveals room category before commitment:
 
-Examples:
 - Combat
 - Elite
-- Shop
 - Event
+- Shop
 - Boss
 
-Potential later reward hints:
-- Gear-heavy encounter/event;
-- Artifact opportunity;
-- healing/economy node.
+Exact normal enemy identity remains hidden until entry unless an Event/effect reveals it.
 
-Exact item identity remains hidden.
+Reward-bias icons are deferred.
 
 ---
 
-# 18. META-PROGRESSION
+# 16. Meta progression
 
-Meta progression remains horizontal.
+Horizontal by default:
 
-Winning/achievements may unlock:
-- new characters;
-- new item pool entries;
-- new encounters;
-- new bosses;
-- new difficulty modifiers;
-- cosmetic dice/material families.
+- characters
+- content-pool additions
+- encounters
+- bosses
+- modifiers
+- cosmetics
 
-Do not grant permanent raw Fight or HP inflation as the primary progression model.
-
----
-
-# 19. NEXT SYSTEMS DEMO
-
-Before environment/menu production expands, build a **systems-complete fight loop demo** with minimal art.
-
-Required flow:
-
-1. start at Level 1 with Delver;
-2. combat using current contested dice;
-3. Best Successful Spoils tracking;
-4. XP and Coin award;
-5. 3-choice Loot Draft generated from Spoils band;
-6. inventory slots and replacement;
-7. second combat;
-8. Level-up event;
-9. Shop;
-10. Elite combat with elevated reward quality;
-11. at least one later fight where acquired items visibly change the dice decision.
-
-The demo may reuse a small enemy-art pool. Its purpose is to validate **run systems**, not final content variety.
+No permanent raw Fight ladder or mandatory Max-HP tree.
 
 ---
 
-# 20. ACCEPTANCE TEST
+# 17. Simulation-backed behavior target
 
-The systems layer succeeds if a player can answer after a short run:
+Simulation Gate V1 produced clear policy separation under Final Blow:
 
-- What Level am I and why do I care?
-- What did my last Spoils roll earn me?
-- What is my build doing to my dice?
-- What am I saving Coins for?
-- Why would I risk an Elite?
-- What item am I hoping to find next?
+| Policy | Clear | Avg damage | Avg rounds | Avg Spoils | Band IV |
+|---|---:|---:|---:|---:|---:|
+| Safe | 97.2% | 6.87 | 15.43 | 5.42 | 1.3% |
+| Balanced | 92.1% | 10.87 | 23.40 | 6.65 | 11.0% |
+| Greedy | 57.2% | 17.24 | 35.46 | 7.67 | 19.9% |
 
-Most importantly:
+These are automated-policy diagnostics, not target human win rates.
 
-> **Does the player look at a strong die and hesitate because using it to survive means giving up a better Loot Draft?**
+Desired qualitative relationship is correct:
 
-If yes, the systems are reinforcing the game rather than sitting beside it.
+- Safe preserves HP and gets weaker Loot.
+- Greedy improves Loot but accepts much more exposure.
+- Balanced trades between them.
+
+---
+
+# 18. Current validation priorities
+
+Before production balance freeze:
+
+- add survival-aware Greedy heuristic rather than pure greed-to-death;
+- expand per-enemy and per-item trigger telemetry;
+- freeze representative regression seeds;
+- verify economy items are worth their limited slots;
+- verify Band I Drafts still feel worthwhile;
+- human-test whether Safe is too forgiving for onboarding;
+- verify optional Elite risk remains attractive but non-mandatory.
+
+The next implementation should be built from the written/simulated Vertical Slice content, not from another exploratory systems toy.
