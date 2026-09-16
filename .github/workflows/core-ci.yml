@@ -32,7 +32,7 @@ jobs:
         run: npm test
       - name: Shared-core simulation batch
         working-directory: engine/sim
-        run: node src/run.mjs --runs=250 --output=results
+        run: node src/run.mjs --runs=1000 --output=results
       - name: Upload simulation telemetry
         uses: actions/upload-artifact@v4
         with:
