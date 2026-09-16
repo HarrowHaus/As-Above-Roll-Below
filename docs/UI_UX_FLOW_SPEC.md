@@ -1,13 +1,15 @@
 # As Above, Roll Below — UI / UX Flow Spec
 
-**Version:** 0.1  
-**Status:** canonical preproduction interaction contract
+**Version:** 0.2  
+**Status:** canonical interaction contract
 
 The UI must make a strange game feel obvious.
 
+This spec is subordinate to `SINGLE_SCREEN_DESCENT_SPEC.md` for in-run presentation.
+
 ---
 
-# 1. Primary UX rule
+# 1. Primary UX rules
 
 The player should never need to wonder:
 
@@ -16,80 +18,24 @@ The player should never need to wonder:
 - which two dice are currently Fight;
 - which two are currently Spoils;
 - what the predicted margin is;
-- why a deterministic item modifier is applying;
-- what will happen when COMMIT is pressed.
+- why a deterministic modifier is applying;
+- what will happen when COMMIT is pressed;
+- what Depth they are on;
+- what irreversible choice they are about to make.
 
-Mystery belongs in content discovery, not combat arithmetic.
+Mystery belongs in content discovery, not arithmetic or navigation.
 
----
-
-# 2. Screen flow
-
-Baseline flow:
-
-`Title → Character Select → Run Map → Room → Reward/Resolution → Run Map → ... → Boss → Floor Transition → ... → Run Summary`
-
-Room-specific screens:
-
-- Combat
-- Loot Draft
-- Level Up
-- Shop
-- Event
-- Boss Reward
-
-Support screens:
-
-- Inventory / Build
-- Codex / discovered content later
-- Pause / Settings
-- Run Summary
+The player should spend most of a run on **one persistent game surface** rather than repeatedly entering maps and menus.
 
 ---
 
-# 3. Title screen
+# 2. In-run flow
 
-Required:
+Baseline:
 
-- New Run / Continue Run
-- Settings
-- Codex/Collection if unlocked
-- Challenges/Daily when implemented
-- version/build identifier in nonintrusive location
+`Encounter → Resolution → Loot/Technique when applicable → DESCEND → Encounter → ... → Boss → Boss Draft → Floor Transition`
 
-Continue appears only when valid active run exists.
-
----
-
-# 4. Character select
-
-Each character card shows:
-
-- character name
-- short playstyle sentence
-- defining starting ability
-- starting Gear
-- starting HP if different
-- difficulty/complexity tag only if useful
-
-Do not reveal an entire future Technique tree on first selection screen.
-
----
-
-# 5. Run map
-
-Always show:
-
-- current Floor
-- current node
-- connected selectable nodes
-- room-category icons
-- player HP / Max HP
-- Level / XP progress
-- Coins
-- compact build summary access
-
-Selectable nodes clearly distinguish:
+Possible encounter states:
 
 - Combat
 - Elite
@@ -97,34 +43,107 @@ Selectable nodes clearly distinguish:
 - Shop
 - Boss
 
-Elite must never look like ordinary Combat.
+Possible overlay/transformation states:
 
-Map interaction should work with tap/click and keyboard focus.
+- Loot Draft
+- replacement decision
+- Technique choice
+- Boss Draft
+- build drawer
+- pause/settings
+
+There is no mandatory run-map screen between encounters.
+
+A future direct route choice may appear in place as two doors / two next-encounter summaries.
 
 ---
 
-# 6. Combat layout information hierarchy
+# 3. Title / run start
 
-Tier 1 information:
+Exact title/new-run/continue/character-select flow remains **DEFERRED**.
 
+Do not invent a mandatory "choose a level" screen merely because the in-run client needs an entry state.
+
+The intended onboarding principle is fast entry into the first meaningful encounter.
+
+---
+
+# 4. Persistent Run Shell
+
+Always available or immediately legible:
+
+- macro Floor name;
+- current Depth;
+- player HP / Max HP;
+- Level / XP progress;
+- Coins;
+- compact build access;
+- current encounter identity/state.
+
+The shell remains while its interior transforms between Combat / Event / Shop / Reward / Technique states.
+
+The game should feel like one machine changing state, not a website changing pages.
+
+---
+
+# 5. Portrait-first mobile layout
+
+Portrait is a first-class production target.
+
+Do not rotate-gate portrait users.
+
+Approximate hierarchy for a 9:16 phone:
+
+## Header — ~8–12%
+- Floor / Depth
+- HP
+- Level / XP
+- Coins
+- compact build button
+
+## Encounter stage — ~32–40%
+- environment
+- enemy / boss
+- enemy HP / name
+- Instinct / primary Rule
+- enemy locked dice
+
+## Dice decision field — ~28–34%
+- four large player dice
+- Fight/Spoils state
+- contextual manipulation controls
+- Fight / Enemy / Margin / Spoils calculation
+
+## Bottom action zone — ~16–24%
+- large COMMIT
+- active Artifact / Contraband access
+- contextual confirm/cancel
+
+Four dice should remain large enough to read and tap. Use one row when practical; use a controlled 2×2 layout on narrow screens rather than shrinking them into desktop-scale miniatures.
+
+Landscape uses responsive reflow. It is not the canonical geometry that portrait must imitate.
+
+---
+
+# 6. Combat hierarchy
+
+Tier 1:
 - player HP
 - enemy HP
 - enemy locked dice + total
-- player four dice
+- four player dice
 - selected Fight pair
 - Spoils pair
 - predicted margin
 - COMMIT
 
 Tier 2:
-
 - enemy Instinct
-- enemy primary rule
-- available manipulations
+- enemy Rule
+- available manipulation
 - deterministic triggered-item preview
 
 Tier 3:
-
 - flavor/provenance/lore
 - decorative archive information
 
@@ -132,61 +151,73 @@ Tier 3 can never obscure Tier 1.
 
 ---
 
-# 7. Combat interaction flow
+# 7. Combat interaction
 
 ## Enemy Cast
-Enemy dice visibly roll/settle.
+Enemy dice roll/settle first.
 
 ## Enemy Lock
-Instinct highlights selected enemy dice and total.
+Instinct visibly determines locked enemy dice and total.
 
 ## Player Cast
-Four dice roll and settle front-facing.
+Four player dice roll and settle front-facing.
 
 ## Selection
-Tapping/clicking one player die toggles it into Fight until exactly two are selected.
+Tap one player die to toggle Fight selection until exactly two are selected.
 
-The other two are visually designated Spoils as soon as two Fight dice are selected.
+The other two visibly become Spoils immediately.
 
 ## Manipulation
-Available BUMP/FLIP/etc. actions remain adjacent to dice decision zone.
+Available BUMP / FLIP / COPY / item actions stay adjacent to the dice decision field.
 
-Target selection state must be obvious.
+Targeting state must be obvious.
 
 ## Preview
-Before COMMIT display:
-
-- raw Fight
-- final Fight
-- enemy total
-- predicted margin
-- predicted baseline damage
-- deterministic bonus/mitigation icons
-- current Spoils Score
-- deterministic Spoils bonus if victory occurs
+Before COMMIT show:
+- raw Fight;
+- final Fight;
+- enemy total;
+- predicted margin;
+- predicted damage;
+- deterministic modifier sources;
+- current Spoils Score if the attack succeeds.
 
 ## Commit
 COMMIT is disabled until exactly two Fight Dice are selected.
 
-After COMMIT, irreversible resolution begins.
+Irreversible resolution begins only after COMMIT.
 
 ---
 
-# 8. Effect explanation
+# 8. Dice visual contract
 
-When an item modifies a number, UI should provide a compact source trail.
+Settled dice:
+- front-facing only;
+- large readable pips;
+- no readable side faces;
+- physical material treatment;
+- state shapes/frames independent of color;
+- optional numeric accessibility value.
+
+The runtime implementation must render correctly in contemporary mobile browsers. If an atlas/spritesheet path proves fragile, runtime-generated geometry/canvas textures are acceptable so long as the production visual standard is preserved.
+
+Black/missing texture quads are a blocking bug, not an acceptable fallback.
+
+---
+
+# 9. Effect explanation
+
+When an item changes a deterministic value, show a compact source trail.
 
 Example:
 
 `FIGHT 8 +1 [Bent Knife] = 9`
 
-Tooltips/inspection can expand full text.
-
-Do not animate three mystery numbers onto the total and force the player to remember item text.
+Do not animate unexplained mystery numbers onto totals.
 
 ---
 
-# 9. Damage feedback
+# 10. Damage feedback
 
 Margin is primary feedback.
 
@@ -196,314 +227,249 @@ Example:
 
 `MARGIN +2`
 
-Then HP change.
+Then HP changes.
 
-Damage animation should visually connect the margin to HP loss rather than feeling like a separate hidden attack roll.
-
----
-
-# 10. Spoils feedback
-
-On damaging win:
-
-- Spoils pair briefly confirms
-- adjusted score shown
-- if new encounter best, Best Spoils value visibly updates
-
-Do not interrupt combat with a reward popup every successful round.
-
-At victory:
-
-- winning encounter Best Spoils transitions directly into Loot Draft presentation
-
-This reinforces causal connection: `these leftover dice produced these offers`.
+Damage animation should visually connect the margin to HP loss.
 
 ---
 
-# 11. Loot Draft UX
+# 11. Final-Blow Spoils feedback
 
-Show:
+On a damaging win:
+- current Spoils pair confirms briefly;
+- adjusted score is visible;
+- combat continues if enemy survives.
 
-- Best Spoils Score
-- quality band
-- Elite uplift if applicable
-- three offers
-- category icon
-- item name
-- concise rules text
-- slot/category
-- comparison/replacement information on focus
+On the **final damaging win**:
+- that round's two uncommitted dice become Final-Blow Spoils;
+- the pair remains visually connected to reward quality;
+- the screen transforms directly into the Loot Draft.
 
-Player can:
-
-- take one
-- inspect current inventory
-- choose replacement
-- cancel replacement
-- skip for Coins
-
-Never require selecting an item before learning which existing item must be replaced.
+Do not show Best-Successful Spoils. That rule is rejected.
 
 ---
 
-# 12. Replacement UX
+# 12. Loot Draft in the Run Shell
 
-When inventory category is full:
+Victory should not navigate to a disconnected page.
 
-1. chosen new item remains visible;
-2. compatible current slots/items highlight;
-3. each replacement preview shows salvage Coins;
-4. player selects one existing item;
-5. final confirm.
+Preferred transition:
+1. enemy/stage recedes or dims;
+2. Final-Blow Spoils remains visible briefly;
+3. three offers rise into the lower/middle field;
+4. player chooses one / replacement / skip where legal;
+5. reward collapses;
+6. DESCEND transition begins.
 
-Cancel returns to original Loot Draft without regenerating offers.
+Each offer shows:
+- item name;
+- category;
+- concise exact rule;
+- tier if player-facing;
+- replacement warning.
 
 ---
 
-# 13. Level Up UX
+# 13. Replacement UX
 
-Level panel is brief.
+When full:
+1. incoming item remains visible;
+2. compatible owned items appear as replacement targets;
+3. salvage value is shown;
+4. choose one;
+5. confirm.
 
-Ordinary Level:
+Cancel returns to the same generated draft.
 
-- Level number
-- Max HP +2
-- Heal 2
+---
+
+# 14. Level / Technique UX
+
+Ordinary Level gain should be brief:
+- Level number;
+- Max HP +2;
+- heal 2.
 
 Technique Level:
+- two large choices occupy the decision field;
+- exact text visible;
+- choose one;
+- descent continues.
 
-- above changes
-- two Technique choices
-- concise rule text
-
-No random third generic stat-upgrade list.
-
----
-
-# 14. Shop UX
-
-Show persistent current resources:
-
-- Coins
-- HP
-- inventory access
-
-Each Shop offer shows:
-
-- category
-- name
-- price
-- exact effect
-- replacement warning if relevant
-
-Healing shows amount and current/max HP.
-
-Purchased offers visibly leave/sold state.
-
-Reopening Shop does not regenerate inventory.
+No generic random stat-upgrade menu.
 
 ---
 
-# 15. Event UX
+# 15. Shop in the Run Shell
 
-Event screen:
+Shop is an encountered room, not a destination on a map.
 
-- one visual/premise area
-- 2–3 choices
-- mechanically relevant consequence preview where appropriate
-- conditional choices visibly explain their unlock source in concise form
+Show:
+- Coins;
+- HP;
+- seeded offers;
+- exact effect;
+- price;
+- replacement warning;
+- healing service.
 
-Example:
+Leaving immediately continues the descent.
 
-`[Hidden Hand] Interfere with the mechanism.`
-
-Do not hide guaranteed damage/cost behind flavor text unless uncertainty is explicitly the event's mechanic.
+Re-enter/redraw never rerolls stock for free.
 
 ---
 
-# 16. Build screen
+# 16. Event in the Run Shell
 
-At any safe state, player can inspect:
+Event stage contains:
+- one visual/premise area;
+- 2–3 large choices;
+- known costs/damage where deterministic;
+- conditional choice source when unlocked by a build piece.
 
+Resolving the Event immediately continues the descent unless it generates an item replacement/offer decision first.
+
+---
+
+# 17. Build inspection
+
+At safe decision states, player can inspect:
 - Weapon
 - Armor
 - Utility
 - 4 Artifacts
 - 2 Contraband
 - Techniques
-- HP/Level/XP/Coins
+- HP / Level / XP / Coins
 
-Each item displays:
-
-- exact rule text
-- trigger/timing when useful
-- category/tier if player-facing
-- source/flavor separately
-
-Build screen should make the run describable in seconds.
+This should be a drawer/overlay on mobile rather than a mandatory separate navigation destination.
 
 ---
 
-# 17. Boss UX
+# 18. Boss UX
 
-Boss presentation may be more dramatic but cannot violate information rules.
+Boss presentation may be more dramatic but must preserve information clarity.
 
 Always communicate:
+- current phase/state;
+- active dice behavior;
+- phase Rule;
+- transition effect.
 
-- current boss state/phase if known
-- active dice behavior
-- visible phase rule
-- state transition effect
+A new phase Rule is shown before the first affected COMMIT.
 
-If a phase introduces a new rule, present it before the first commitment affected by that rule.
-
----
-
-# 18. Run summary
-
-Death/victory summary should show:
-
-- result
-- Floor/node reached
-- character
-- final Level
-- final build
-- notable item/Technique triggers
-- highest Spoils
-- Elites defeated
-- Coins earned/spent
-- seed
-- unlocks gained
-
-Primary action:
-
-`GO AGAIN`
-
-Secondary:
-
-- copy seed
-- return title
-- inspect detailed run log later if implemented
+After victory, Boss Draft occupies the same Run Shell before Floor transition.
 
 ---
 
-# 19. Tutorial philosophy
+# 19. DESCEND transition
+
+Between Depths:
+- brief threshold/door/vertical transition;
+- Depth counter updates;
+- next environment resolves;
+- control returns quickly.
+
+Target repeat duration after familiarity: ~300–700ms.
+
+No connective walking/avatar navigation is necessary.
+
+---
+
+# 20. Tutorial philosophy
 
 Teach by encounter, not text wall.
 
-First combat onboarding sequence:
+First encounter:
+1. enemy casts/locks;
+2. player rolls four;
+3. prompt choose two Fight Dice;
+4. leftovers visibly become Spoils;
+5. margin preview appears;
+6. COMMIT;
+7. victory demonstrates Final-Blow Loot Draft;
+8. DESCEND demonstrates run cadence.
 
-1. enemy rolls/locks
-2. player rolls four
-3. prompt choose two Fight Dice
-4. show leftovers become Spoils
-5. show predicted margin
-6. confirm
-7. first victory demonstrates Loot Draft
-
-Do not explain Artifacts, Shop, Elite uplift, Techniques, Events, and meta progression before the first roll.
-
-Contextual tooltips appear when each system first occurs.
+Do not front-load Artifacts, Shops, Elites, Techniques, Events, meta progression, or full run structure.
 
 ---
 
-# 20. Input contract
+# 21. Input / touch contract
 
-All primary game actions support:
-
-- mouse
-- touch
-- keyboard
+All primary actions support mouse/touch; keyboard remains supported on desktop.
 
 No essential action requires drag-and-drop.
 
-Drag may be supported as optional flourish.
-
-Keyboard:
-
-- predictable tab/focus order
-- arrow/number shortcuts for dice where useful
-- Enter/Space confirm
-- Escape back/cancel only before irreversible action
-
----
-
-# 21. Mobile contract
-
-Portrait/mobile layout must preserve:
-
-- enemy art/HP top
-- enemy dice/Instinct immediately below/near it
-- player dice central
-- manipulation controls thumb-reachable
-- COMMIT large and distinct
-- no tiny inventory text during combat
-
-Minimum tap target should follow contemporary mobile accessibility norms rather than native pixel asset size.
+Mobile:
+- large tap targets;
+- COMMIT thumb-reachable;
+- no tiny text-only active items;
+- no hover-only explanation;
+- safe-area aware;
+- portrait and landscape both usable.
 
 ---
 
 # 22. Accessibility
 
-Required baseline:
-
-- reduced motion
-- faster animations
-- scalable text
-- separate music/SFX
-- numeric die values optionally shown alongside pips
-- state icons/shapes independent of color
-- high-contrast mode review
-- screen-reader semantics for DOM UI where technically feasible
-- no timed combat decisions
+Baseline:
+- reduced motion;
+- faster animation option;
+- scalable text;
+- separate music/SFX;
+- numeric die values optionally alongside pips;
+- shapes/icons independent of color;
+- high-contrast review;
+- no timed combat decisions.
 
 ---
 
 # 23. Animation pacing
 
-Ordinary actions must remain fast.
-
 Targets:
+- dice cast/settle ~350–650ms;
+- select ~80–150ms;
+- lock ~150–250ms;
+- simple hit resolution under ~500ms;
+- Loot reveal under ~700ms;
+- repeated DESCEND transition ~300–700ms.
 
-- dice cast/settle: roughly 350–650ms
-- select: 80–150ms
-- lock: 150–250ms
-- simple hit resolution: under ~500ms
-- Loot Draft reveal: under ~700ms
-
-Player can speed/skip repeated presentation after familiarity where appropriate.
-
-Do not let polish create friction between decisions.
+Polish cannot become decision friction.
 
 ---
 
-# 24. Autosave feedback
+# 24. Run summary
 
-Saving should be unobtrusive.
+Death/victory summary eventually shows:
+- result;
+- Floor / Depth reached;
+- character;
+- final Level;
+- final build;
+- notable triggers;
+- Final-Blow reward history / highest reward tier where useful;
+- Elites defeated;
+- Coins earned/spent;
+- seed.
 
-If save fails:
+Primary action: `GO AGAIN`.
 
-- surface clear warning
-- do not imply run is safely resumable
-- retry where appropriate
-
-Quit/continue copy must distinguish temporary pause/exit from deliberate run abandonment.
+Exact title/continue/new-run UX remains deferred.
 
 ---
 
-# 25. Debug UI
+# 25. Debug UX
 
-Development builds need toggles for:
+Development builds may expose:
+- seed;
+- RNG stream state;
+- encounter ID;
+- effect log;
+- raw/final Fight;
+- Spoils adjustment;
+- force reward band;
+- grant item;
+- set HP/Coins/Level;
+- jump Depth/Floor.
 
-- seed
-- RNG stream state
-- encounter ID
-- effect log
-- raw/final Fight calculations
-- Spoils adjustments
-- force reward band
-- grant item
-- set HP/Coins/Level
-- jump node/Floor
-
-Debug UI never ships enabled to ordinary players.
+Debug controls must not dictate production navigation.
