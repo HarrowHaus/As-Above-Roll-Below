@@ -14,6 +14,7 @@ export class MapScene extends Scene {
     const state=clientRun.state;
     this.add.text(980,42,`HP ${state.progression.hp}/${state.progression.maxHp}   LV ${state.progression.level}   XP ${state.progression.xp}   ¢ ${state.economy.coins}`,{fontFamily:"monospace",fontSize:"14px",color:"#d6d0c3"}).setOrigin(1,0);
     this.add.text(1230,42,`SEED ${clientRun.currentSeed}`,{fontFamily:"monospace",fontSize:"12px",color:"#6f7a82"}).setOrigin(1,0);
+    if(clientRun.hasEmergencyKey&&state.progression.hp<state.progression.maxHp){const key=this.add.rectangle(1090,92,280,42,0x23302e).setStrokeStyle(1,0x5e9587).setInteractive({useHandCursor:true});this.add.text(1090,92,"USE EMERGENCY KEY • HEAL 4",{fontFamily:"monospace",fontSize:"11px",color:"#cde3dc"}).setOrigin(0.5);key.on("pointerdown",()=>{clientRun.useEmergencyKey();this.scene.restart();});}
     if(state.phase==="RUN_VICTORY"||state.phase==="RUN_DEATH"){this.renderEnd(state.phase==="RUN_VICTORY");return;}
 
     const graph=state.floors[state.floorIndex]!,available=new Set(clientRun.availableNodes.map((node)=>node.id));
