@@ -1,14 +1,14 @@
 # As Above, Roll Below — Dice Design Bible
 
-**Version:** 0.1  
+**Version:** 0.2  
 **Status:** C-stage active canon  
-**Purpose:** define the dice as the game's primary visual, mechanical, audio, and lore objects.
+**Purpose:** define the dice as the game's primary visual, mechanical, audio, lore, and information objects.
 
 ---
 
 # 1. DESIGN MANDATE
 
-The dice must be memorable enough that a screenshot is identifiable as **As Above, Roll Below** before the viewer recognizes a specific monster.
+The dice must be memorable enough that a screenshot is identifiable as **As Above, Roll Below** before the viewer recognizes a particular monster.
 
 They are not generic UI cubes. They are:
 
@@ -20,415 +20,436 @@ They are not generic UI cubes. They are:
 - manipulation targets;
 - a major source of tactile game feel.
 
-If the dice feel cheap, the whole game feels cheap.
+If the dice feel cheap, confusing, or physically dishonest, the whole game feels cheap.
 
 ---
 
 # 2. DIEGETIC ROLE
 
-In the Below, delvers use **casting lots** to read and force local settlement between unresolved possibilities. The game's history inspiration comes from the broad historical use of lots/dice/astragali in games and divinatory practices, but the actual Below mechanism is original fiction.
+In the Below, delvers use **casting lots** to read and force local settlement between unresolved possibilities. Historical lots/dice/astragali are inspiration for the concept; the Below mechanism itself is original fiction.
 
 Mechanical interpretation:
 
-- the monster casts/locks its outcome;
+- the monster casts and locks an outcome;
 - the player casts four possibilities;
 - committing two spends those outcomes on the clash;
 - the unspent pair can become Spoils if the clash succeeds.
 
-The dice therefore represent **available outcomes**, not mana crystals or casino gambling.
+The dice represent **available outcomes**, not casino gambling or mana.
 
 ---
 
-# 3. STANDARD FORM
+# 3. CANONICAL GAMEPLAY VIEW — FRONT-FACING
 
-## Native cell
-**48 × 48 pixels** per standard combat die.
+## Decision-state rule
 
-The visible die normally occupies ~38–44px of the cell, leaving room for state marks and animation overshoot.
+All standard gameplay dice settle into a **front-facing single-face presentation**.
 
-## Perspective
-Use one stable three-quarter/pseudo-isometric presentation:
+Only the current rolled face is readable.
 
-- primary/current face dominates the read;
-- secondary side/top planes communicate physical volume;
-- the rolled value is visually emphasized on the primary face;
-- side-face pips must never make the current value ambiguous.
+No numbered side planes are visible during any state in which the player is expected to evaluate or choose dice.
 
-If necessary for accessibility, the runtime UI also presents a small numeric value adjacent to/below the die.
+This is canonical because it gives the game:
 
-## Corner profile
-Player dice: slightly softened handled corners.  
-Enemy dice: harder, chipped, or heavier corners.
+- immediate value readability;
+- no impossible side-face combinations;
+- no competition between current value and decorative side values;
+- a physically trustworthy FLIP mechanic;
+- much cleaner mobile presentation;
+- one stable geometry for overlays and animation;
+- simpler, more reliable asset production.
 
-Do not make either family look like glossy casino dice.
+## Physicality without side faces
+
+The die must still feel like a physical object through:
+
+- a chunky perimeter/bevel;
+- edge highlights;
+- material wear;
+- recessed or inset pips;
+- a compact contact shadow;
+- subtle face thickness at the rim if useful;
+- tiny lighting changes on selection/hover.
+
+The target is **a heavy die viewed squarely at one face**, not a flat card with pips.
+
+## Isometric / three-quarter use
+
+Three-quarter dice are allowed only for:
+
+- marketing art;
+- codex/object closeups;
+- inventory showcase art;
+- transient roll/tumble frames where side values are unreadable or abstracted.
+
+They are **not** the normal combat decision state.
+
+The previous isometric V0 family is retained only as material/style reference and is not game-ready geometry.
 
 ---
 
-# 4. PHYSICAL FACE LOGIC
+# 4. NATIVE CELL AND MASTER TEMPLATE
 
-Opposite faces are canonical:
+## Standard combat die
+
+Native cell: **48 × 48 pixels**.
+
+The physical face should occupy roughly **38–42 px** square within the cell, leaving room for overlays and 1–2 px animation lift.
+
+Pivot: center `(24,24)`.
+
+## Master geometry
+
+Every standard die family derives from one locked face template:
+
+- same outer silhouette;
+- same bevel depth;
+- same pip grid;
+- same light direction;
+- same contact baseline;
+- same overlay-safe margins.
+
+Material families may alter wear, trim, pip treatment, and microtexture, but **not the underlying geometry** unless a boss-specific die is intentionally a different object class.
+
+---
+
+# 5. FACE / PIP LOGIC
+
+Canonical opposite relationships remain:
 
 - `1 ↔ 6`
 - `2 ↔ 5`
 - `3 ↔ 4`
 
-The FLIP mechanic must visually respect this relationship.
+Because standard decision-state dice show only one face, impossible adjacent-face configurations cannot occur.
 
-A standard player die's six source faces should be authored as one coherent object family, not six separately improvised cubes.
+## Pip placement
+
+Use standard d6 pip arrangements:
+
+- 1: center;
+- 2: opposing diagonal;
+- 3: diagonal + center;
+- 4: four corners;
+- 5: four corners + center;
+- 6: two vertical columns of three.
+
+Pip geometry must be authored from a shared grid, not re-improvised per face.
+
+## Readability target
+
+A rolled value must be identifiable in under **250 ms** at native size.
+
+State overlays may never cover or visually merge with pips.
 
 ---
 
-# 5. PLAYER BASELINE FAMILY — BONECAST
+# 6. PLAYER BASELINE FAMILY — BONECAST
 
-Working name: **Bonecast**.
+Working family name: **Bonecast**.
 
 Visual construction:
 
-- old-bone / warm ivory body;
+- old-bone / warm ivory face;
 - dark charcoal recessed pips;
-- tiny tarnished-brass registration marks or corner inlay;
-- subtle staining/wear concentrated around edges and pip recesses;
-- matte to satin surface, never plastic gloss;
-- enough irregularity to feel handled, but still clearly cubic and engineered.
+- tiny tarnished-brass corner or registration details;
+- staining/wear concentrated around outer rim and pip recesses;
+- matte/satin material;
+- minor irregularity without losing engineered geometry.
 
-Color role:
+The face should feel like a repeatedly handled field instrument: valuable, strange, practical.
 
-- body: Old Bone / Pale Bone;
-- pips: Void Charcoal;
-- tiny hardware: Tarnished Brass;
-- manipulation/state effects provided by overlays rather than repainting the whole die.
-
-The baseline die should feel valuable but replaceable: a field instrument, not a jeweled royal relic.
+It should not look like plastic, polished casino acrylic, or a jeweled royal relic.
 
 ---
 
-# 6. ENEMY BASELINE FAMILY — IRONCAST
+# 7. ENEMY BASELINE FAMILY — IRONCAST
 
-Working name: **Ironcast**.
+Working family name: **Ironcast**.
 
 Visual construction:
 
-- blackened iron / stone-like body;
-- pale bone/ash pips;
-- hard chipped edge clusters;
-- occasional oxide/brown wear;
-- slightly heavier-looking perspective/shadow;
-- geometric registration cuts distinct from player brass details.
+- blackened iron / dark mineral face;
+- pale bone/ash inset pips;
+- harder chipped rim language;
+- oxide wear;
+- geometric cuts or registration marks distinct from player brass details;
+- visibly heavier contact/shadow language.
 
-Enemy dice must remain recognizable in grayscale.
+Enemy dice must remain distinguishable from player dice in grayscale.
 
-Never distinguish enemy dice solely by red color.
+Color is supporting information, not the sole discriminator.
 
 ---
 
-# 7. ELITE / BOSS DICE
+# 8. BOSS / SPECIAL DICE
 
-Boss dice may break baseline materials but must still use the same state grammar.
+Boss dice may use 64×64 native cells when presentation warrants it.
 
-Possible directions:
+Possible material families include:
 
 - sealed brass;
 - black glass;
 - painted institutional ceramic;
-- lettered/numbered grid dice;
-- stone with embedded archival tags;
-- Below-native material.
+- letter-grid faces;
+- stone with embedded tags;
+- Below-native matter.
 
-Boss dice can be **64 × 64 native cells** when the encounter presentation gives them additional emphasis.
-
-A boss should not receive a weird die merely because it is a boss. The material/face system should relate to the boss's authored dice engine.
+Special dice must still preserve value readability and the canonical state grammar unless their authored boss mechanic deliberately changes the information model.
 
 ---
 
-# 8. MODULAR STATE ARCHITECTURE
+# 9. MODULAR STATE ARCHITECTURE
 
-Do **not** produce six separate full dice sprites for every gameplay state if an overlay can communicate the state consistently.
+Do not repaint all six faces for every state.
 
-Production structure:
+Runtime composition:
 
-## Base layer
-- material family + rolled face.
+## Base
+`material family + value face`
 
-## State overlay layer
-- selection bracket;
-- Spoils bracket/halo;
-- lock frame;
-- disabled/sealed treatment;
-- manipulation marker;
-- persistent effect marker.
+## State overlay
+- focus/hover;
+- Fight selected;
+- Spoils potential;
+- enemy locked;
+- persistent LOCK;
+- disabled/sealed;
+- mechanic-specific mark.
 
-## VFX layer
-- BUMP tick;
-- FLIP motion trail;
-- COPY relation line;
-- TRANSMUTE rewrite pixels;
-- reward confirmation.
+## VFX
+- BUMP;
+- FLIP;
+- COPY;
+- TRANSMUTE;
+- Spoils qualify.
 
-This keeps the asset count controlled and permits material variants without multiplying every state by six faces.
+This architecture is mandatory because it preserves geometry and prevents asset multiplication.
 
 ---
 
-# 9. REQUIRED STATES
+# 10. REQUIRED STATES
 
 ## Neutral
-No special frame. Clear physical object.
+Base face only with compact contact shadow.
 
-## Hover / Focus
-Small lift or light edge emphasis plus cursor/focus treatment. Keyboard focus must be just as visible as pointer hover.
+## Focus / Hover
+1 px lift and a clear geometric outline/bracket. Keyboard focus receives the same clarity as pointer hover.
 
 ## Fight Selected
-Primary combat state.
+Primary selection state.
 
-Visual grammar:
-- angular magenta/crimson corner brackets;
-- crossed-line / blade-like tiny motif or inward-facing marks;
-- slight 1–2px lift;
-- no need for large glow.
-
-Must remain readable without color.
+- strong angular corner brackets;
+- slight lift;
+- magenta/crimson may support the state;
+- geometry alone must remain understandable in grayscale.
 
 ## Spoils Potential
-Brass/gold lower-corner cradle, subtle sparkle/notch geometry, or distinct base platform.
-
-Spoils should look desirable without overpowering Fight selection.
-
-## Enemy Unlocked
-Enemy material only; no lock frame.
+Distinct lower cradle/bracket or corner treatment. Brass/gold may support it. It should feel desirable but subordinate to Fight selection.
 
 ## Enemy Locked
-Cyan/teal registration clamp or four-corner lock frame settles around die.
-
-The geometry—not cyan alone—communicates lock state.
+Four-corner clamp / registration frame closes around the enemy die.
 
 ## Persistent LOCK
-Distinct from ordinary enemy lock. Use a stronger retained bracket/seal mark that remains visible between rounds.
-
-## BUMPED
-A small `+1` / `−1` step marker appears and the face resolves. The final die then returns to its ordinary state plus a short-lived manipulation tag if needed.
-
-## FLIPPED
-Physical half-turn animation. End state is the actual opposite value.
+Stronger retained seal/frame that visibly survives between rounds.
 
 ## Disabled / Sealed
-Desaturate/darken body plus a diagonal registration bar / wax-like seal / broken input frame. Do not use only reduced opacity.
-
-## Cursed / Modified
-Reserved overlay slot for item/monster-specific persistent states. Avoid creating a universal purple-glow curse shorthand.
+Darkened/desaturated base plus obvious crossing/bar/seal geometry. Never opacity-only.
 
 ---
 
-# 10. VALUE READABILITY
-
-The current rolled value must be readable in **under 250 ms** during ordinary play.
-
-Rules:
-
-- pips are large enough to parse at 48px;
-- perspective cannot hide the primary face;
-- background contrast around dice is controlled;
-- state effects cannot cover pips;
-- current value may be repeated as a small runtime numeral for accessibility;
-- dice remain readable in grayscale and under common color-vision deficiencies.
-
-At native size, the player should never ask which number a die is showing.
-
----
-
-# 11. ANIMATION GRAMMAR
-
-Animations are short and tactile.
+# 11. MANIPULATION ANIMATION GRAMMAR
 
 ## Roll
-Target: **6–8 authored/derived visual beats across ~350–650 ms**.
+During a short roll animation, the die may tumble through abstract edge-on / partial-cube frames. Readable numbered side planes are unnecessary.
 
-Implementation may combine:
-- 2D translation/rotation;
-- a compact set of tumbling sprites;
-- tiny squash/impact on landing;
-- 1–2px bounce.
+At settle, it snaps/resolves into the canonical front-facing value face.
 
-Do not require a unique frame-by-frame roll animation for every possible result. The animation can resolve into the final face at settle.
+Target duration: **350–650 ms**.
 
 ## Select
 ~80–150 ms.
-- lift 1–2px;
+
+- 1–2 px lift;
 - bracket snaps in;
-- short dry click.
+- contact shadow responds.
 
 ## Lock
 ~150–250 ms.
+
 - frame/clamp closes around die;
-- small physical `tch`/latch sound.
+- dry latch sound.
 
 ## BUMP
 ~150–250 ms.
-- face value visibly steps;
-- upward/downward tick;
-- tiny pip/number shift.
+
+- value changes by exactly one;
+- face swap is clearly directional;
+- tiny up/down tick supports interpretation;
+- no generic magical explosion.
 
 ## FLIP
 ~250–450 ms.
-- clear half-turn;
-- midpoint can silhouette the cube;
-- opposite face lands cleanly.
+
+The die briefly rotates edge-on or compresses to a narrow transitional silhouette, then resolves to its **true opposite value**:
+
+- 1 → 6 / 6 → 1;
+- 2 → 5 / 5 → 2;
+- 3 → 4 / 4 → 3.
+
+The transition may imply a physical half-turn even though the settled state is front-facing.
 
 ## COPY
-Source and target receive a brief directional line/echo; target face changes after the relation is established.
+Show source-target relation first, then replace target face.
 
 ## TRANSMUTE
-Pips/inscription rewrite structurally; avoid particle dissolve as the only explanation.
+Pip structure visibly rewrites into the target face. Avoid particle dissolve as the sole explanation.
 
 ## Spoils Qualify
-Brief brass confirmation pulse after a damaging player win. It should feel rewarding but never delay the next decision.
+Short warm confirmation around the Spoils overlay after damaging player success.
 
 ---
 
 # 12. SOUND IDENTITY
 
-Dice require their own material sound families.
-
 ## Bonecast
 - hard ivory/bone clack;
-- light wooden/stone table resonance;
-- crisp, dry settle.
+- light table resonance;
+- crisp dry settle.
 
 ## Ironcast
 - denser stone/metal knock;
-- shorter higher-frequency edge tick;
+- harder edge tick;
 - heavier settle.
 
-## UI-state sounds
-- Fight select: precise dry click;
-- Spoils qualify: small warm metallic tick/chime;
-- Lock: latch/clasp;
-- BUMP: small calibrated tick;
+## State cues
+- Fight: dry precision click;
+- Spoils qualify: restrained warm metallic tick;
+- LOCK: clasp/latch;
+- BUMP: calibrated mechanical tick;
 - FLIP: twist + landing click;
-- invalid action: muted blocked knock, not alarm beep.
-
-Sound references describe material behavior, not literal recordings that must be copied.
+- invalid action: muted blocked knock.
 
 ---
 
-# 13. SHADOW / CONTACT
+# 13. ARTIFACT MODIFICATIONS
 
-Dice should feel placed in the same world as the combat UI.
-
-- compact contact shadow;
-- no blurry photo-real ambient occlusion;
-- shadow rendered as pixel clusters / simple transparent sprite or runtime effect;
-- selected dice may lift slightly, shortening/softening the contact shadow;
-- enemy dice can use a harder shadow footprint.
-
----
-
-# 14. PLAYER / ENEMY DIFFERENTIATION
-
-Differentiation uses at least three channels:
-
-1. material/value family;
-2. edge/corner language;
-3. state-frame geometry.
-
-Color is a fourth channel, not the only one.
-
-At a glance:
-
-- Bonecast = warm, pale, handled, field-crafted;
-- Ironcast = dark, hard, heavy, hostile.
-
----
-
-# 15. ARTIFACT-MODIFIED DICE
-
-Artifacts should usually modify the **state layer or a small physical property**, not replace the entire die set.
+Artifacts should usually change an overlay or a small physical feature rather than replacing the entire die family.
 
 Good:
-- brass ring around a specific face;
-- one cracked edge;
-- tiny seal on marked dice;
-- pip shape changed for a mechanic;
-- controlled ghost duplicate during COPY.
+
+- brass ring around one face/state;
+- one cracked rim;
+- tiny seal;
+- marked pip;
+- ghost duplicate for COPY;
+- specific registration notch.
 
 Bad:
-- every Artifact completely reskins all six dice;
-- unreadable rainbow rarity skins;
-- state effects hidden inside cosmetic material noise.
 
-Cosmetic die families may exist later, but mechanics remain readable through the canonical overlays.
+- complete reskin per Artifact;
+- rainbow rarity noise;
+- mechanics hidden by cosmetic treatment.
 
 ---
 
-# 16. PRODUCTION FILES — FIRST DICE FAMILY
-
-Minimum source deliverables:
+# 14. FIRST PRODUCTION FILES — V1 FRONT-FACING
 
 ## Base faces
-`player_bonecast_face_1.png` … `player_bonecast_face_6.png`
 
-`enemy_ironcast_face_1.png` … `enemy_ironcast_face_6.png`
+`die_player_bonecast_face_1.png` … `die_player_bonecast_face_6.png`
 
-48×48, transparent PNG masters.
+`die_enemy_ironcast_face_1.png` … `die_enemy_ironcast_face_6.png`
+
+Each:
+
+- 48×48;
+- transparent PNG;
+- front-facing;
+- identical master geometry within family;
+- one readable face only.
 
 ## Shared overlays
+
+- `die_state_focus.png`
 - `die_state_fight.png`
 - `die_state_spoils.png`
 - `die_state_enemy_locked.png`
 - `die_state_persistent_lock.png`
 - `die_state_disabled.png`
-- `die_state_focus.png`
 
-48×48, transparent.
+## FX
 
-## Manipulation FX
-- BUMP up/down effect frames;
-- FLIP intermediary frames or transform-safe silhouette frames;
-- COPY relation effect;
+- BUMP up/down;
+- FLIP transitional silhouette/frame(s);
+- COPY relation line;
 - TRANSMUTE rewrite effect;
-- Spoils-confirm effect.
-
-## Optional shadow
-`die_shadow_48.png`
+- Spoils qualify.
 
 ---
 
-# 17. QUALITY GATES
+# 15. QUALITY GATES
 
-Every die family must pass:
+Every family must pass:
 
-### Native-size test
-Can a player identify value/state instantly at 1×?
+### Geometry gate
+All six faces have identical outer silhouette, rim/bevel geometry, scale, pivot, and light direction.
 
-### Grayscale test
-Can player/enemy and selected/locked states still be distinguished?
+### Native-size gate
+Value and state read instantly at 1×.
 
-### Contact-sheet test
-Do all six faces look like one physical object family?
+### Grayscale gate
+Player/enemy and major states remain distinguishable.
 
-### Flip test
-Do opposites resolve correctly?
+### Flip gate
+Every opposite pair resolves correctly.
 
-### Overlay test
-Do Fight/Spoils/Lock overlays fit every face/material without collisions?
+### Overlay gate
+Every state overlay fits every value/material without colliding with pips.
 
-### Mobile test
-At the smallest supported combat presentation, do pips and state marks remain legible?
+### Pixel gate
+No unintended antialias fringe, broken clusters, or source-resolution noise.
 
-### Alpha test
-No colored matte/fringe; no accidental semi-transparent halo.
+### Mobile gate
+The smallest supported runtime presentation retains value/state readability.
+
+### Alpha gate
+No matte halo or accidental background pixels.
 
 ---
 
-# 18. FIRST PRODUCTION TARGET
+# 16. DEPRECATED V0 ISOMETRIC SET
 
-The first true asset family should be:
+The first isometric Bonecast/Ironcast experiment is **not canonical runtime art**.
 
-1. Bonecast faces 1–6;
-2. Ironcast faces 1–6;
-3. Fight overlay;
-4. Spoils overlay;
-5. enemy-lock overlay;
-6. focus overlay;
-7. BUMP test;
-8. FLIP test.
+It is retained only for:
 
-Only after these survive an in-browser contact sheet should the project expand into rare/boss dice.
+- material inspiration;
+- color/value reference;
+- trim ideas;
+- evidence of the production learning path.
+
+Reasons for rejection:
+
+- inconsistent perspective;
+- impossible/illogical visible side-face numbering;
+- side values compete with the result face;
+- poor fit for FLIP logic;
+- unnecessary mobile information noise.
+
+Do not build future runtime dice by correcting individual V0 cubes. Rebuild from the front-facing master template.
+
+---
+
+# 17. PRODUCTION ORDER
+
+1. lock one front-facing 48×48 silhouette/template;
+2. author Bonecast face 1;
+3. derive faces 2–6 using the same pip grid and geometry;
+4. author Ironcast material using the same geometry;
+5. derive Ironcast 2–6;
+6. build overlays separately;
+7. test at native size in a real combat UI;
+8. only then author manipulation FX and special dice.
+
+The dice are a focal point. **Logical correctness and instantaneous readability outrank decorative complexity.**
