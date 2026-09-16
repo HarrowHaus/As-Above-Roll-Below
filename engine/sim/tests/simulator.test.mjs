@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { batch, simulateFloor } from "../src/simulator.mjs";
+import { batch, simulateFloor } from "../src/simulator-v2.mjs";
 
 test("same seed and policy reproduce exactly",()=>{
   assert.deepEqual(simulateFloor(424242,"opportunist"),simulateFloor(424242,"opportunist"));
@@ -17,7 +17,7 @@ test("all three policies can execute generated Floor I end-to-end",()=>{
   }
 });
 
-test("small batch separates raw Spoils bands from post-Elite reward bands",()=>{
+test("small batch separates raw Spoils bands and includes item-use telemetry",()=>{
   const result=batch({runs:20,seedBase:800000});
   for(const policy of ["safe","opportunist","greedy"]){
     const s=result[policy];
@@ -30,5 +30,7 @@ test("small batch separates raw Spoils bands from post-Elite reward bands",()=>{
     }
     assert.ok(Number.isFinite(s.boss.clearRate));
     assert.ok(Number.isFinite(s.boss.avgRounds));
+    assert.equal(typeof s.itemUses,"object");
+    assert.equal(typeof s.itemsTaken,"object");
   }
 });
