@@ -1,26 +1,28 @@
-name: Core Engine CI
+name: AARB Engine CI
 
 on:
   push:
     paths:
       - "engine/core/**"
       - "engine/sim/**"
+      - "engine/client/**"
+      - "assets/preproduction/dice/**"
       - ".github/workflows/core-ci.yml"
   pull_request:
     paths:
       - "engine/core/**"
       - "engine/sim/**"
+      - "engine/client/**"
+      - "assets/preproduction/dice/**"
 
 jobs:
-  core:
+  engine:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: engine/core/package.json
       - name: Install core tooling
         working-directory: engine/core
         run: npm install --no-audit --no-fund
@@ -46,4 +48,16 @@ jobs:
         with:
           name: shared-core-simulation-${{ github.sha }}
           path: engine/sim/results/
+          if-no-files-found: error
+      - name: Install Phaser client tooling
+        working-directory: engine/client
+        run: npm install --no-audit --no-fund
+      - name: Build Phaser client
+        working-directory: engine/client
+        run: npm run build
+      - name: Upload browser build
+        uses: actions/upload-artifact@v4
+        with:
+          name: aarb-client-${{ github.sha }}
+          path: engine/client/dist/
           if-no-files-found: error
