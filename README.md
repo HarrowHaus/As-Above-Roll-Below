@@ -26,6 +26,19 @@ The original single-file **ROLL / LOOT / REGRET** prototype proved the basic `ro
 
 The current design replaces fixed monster Threat checks with **contested visible dice rolls and margin-based HP damage**.
 
+### Current playable test
+
+`prototypes/combat-v1/index.html` is the current combat prototype. It tests:
+
+- enemy-first visible rolls and locking;
+- contested totals;
+- margin-based HP damage;
+- 2d6 normal versus 3d6/highest-two elite pressure;
+- BUMP and FLIP manipulation;
+- FINAL BLOW versus BEST SUCCESS Spoils capture.
+
+It is a mechanics laboratory, not production code or final art direction.
+
 A-stage system design and the first mathematical combat pass are complete enough to support B-stage research. The first verified real-world reference record is now in the repository and establishes the provenance standard for future content.
 
 ## Repository map
@@ -37,6 +50,7 @@ A-stage system design and the first mathematical combat pass are complete enough
 - `docs/VERTICAL_SLICE_CONTENT.md` — complete Floor I specification scaffold.
 - `docs/research/CORPUS_INVENTORY.md` — discovery-source map for the podcast/research corpus.
 - `docs/research/verified/` — independently verified real-world reference records.
+- `prototypes/combat-v1/` — current contested-dice combat prototype.
 - `prototypes/mechanics-v0/` — superseded prototype notes and legacy direction.
 
 ## Production order
