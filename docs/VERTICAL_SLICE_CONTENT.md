@@ -1,10 +1,10 @@
 # As Above, Roll Below — Vertical Slice Content Sheet
 
-**Version:** 0.1 content pass  
+**Version:** 0.2 simulation-tuned content pass  
 **Floor:** I — THRESHOLDS  
-**Status:** authored for simulation; names/rules may tune, architecture may not casually drift
+**Status:** authored and Simulation Gate V1-tuned; human playtest still required
 
-Goal: one replayable 8–12 minute Floor that proves combat, loot, leveling, route choice, inventory pressure, Shop, Event, Elite and Boss systems.
+Goal: one replayable 8–12 minute Floor proving combat, Final-Blow Spoils, loot, leveling, route choice, inventory pressure, Shop, Event, Elite and Boss systems.
 
 ---
 
@@ -13,6 +13,7 @@ Goal: one replayable 8–12 minute Floor that proves combat, loot, leveling, rou
 ## Starting state
 - Max HP: 20
 - Level: 1
+- XP: 0
 - Coins: 0
 - Core Dice: 4d6
 - Starting Gear: **Old Field Coat**
@@ -31,7 +32,7 @@ Armor — starter only.
 **Field Adjustment gains one additional use each encounter.**
 
 ### Long Odds
-**The first time each encounter you win by exactly 1, +2 to that successful Spoils Score, maximum 12.**
+**If the final killing win has margin exactly 1, +2 Final-Blow Spoils Score, maximum 12.**
 
 ## Level 5 Techniques — full-game target, not required for first slice balance
 
@@ -59,7 +60,26 @@ A single run does not visit every node.
 
 ---
 
-# 3. Normal enemy pool
+# 3. Final-Blow Spoils contract
+
+Floor I uses the canonical simulation-backed rule:
+
+> **The two uncommitted dice on the damaging player win that kills the enemy determine encounter reward quality.**
+
+Earlier successful Spoils are not banked.
+
+Final pair → apply visible Spoils modifiers → clamp to 12 → map to reward band.
+
+- 2–4: Band I
+- 5–7: Band II
+- 8–10: Band III
+- 11–12: Band IV
+
+Simulation Gate V1 rejected Best Successful Spoils because it overproduced premium rewards and incentivized prolonging fights.
+
+---
+
+# 4. Normal enemy pool
 
 ## EN-01 — Latchling
 Taxonomy: Below Native  
@@ -72,7 +92,9 @@ Coins: 2
 
 Rule: none beyond baseline.
 
-Purpose: tutorial enemy.
+Purpose: tutorial enemy. Teaches enemy-first cast, player commitment, margin damage and Final-Blow Spoils.
+
+---
 
 ## EN-02 — Turnback
 Taxonomy: Below Native  
@@ -85,6 +107,10 @@ Coins: 2
 
 **REFUSAL:** On a tie, Turnback heals 1 HP, maximum Max HP.
 
+Purpose: teaches that a tie is not always neutral.
+
+---
+
 ## EN-03 — Unadmitted
 Taxonomy: Below Native  
 Pressure: P2  
@@ -96,6 +122,10 @@ Coins: 2
 
 **NO ADJUSTMENTS:** After Player Cast, your lowest-valued die becomes FIXED for this round and cannot be manipulated. If tied for lowest, the leftmost tied die is FIXED.
 
+Purpose: introduces manipulation denial without invalidating the whole build.
+
+---
+
 ## EN-04 — Doorwake
 Taxonomy: Below Native  
 Pressure: P2  
@@ -106,6 +136,10 @@ XP: 1
 Coins: 2
 
 Rule: WIDE is the complete primary rule.
+
+Purpose: demonstrates that extra enemy dice do not always mean strongest-two.
+
+---
 
 ## EN-05 — Toll Eater
 Taxonomy: Below Native  
@@ -120,6 +154,10 @@ Coins: 2
 
 Previewed before COMMIT.
 
+Purpose: directly attacks greed without hiding information.
+
+---
+
 ## EN-06 — Passage Clerk
 Taxonomy: Original institutional manifestation  
 Pressure: P2  
@@ -130,6 +168,10 @@ XP: 1
 Coins: 2
 
 **DUPLICATE FILING:** If your committed Fight Dice match, Enemy Fight +2.
+
+Purpose: interferes with doubles builds while remaining fully previewable.
+
+---
 
 ## EN-07 — Seal-Whelp
 Taxonomy: Below Native  
@@ -142,6 +184,10 @@ Coins: 2
 
 **REACTION SEAL:** The first time each round you manipulate one of your dice, Enemy Fight +1 for that round.
 
+Purpose: manipulation tax; should make the player ask whether changing the roll is actually worth it.
+
+---
+
 ## EN-08 — Misaddressed Visitor
 Taxonomy: Convergence / Original  
 Pressure: P2  
@@ -153,9 +199,11 @@ Coins: 2
 
 Rule: ODD is the complete primary rule.
 
+Purpose: teaches Instinct as enemy identity.
+
 ---
 
-# 4. Elites
+# 5. Elites
 
 ## EL-01 — Threshold Warden
 Taxonomy: Below Native / institutional convergence  
@@ -164,24 +212,31 @@ Dice: 3d6
 Instinct: STRONGEST  
 XP: 2  
 Coins: 4  
-Reward: Spoils Band +1
+Reward: Final-Blow Spoils Band +1, capped at IV
 
 **INSPECTION:** After Player Cast, your highest-valued die becomes FIXED for this round. If tied, leftmost tied die is FIXED.
 
-## EL-02 — Seal-Bearer
-Taxonomy: Below Native  
-HP: 9  
-Dice: 3d6  
-Instinct: WIDE  
-XP: 2  
-Coins: 4  
-Reward: Spoils Band +1
-
-**COUNTERSEAL:** Once per round, when you manipulate a die, BUMP Seal-Bearer's lower locked die +1, maximum 6. Only the first manipulation each round triggers COUNTERSEAL.
+Purpose: powerful visible denial plus genuine strongest-two pressure.
 
 ---
 
-# 5. Boss — The First Door
+## EL-02 — Seal-Bearer
+Taxonomy: Below Native  
+HP: **8**  
+Dice: 3d6  
+Instinct: **STRONGEST**  
+XP: 2  
+Coins: 4  
+Reward: Final-Blow Spoils Band +1, capped at IV
+
+**COUNTERSEAL:** Once per round, when you manipulate a die, BUMP Seal-Bearer's lower locked die +1, maximum 6. Only the first manipulation each round triggers COUNTERSEAL.
+
+### Simulation Gate V1 revision
+Previous candidate was 9 HP / WIDE. WIDE did not create enough Elite pressure to justify premium rewards. V0.2 uses 8 HP / STRONGEST so the identity comes from COUNTERSEAL rather than HP sponge behavior.
+
+---
+
+# 6. Boss — The First Door
 
 Taxonomy: Below Native / foundational threshold entity  
 HP: 18  
@@ -190,7 +245,7 @@ Coins: 6
 Reward: Boss Draft  
 Boss clear heal: 2
 
-State changes occur immediately after damage crosses a threshold and apply starting next round.
+State changes apply starting the round after the HP threshold is crossed.
 
 ## State I — CLOSED
 HP 13–18.
@@ -200,8 +255,12 @@ Instinct: TIGHT.
 
 **SEALED:** Enemy locked dice cannot be targeted by player interference effects.
 
+Function: introduces the boss safely and blocks early interference abuse.
+
+---
+
 ## State II — AJAR
-HP 7–12.
+HP **4–12**.
 
 Dice: 3d6  
 Instinct: STRONGEST.
@@ -210,19 +269,28 @@ Instinct: STRONGEST.
 
 Previewed before COMMIT.
 
-## State III — OPEN
-HP 1–6.
-
-Dice: 4d6  
-Instinct: WIDE.
-
-**BOTH WAYS:** A tie deals 2 damage to both combatants.
-
-Boss presentation must display a new state rule before the first affected Player Cast.
+Function: sustained central pressure; greed is still possible, but the Door feels the draft.
 
 ---
 
-# 6. Gear pool — 8
+## State III — OPEN
+HP **1–3**.
+
+Dice: **4d6**  
+Instinct: **STRONGEST**.
+
+**BOTH WAYS:** A tie deals 2 damage to both combatants.
+
+### Simulation Gate V1 revision
+Previous candidate used HP 1–6 and WIDE. That made the dramatic final state too soft and too long. V0.2 restricts OPEN to the final 3 HP but makes the cast genuinely dangerous: 4d6 STRONGEST.
+
+Function: short, sharp finishing state. The player should feel the door fully opening, not spend half the boss fighting a generic 4d6 sponge.
+
+Boss presentation must display each new state rule before the first affected Player Cast.
+
+---
+
+# 7. Gear pool — 8
 
 ## G-01 Bent Knife
 Weapon — Tier I — base price 5.  
@@ -258,7 +326,7 @@ Utility — Tier I — base price 5.
 
 ---
 
-# 7. Artifact pool — 12
+# 8. Artifact pool — 12
 
 ## A-01 Mirror Shard
 Tier I — price 6.  
@@ -266,11 +334,11 @@ Tier I — price 6.
 
 ## A-02 Loaded Question
 Tier I — price 6.  
-**Successful Spoils doubles gain +2 Spoils Score, maximum 12.**
+**If your Final-Blow Spoils Dice match, +2 Spoils Score, maximum 12.**
 
 ## A-03 False Bottom
 Tier II — price 9.  
-**Successful Spoils Score 5 or less gains +2, maximum 12.**
+**If Final-Blow Spoils Score is 5 or less, +2, maximum 12.**
 
 ## A-04 The Hidden Hand
 Tier II — price 10.  
@@ -282,13 +350,13 @@ Tier I — price 6.
 
 ## A-06 Opposite Number
 Tier II — price 8.  
-**If your successful Spoils Dice are physical opposites, +3 Spoils Score, maximum 12.**
+**If your Final-Blow Spoils Dice are physical opposites, +3 Spoils Score, maximum 12.**
 
 Opposites: 1+6, 2+5, 3+4.
 
 ## A-07 Brass Caliper
 Tier I — price 7.  
-**Once per encounter after a successful win, BUMP one Spoils die ±1 before scoring it.**
+**Once per encounter, after the killing win, BUMP one Spoils die ±1 before Final-Blow scoring.**
 
 ## A-08 Red Thread
 Tier I — price 6.  
@@ -312,7 +380,7 @@ Tier III — price 13.
 
 ---
 
-# 8. Contraband pool — 6
+# 9. Contraband pool — 6
 
 ## C-01 Redacted Slip
 Tier I — price 3.  
@@ -336,11 +404,11 @@ Tier II — price 5.
 
 ## C-06 Temporary Injunction
 Tier II — price 5.  
-**For this round, ignore a normal/elite enemy's primary Rule text. Instinct and Boss phase rules cannot be ignored. Consume.**
+**For this round, ignore a normal/elite enemy's primary Rule text. Instinct and Boss state rules cannot be ignored. Consume.**
 
 ---
 
-# 9. Events — 3
+# 10. Events — 3
 
 ## EV-01 Unnumbered Door
 Original Below Event.
@@ -367,7 +435,7 @@ Reference substrate: `REF-0003_TALKING_BOARD_OUIJA.md`.
 Game transformation is fictional; historical patent/object facts and paranormal claims remain separated in the research record.
 
 ### Ask what waits ahead
-Reveal the exact enemy identity, Instinct and Rule of the next Combat/Elite node on the chosen path.
+Reveal exact enemy identity, Instinct and Rule of the next Combat/Elite node on the chosen path.
 
 ### Move the pointer yourself
 Gain one random Contraband. Lose 1 HP.
@@ -381,7 +449,7 @@ Gain 2 Coins.
 Original institutional Event.
 
 ### File a persistent item
-Choose one equipped Gear or Artifact. Remove it and gain 75% of base shop price, rounded down, instead of normal salvage.
+Choose one equipped Gear or Artifact. Remove it and gain 75% of base Shop price, rounded down, instead of normal salvage.
 
 ### Claim something that isn't yours
 Pay 4 Coins. Receive a random Tier I Gear/Artifact offer and choose whether to take it.
@@ -391,7 +459,7 @@ Leave.
 
 ---
 
-# 10. Shop
+# 11. Shop
 
 Baseline stock:
 - 1 Gear
@@ -404,22 +472,23 @@ Floor I eligible tiers:
 - Tier II at reduced weighting
 - Tier III excluded from Shop
 
-No reroll.
+No reroll in baseline Vertical Slice.
 
 ---
 
-# 11. Slice-specific loot guardrails
+# 12. Floor I loot guardrails
 
 Use `LOOT_AND_ECONOMY_SPEC.md`.
 
-Additional Floor I constraints:
+Additional constraints:
 - Band I/II overrepresent Tier I items that function alone.
 - Blank Face is eligible only from Band IV, Elite uplift to Band IV, or Boss Draft.
+- Elite victory raises Final-Blow reward band by 1, capped at IV.
 - Boss Draft guarantees at least two persistent options.
 
 ---
 
-# 12. Boss Draft pool
+# 13. Boss Draft pool
 
 Draw 3 valid offers from:
 - Breaching Bar
@@ -435,7 +504,7 @@ No duplicate currently owned non-stackable item.
 
 ---
 
-# 13. Supported build archetypes
+# 14. Supported build archetypes
 
 ## Safe / certainty
 Bent Knife, Work Apron, Proof Vest, Mirror Shard.
@@ -443,10 +512,10 @@ Bent Knife, Work Apron, Proof Vest, Mirror Shard.
 ## Doubles / pattern
 Twin Nails, Loaded Question, Carbon Paper.
 
-## Low-face greed
+## Low-face kill-roll greed
 False Bottom, Brass Caliper.
 
-## Margin-1 greed
+## Margin-1
 Long Odds, Red Thread, Inside-Out Lining.
 
 ## Enemy interference
@@ -458,20 +527,37 @@ Stuck Key.
 ## Economy
 Ash Ledger, Small Change Purse, Receipt From Nowhere.
 
-The slice must support several two-axis builds rather than one obvious best package.
+The slice should support several two-axis builds rather than one obvious best package.
 
 ---
 
-# 14. Simulation questions before implementation lock
+# 15. Simulation Gate V1 results
 
-- Is Toll Eater's greed penalty understandable/fair?
-- Is Unadmitted/Threshold Warden FIXED targeting too restrictive?
-- Does Seal-Bearer punish manipulation without becoming anti-fun?
-- Does First Door OPEN cause excessive sudden damage?
-- Are Mirror Shard / Carbon Paper / Blank Face certainty effects too powerful?
-- Are economy Artifacts ever worth slots versus direct combat power?
-- Does Best Successful Spoils create safe farming on low-HP enemies?
-- Do Band I rewards still feel worth taking?
-- Is optional Elite risk worth +1 reward band?
+Candidate regression under Final-Blow Spoils:
 
-Numbers tune after simulation and playtest; system categories and timing stay governed by the master specs.
+| Policy | Clear | Avg damage | Avg rounds | Avg Spoils | Band IV |
+|---|---:|---:|---:|---:|---:|
+| Safe | 97.2% | 6.87 | 15.43 | 5.42 | 1.3% |
+| Balanced | 92.1% | 10.87 | 23.40 | 6.65 | 11.0% |
+| Greedy | 57.2% | 17.24 | 35.46 | 7.67 | 19.9% |
+
+These are automated-policy diagnostics, not desired human win rates.
+
+See `simulation/floor1/SIMULATION_GATE_REPORT.md`.
+
+---
+
+# 16. Remaining simulation / playtest questions
+
+- Is Toll Eater's greed penalty understandable/fair in UI?
+- Is Unadmitted / Threshold Warden FIXED targeting too restrictive in human play?
+- Does Seal-Bearer STRONGEST + COUNTERSEAL feel Elite rather than simply punitive?
+- Is First Door OPEN too lethal now that it is 4d6 STRONGEST, even though it lasts only 3 HP?
+- Are Mirror Shard / Carbon Paper / Blank Face certainty effects too powerful once player planning improves?
+- Are economy Artifacts worth their limited slots?
+- Do Band I Drafts remain interesting under Final-Blow Spoils?
+- Does optional Elite value feel worth the additional human-perceived risk?
+- Is Safe play too forgiving after onboarding?
+- Can a survival-aware greed policy preserve the intended premium-loot fantasy without collapsing to pure safety?
+
+Numbers continue to tune through simulation and playtest. The combat/reward architecture does not casually drift.
