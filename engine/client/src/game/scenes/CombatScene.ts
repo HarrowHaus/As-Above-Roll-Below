@@ -107,7 +107,6 @@ export class CombatScene extends Scene {
     this.add.rectangle(w/2,doorY,doorW,doorH,0x0f1418).setStrokeStyle(Math.max(2,w*0.005),0x505b62);
     this.add.rectangle(w/2,doorY,doorW*0.58,doorH*0.78,0x3a1821,0.28);
 
-    // Temporary enemy silhouette: less literal than the old block-man placeholder.
     const creatureW=Math.min(w*0.18,94),creatureH=Math.min(h*0.16,150),cy=h*0.255;
     this.add.rectangle(w/2,cy,creatureW,creatureH,0x353838).setStrokeStyle(4,0x8d6244);
     this.add.rectangle(w/2,cy-creatureH*0.22,creatureW*0.58,creatureH*0.28,0x111619).setStrokeStyle(2,0x8d6244);
@@ -228,7 +227,7 @@ export class CombatScene extends Scene {
     if(state==="locked"){g.fillStyle(0x3cc4bd,1);g.fillRect(-half+3,-5,4,10);g.fillRect(half-7,-5,4,10);}
     if(state==="fixed"){g.lineStyle(Math.max(2,size*0.035),0xaa5965,0.9);g.lineBetween(-half+9,half-9,half-9,-half+9);}
     const c=this.add.container(x,y,[g]).setSize(size,size);
-    if(interactive)c.setInteractive(new Phaser.Geom.Rectangle(-half,-half,size,size),Phaser.Geom.Rectangle.Contains,{useHandCursor:true});
+    if(interactive)c.setInteractive(new Phaser.Geom.Rectangle(-half,-half,size,size),Phaser.Geom.Rectangle.Contains);
     return c;
   }
 
