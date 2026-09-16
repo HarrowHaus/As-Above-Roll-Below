@@ -1,4 +1,4 @@
-import { CANVAS, Game, Scale } from "phaser";
+import { AUTO, Game, Scale } from "phaser";
 import { DescentScene } from "./scenes/DescentScene.js";
 import { CombatScene } from "./scenes/CombatScene.js";
 import { LootScene } from "./scenes/LootScene.js";
@@ -7,9 +7,9 @@ import { EventScene } from "./scenes/EventScene.js";
 import { TechniqueScene } from "./scenes/TechniqueScene.js";
 
 const config: Phaser.Types.Core.GameConfig = {
-  // AARB is a modest 2D pixel/UI game. Canvas is currently the most reliable
-  // mobile path and avoids browser-specific black texture quads entirely.
-  type: CANVAS,
+  // Prefer Phaser's GPU renderer. Combat dice are generated from Graphics now,
+  // so the old atlas-texture failure no longer requires a Canvas-only client.
+  type: AUTO,
   width: Math.max(320, window.innerWidth),
   height: Math.max(480, window.innerHeight),
   parent: "game-container",
