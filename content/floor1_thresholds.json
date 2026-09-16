@@ -1,57 +1,29 @@
 {
-  "schema_version": "0.1",
-  "floor": {
-    "id": "thresholds",
-    "index": 1,
-    "rows": 4,
-    "boss": "first_door"
-  },
+  "schema_version": "0.2",
+  "floor": {"id":"thresholds","index":1,"rows":4,"boss":"first_door"},
   "player": {
-    "id": "delver",
-    "max_hp": 20,
-    "core_dice": 4,
-    "starting_gear": ["old_field_coat"],
-    "ability": {
-      "id": "field_adjustment",
-      "uses_per_encounter": 1,
-      "action": "bump_player_die",
-      "delta_options": [-1, 1]
-    },
-    "techniques": {
-      "3": [
-        {"id": "steady_hand", "effect": "field_adjustment_plus_one_use"},
-        {"id": "long_odds", "effect": "first_margin1_plus2_spoils"}
-      ]
-    }
+    "id":"delver","max_hp":20,"core_dice":4,"starting_gear":["old_field_coat"],
+    "ability":{"id":"field_adjustment","uses_per_encounter":1,"action":"bump_player_die","delta_options":[-1,1]},
+    "techniques":{"3":[{"id":"steady_hand","effect":"field_adjustment_plus_one_use"},{"id":"long_odds","effect":"first_margin1_plus2_spoils"}]}
   },
-  "xp": {
-    "normal": 1,
-    "elite": 2,
-    "boss": 3,
-    "thresholds": {"2": 3, "3": 7, "4": 12, "5": 18, "6": 25}
-  },
-  "level_up": {"max_hp": 2, "heal": 2},
+  "xp":{"normal":1,"elite":2,"boss":3,"thresholds":{"2":3,"3":7,"4":12,"5":18,"6":25}},
+  "level_up":{"max_hp":2,"heal":2},
   "enemies": {
-    "latchling": {"name":"Latchling","hp":5,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":1,"rule":null},
-    "turnback": {"name":"Turnback","hp":5,"dice":3,"instinct":"TIGHT","xp":1,"coins":2,"pressure":2,"rule":"REFUSAL"},
-    "unadmitted": {"name":"Unadmitted","hp":6,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":2,"rule":"NO_ADJUSTMENTS"},
-    "doorwake": {"name":"Doorwake","hp":6,"dice":3,"instinct":"WIDE","xp":1,"coins":2,"pressure":2,"rule":null},
-    "toll_eater": {"name":"Toll Eater","hp":6,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":2,"rule":"TAKE_YOUR_CUT"},
-    "passage_clerk": {"name":"Passage Clerk","hp":5,"dice":3,"instinct":"TIGHT","xp":1,"coins":2,"pressure":2,"rule":"DUPLICATE_FILING"},
-    "seal_whelp": {"name":"Seal-Whelp","hp":7,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":3,"rule":"REACTION_SEAL"},
-    "misaddressed_visitor": {"name":"Misaddressed Visitor","hp":6,"dice":3,"instinct":"ODD","xp":1,"coins":2,"pressure":2,"rule":null}
+    "latchling":{"name":"Latchling","hp":5,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":1,"rule":null},
+    "turnback":{"name":"Turnback","hp":5,"dice":3,"instinct":"TIGHT","xp":1,"coins":2,"pressure":2,"rule":"REFUSAL"},
+    "unadmitted":{"name":"Unadmitted","hp":6,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":2,"rule":"NO_ADJUSTMENTS"},
+    "doorwake":{"name":"Doorwake","hp":6,"dice":3,"instinct":"WIDE","xp":1,"coins":2,"pressure":2,"rule":null},
+    "toll_eater":{"name":"Toll Eater","hp":6,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":2,"rule":"TAKE_YOUR_CUT"},
+    "passage_clerk":{"name":"Passage Clerk","hp":5,"dice":3,"instinct":"TIGHT","xp":1,"coins":2,"pressure":2,"rule":"DUPLICATE_FILING"},
+    "seal_whelp":{"name":"Seal-Whelp","hp":7,"dice":2,"instinct":"BOTH","xp":1,"coins":2,"pressure":3,"rule":"REACTION_SEAL"},
+    "misaddressed_visitor":{"name":"Misaddressed Visitor","hp":6,"dice":3,"instinct":"ODD","xp":1,"coins":2,"pressure":2,"rule":null}
   },
   "elites": {
-    "threshold_warden": {"name":"Threshold Warden","hp":8,"dice":3,"instinct":"STRONGEST","xp":2,"coins":4,"pressure":4,"rule":"INSPECTION","elite":true},
-    "seal_bearer": {"name":"Seal-Bearer","hp":8,"dice":3,"instinct":"STRONGEST","xp":2,"coins":4,"pressure":4,"rule":"COUNTERSEAL","elite":true}
+    "threshold_warden":{"name":"Threshold Warden","hp":8,"dice":3,"instinct":"STRONGEST","xp":2,"coins":4,"pressure":4,"rule":"INSPECTION","elite":true},
+    "seal_bearer":{"name":"Seal-Bearer","hp":8,"dice":3,"instinct":"STRONGEST","xp":2,"coins":4,"pressure":4,"rule":"COUNTERSEAL","elite":true}
   },
   "boss": {
-    "id":"first_door",
-    "name":"The First Door",
-    "hp":18,
-    "xp":3,
-    "coins":6,
-    "clear_heal":2,
+    "id":"first_door","name":"The First Door","hp":18,"xp":3,"coins":6,"clear_heal":2,
     "states":[
       {"id":"closed","hp_min":13,"hp_max":18,"dice":3,"instinct":"TIGHT","rule":"SEALED"},
       {"id":"ajar","hp_min":4,"hp_max":12,"dice":3,"instinct":"STRONGEST","rule":"DRAFT"},
@@ -62,7 +34,7 @@
     "bent_knife":{"name":"Bent Knife","cat":"gear","slot":"weapon","tier":1,"price":5,"tags":["fight","certainty"]},
     "twin_nails":{"name":"Twin Nails","cat":"gear","slot":"weapon","tier":1,"price":6,"tags":["fight","doubles","pattern"]},
     "breaching_bar":{"name":"Breaching Bar","cat":"gear","slot":"weapon","tier":2,"price":9,"tags":["damage","high_face"]},
-    "work_apron":{"name":"Work Apron","cat":"gear","slot":"armor","tier":1,"price":5,"tags":["defense"]},
+    "work_apron":{"name":"Work Apron","cat":"gear","slot":"armor","tier":1,"price":5,"tags":["defense","small_margin"],"rules_text":"Whenever you lose a clash by 1 or 2, reduce that incoming damage by 1."},
     "proof_vest":{"name":"Proof Vest","cat":"gear","slot":"armor","tier":2,"price":9,"tags":["defense"]},
     "inside_out_lining":{"name":"Inside-Out Lining","cat":"gear","slot":"armor","tier":2,"price":8,"tags":["defense","margin1"]},
     "brass_buckle":{"name":"Brass Buckle","cat":"gear","slot":"utility","tier":1,"price":5,"tags":["tie","fight"]},
@@ -79,12 +51,12 @@
     "stuck_key":{"name":"Stuck Key","cat":"artifact","tier":2,"price":9,"tags":["lock","greed"]},
     "receipt_nowhere":{"name":"Receipt From Nowhere","cat":"artifact","tier":1,"price":6,"tags":["economy","shop"]},
     "blank_face":{"name":"Blank Face","cat":"artifact","tier":3,"price":13,"tags":["transmute","certainty","high_face","low_face"]},
-    "redacted_slip":{"name":"Redacted Slip","cat":"contraband","tier":1,"price":3,"tags":["reroll"]},
-    "counterfeit_seal":{"name":"Counterfeit Seal","cat":"contraband","tier":1,"price":3,"tags":["set4"]},
-    "wire_cutter":{"name":"Wire Cutter","cat":"contraband","tier":1,"price":4,"tags":["interference"]},
+    "redacted_slip":{"name":"Redacted Slip","cat":"contraband","tier":1,"price":3,"tags":["reroll","certainty"],"rules_text":"REROLL one selected player die, then keep either its original or new value. Consume."},
+    "counterfeit_seal":{"name":"Counterfeit Seal","cat":"contraband","tier":1,"price":3,"tags":["set5","certainty"],"rules_text":"Set one selected player die to 5. Consume."},
+    "wire_cutter":{"name":"Wire Cutter","cat":"contraband","tier":1,"price":4,"tags":["interference","strong_interference"],"rules_text":"Lower the enemy's highest locked die by 2, minimum 1. Consume."},
     "carbon_copy":{"name":"Carbon Copy","cat":"contraband","tier":1,"price":4,"tags":["copy"]},
     "emergency_key":{"name":"Emergency Key","cat":"contraband","tier":2,"price":5,"tags":["healing"]},
-    "temporary_injunction":{"name":"Temporary Injunction","cat":"contraband","tier":2,"price":5,"tags":["ignore_rule"]}
+    "temporary_injunction":{"name":"Temporary Injunction","cat":"contraband","tier":2,"price":5,"tags":["ignore_rule","interference"]}
   },
   "boss_draft_pool":["breaching_bar","proof_vest","false_bottom","hidden_hand","opposite_number","carbon_paper","stuck_key","blank_face"],
   "spoils":{"capture":"final_blow","bands":{"1":[2,4],"2":[5,7],"3":[8,10],"4":[11,12]}},
