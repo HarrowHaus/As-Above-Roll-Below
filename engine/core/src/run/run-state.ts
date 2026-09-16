@@ -1,4 +1,4 @@
-import type { FloorDefinition, FloorGraph, FloorNode, RoomType } from "../types.js";
+import type { EnemyInstinct, FloorDefinition, FloorGraph, FloorNode, RoomType } from "../types.js";
 import { generateRun } from "../procgen/run.js";
 import { createProgression, type ProgressionState } from "../progression/progression.js";
 import { createEconomy, type EconomyState } from "../economy/economy.js";
@@ -25,7 +25,7 @@ export interface RunState {
   readonly progression: ProgressionState;
   readonly economy: EconomyState;
   readonly inventory: InventoryState;
-  readonly encounterHistory: readonly { readonly enemyId:string; readonly instinct:string }[];
+  readonly encounterHistory: readonly { readonly enemyId:string; readonly instinct:EnemyInstinct }[];
   readonly eventHistory: readonly string[];
 }
 
@@ -99,38 +99,19 @@ export function completeRunNode(state:RunState):RunState {
   if(!node) throw new Error("No active room to complete");
   if(state.phase==="RUN_DEATH"||state.phase==="RUN_VICTORY"||state.phase==="RUN_MAP") throw new Error(`Cannot complete room during ${state.phase}`);
   const visited=[...state.visitedNodeIds,node.id];
-
   if(node.type==="BOSS"){
     const nextFloorIndex=state.floorIndex+1;
-    if(nextFloorIndex>=state.floors.length){
-      return {...state,currentNodeId:null,lastCompletedNodeId:node.id,visitedNodeIds:visited,phase:"RUN_VICTORY"};
-    }
+    if(nextFloorIndex>=state.floors.length)return {...state,currentNodeId:null,lastCompletedNodeId:node.id,visitedNodeIds:visited,phase:"RUN_VICTORY"};
     return {...state,floorIndex:nextFloorIndex,currentNodeId:null,lastCompletedNodeId:null,visitedNodeIds:visited,phase:"RUN_MAP"};
   }
-
   return {...state,currentNodeId:null,lastCompletedNodeId:node.id,visitedNodeIds:visited,phase:"RUN_MAP"};
 }
 
-export function defeatRun(state:RunState):RunState {
-  return {...state,currentNodeId:null,phase:"RUN_DEATH"};
+export function defeatRun(state:RunState):RunState {return {...state,currentNodeId:null,phase:"RUN_DEATH"};}
+export function withRunResources(state:RunState,patch:{readonly progression?:ProgressionState;readonly economy?:EconomyState;readonly inventory?:InventoryState}):RunState {
+  return {...state,progression:patch.progression??state.progression,economy:patch.economy??state.economy,inventory:patch.inventory??state.inventory};
 }
-
-export function withRunResources(
-  state:RunState,
-  patch:{readonly progression?:ProgressionState;readonly economy?:EconomyState;readonly inventory?:InventoryState},
-):RunState {
-  return {
-    ...state,
-    progression:patch.progression??state.progression,
-    economy:patch.economy??state.economy,
-    inventory:patch.inventory??state.inventory,
-  };
-}
-
-export function withEncounterHistory(state:RunState,enemyId:string,instinct:string):RunState {
+export function withEncounterHistory(state:RunState,enemyId:string,instinct:EnemyInstinct):RunState {
   return {...state,encounterHistory:[...state.encounterHistory,{enemyId,instinct}]};
 }
-
-export function withEventHistory(state:RunState,eventId:string):RunState {
-  return {...state,eventHistory:[...state.eventHistory,eventId]};
-}
+export function withEventHistory(state:RunState,eventId:string):RunState {return {...state,eventHistory:[...state.eventHistory,eventId]};}
