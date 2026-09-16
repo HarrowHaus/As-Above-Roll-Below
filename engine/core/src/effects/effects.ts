@@ -11,6 +11,7 @@ export type EffectCondition =
   | { readonly type: "spoils_doubles" }
   | { readonly type: "spoils_score_at_most"; readonly value: number }
   | { readonly type: "spoils_score_at_least"; readonly value: number }
+  | { readonly type: "spoils_greater_than_raw_fight" }
   | { readonly type: "spoils_opposites" }
   | { readonly type: "margin_exact"; readonly value: number }
   | { readonly type: "outcome"; readonly value: CombatOutcome };
@@ -65,9 +66,7 @@ export interface EffectResolution {
 
 const opposite: Record<DieValue, DieValue> = {1:6,2:5,3:4,4:3,5:2,6:1};
 
-export function createEffectState(): EffectState {
-  return { uses: {} };
-}
+export function createEffectState(): EffectState { return { uses: {} }; }
 
 function conditionMatches(condition: EffectCondition, context: CombatEffectContext): boolean {
   switch (condition.type) {
@@ -78,6 +77,7 @@ function conditionMatches(condition: EffectCondition, context: CombatEffectConte
     case "spoils_doubles": return context.spoilsValues[0] === context.spoilsValues[1];
     case "spoils_score_at_most": return context.finalSpoilsScore <= condition.value;
     case "spoils_score_at_least": return context.finalSpoilsScore >= condition.value;
+    case "spoils_greater_than_raw_fight": return context.baseSpoilsScore > context.rawFight;
     case "spoils_opposites": return opposite[context.spoilsValues[0]] === context.spoilsValues[1];
     case "margin_exact": return context.margin === condition.value;
     case "outcome": return context.outcome === condition.value;
@@ -108,29 +108,14 @@ function applyAction(context: CombatEffectContext, action: EffectAction): Combat
 function withDerivedCombat(context: CombatEffectContext): CombatEffectContext {
   const margin = context.finalFight - context.enemyFight;
   const outcome: CombatOutcome = margin > 0 ? "win" : margin < 0 ? "loss" : "tie";
-  return {
-    ...context,
-    margin,
-    outcome,
-    damageToEnemy: Math.max(0, margin),
-    damageToPlayer: Math.max(0, -margin),
-  };
+  return { ...context, margin, outcome, damageToEnemy: Math.max(0, margin), damageToPlayer: Math.max(0, -margin) };
 }
 
-function resolveTiming(
-  input: CombatEffectContext,
-  effects: readonly EffectDefinition[],
-  timing: EffectTiming,
-  state: EffectState,
-  consumeUses: boolean,
-): EffectResolution {
+function resolveTiming(input: CombatEffectContext,effects: readonly EffectDefinition[],timing: EffectTiming,state: EffectState,consumeUses: boolean): EffectResolution {
   let context = input;
-  let uses: Record<string, number> = { ...state.uses };
+  const uses: Record<string, number> = { ...state.uses };
   const log: EffectLogEntry[] = [];
-  const ordered = effects
-    .filter((effect) => effect.timing === timing)
-    .sort((a,b) => a.priority - b.priority || a.id.localeCompare(b.id));
-
+  const ordered = effects.filter((effect) => effect.timing === timing).sort((a,b) => a.priority - b.priority || a.id.localeCompare(b.id));
   for (const effect of ordered) {
     const used = uses[effect.id] ?? 0;
     if (effect.maxUsesPerEncounter !== undefined && used >= effect.maxUsesPerEncounter) continue;
@@ -139,30 +124,20 @@ function resolveTiming(
     if (consumeUses && effect.maxUsesPerEncounter !== undefined) uses[effect.id] = used + 1;
     log.push({ effectId: effect.id, sourceId: effect.sourceId, timing, actions: effect.actions });
   }
-
   return { context, effectState: { uses }, log };
 }
 
-export function resolveCombatEffects(
-  base: CombatEffectContext,
-  effects: readonly EffectDefinition[],
-  state: EffectState = createEffectState(),
-  consumeUses = false,
-): EffectResolution {
+export function resolveCombatEffects(base: CombatEffectContext,effects: readonly EffectDefinition[],state: EffectState = createEffectState(),consumeUses = false): EffectResolution {
   let context = base;
   let effectState = state;
   const log: EffectLogEntry[] = [];
-
   let step = resolveTiming(context,effects,"FIGHT_MODIFICATION",effectState,consumeUses);
   context = withDerivedCombat(step.context); effectState = step.effectState; log.push(...step.log);
-
   step = resolveTiming(context,effects,"DAMAGE_MODIFICATION",effectState,consumeUses);
   context = step.context; effectState = step.effectState; log.push(...step.log);
-
   if (context.outcome === "win") {
     step = resolveTiming(context,effects,"SPOILS_MODIFICATION",effectState,consumeUses);
     context = step.context; effectState = step.effectState; log.push(...step.log);
   }
-
   return { context, effectState, log };
 }
