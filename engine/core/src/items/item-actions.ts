@@ -74,21 +74,11 @@ export function applyCombatItemAction(
     }
     case "SUPPRESS_ENEMY_RULES_ROUND":
       return {state,suppressEnemyRules:true};
-    default: {
-      const exhaustive: never = action;
-      throw new Error(`Unhandled combat item action ${String(exhaustive)}`);
-    }
   }
 }
 
 export function applyOutsideCombatItemAction(state: ProgressionState, action: OutsideCombatItemAction): ProgressionState {
-  switch(action.type){
-    case "HEAL_PLAYER": return heal(state,action.amount);
-    default: {
-      const exhaustive: never = action;
-      throw new Error(`Unhandled outside-combat item action ${String(exhaustive)}`);
-    }
-  }
+  return heal(state,action.amount);
 }
 
 export function injectCarriedDie(state: CombatState, value: DieValue): CombatState {
