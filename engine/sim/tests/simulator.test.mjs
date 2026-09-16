@@ -13,16 +13,22 @@ test("all three policies can execute generated Floor I end-to-end",()=>{
     assert.ok(result.hp>=0);
     assert.ok(result.rounds>0);
     assert.ok(result.level>=1);
+    assert.ok(result.encounters["thresholds:first-door"]?.attempts===1);
   }
 });
 
-test("small batch returns finite telemetry and all reward bands",()=>{
+test("small batch separates raw Spoils bands from post-Elite reward bands",()=>{
   const result=batch({runs:20,seedBase:800000});
   for(const policy of ["safe","opportunist","greedy"]){
     const s=result[policy];
     assert.equal(s.runs,20);
     assert.ok(Number.isFinite(s.clearRate));
     assert.ok(Number.isFinite(s.avgRounds));
-    for(const band of [1,2,3,4]) assert.ok(Number.isFinite(s.bandFrequency[band]));
+    for(const band of [1,2,3,4]){
+      assert.ok(Number.isFinite(s.rawBandFrequency[band]));
+      assert.ok(Number.isFinite(s.rewardBandFrequency[band]));
+    }
+    assert.ok(Number.isFinite(s.boss.clearRate));
+    assert.ok(Number.isFinite(s.boss.avgRounds));
   }
 });
