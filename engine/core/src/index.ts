@@ -12,6 +12,7 @@ export * from "./procgen/descent.js";
 export * from "./procgen/encounter.js";
 export * from "./procgen/event.js";
 export * from "./run/run-state.js";
+export * from "./run/descent-run-state.js";
 export * from "./content/thresholds.js";
 export * from "./effects/effects.js";
 export * from "./content/floor1-effects.js";
