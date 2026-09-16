@@ -20,18 +20,24 @@ The design goal is simple to learn and increasingly difficult to evaluate: the s
 
 ## Current status
 
-Preproduction. The original single-file prototype proved the basic `roll four / commit two / leftovers become loot` interaction. It is archived under `prototypes/mechanics-v0/` and is **not** the current combat model.
+Preproduction.
+
+The original single-file **ROLL / LOOT / REGRET** prototype proved the basic `roll four / commit two / leftovers become loot` interaction. Its design history is archived under `prototypes/mechanics-v0/` and is **not** the current combat model.
 
 The current design replaces fixed monster Threat checks with **contested visible dice rolls and margin-based HP damage**.
+
+A-stage system design and the first mathematical combat pass are complete enough to support B-stage research. The first verified real-world reference record is now in the repository and establishes the provenance standard for future content.
 
 ## Repository map
 
 - `docs/GAME_DESIGN_BIBLE.md` — canonical system design and locked pillars.
 - `docs/COMBAT_MODEL.md` — contested-dice rules, simulations, balance envelope, open test questions.
-- `docs/CONTENT_RESEARCH_BIBLE.md` — scaffold for world, provenance, sourcing, humor, and reference verification.
-- `docs/ART_BIBLE.md` — scaffold for the production visual system.
-- `docs/VERTICAL_SLICE_CONTENT.md` — scaffold for the complete Floor I content specification.
-- `prototypes/mechanics-v0/` — superseded mechanics prototype and its original notes.
+- `docs/CONTENT_RESEARCH_BIBLE.md` — world, provenance, sourcing, humor, and reference-verification rules.
+- `docs/ART_BIBLE.md` — production visual-system scaffold.
+- `docs/VERTICAL_SLICE_CONTENT.md` — complete Floor I specification scaffold.
+- `docs/research/CORPUS_INVENTORY.md` — discovery-source map for the podcast/research corpus.
+- `docs/research/verified/` — independently verified real-world reference records.
+- `prototypes/mechanics-v0/` — superseded prototype notes and legacy direction.
 
 ## Production order
 
