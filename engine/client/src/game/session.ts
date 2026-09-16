@@ -6,6 +6,7 @@ import {
   bossPhaseAsEnemy,
   buyHealing,
   completeRunNode,
+  consumeContraband,
   createRunState,
   defeatRun,
   enterRunNode,
@@ -95,10 +96,13 @@ class ClientRunSession {
   }
 
   enemyForHp(hp:number):EnemyDefinition {if(!this.currentEnemy)throw new Error("No current enemy");return this.run.phase==="BOSS"?bossPhaseAsEnemy(firstDoor,hp):this.currentEnemy;}
-  combatEffects(enemy:EnemyDefinition):readonly EffectDefinition[] {
+  combatEffects(enemy:EnemyDefinition,includeEnemyRules=true):readonly EffectDefinition[] {
     const sourceIds=new Set([...Object.values(this.run.inventory.gear).filter((id):id is string=>id!==null),...this.run.inventory.artifacts].flatMap((id)=>floor1ItemRegistry[id]?.effectSourceIds??[]));
-    if(this.hasTechnique("long-odds"))sourceIds.add("technique:long-odds");const effects=Object.values(floor1EffectRegistry).filter((effect)=>sourceIds.has(effect.sourceId));for(const ruleId of enemy.ruleIds??[]){const effect=floor1EffectRegistry[ruleId];if(effect)effects.push(effect);}return effects;
+    if(this.hasTechnique("long-odds"))sourceIds.add("technique:long-odds");const effects=Object.values(floor1EffectRegistry).filter((effect)=>sourceIds.has(effect.sourceId));if(includeEnemyRules)for(const ruleId of enemy.ruleIds??[]){const effect=floor1EffectRegistry[ruleId];if(effect)effects.push(effect);}return effects;
   }
+
+  consumeContrabandItem(itemId:string):void {this.run=withRunResources(this.run,{inventory:consumeContraband(this.run.inventory,itemId)});}
+  grantCoins(amount:number):void {this.run=withRunResources(this.run,{economy:addCoins(this.run.economy,amount)});}
 
   finishCombatVictory(playerHp:number,finalSpoils:number|null):"LOOT"|"MAP"|"VICTORY" {
     if(!this.currentEnemy)throw new Error("Cannot finish combat without an enemy");let progression={...this.run.progression,hp:playerHp};const economy=addCoins(this.run.economy,this.currentEnemy.coins);progression=grantXp(progression,this.currentEnemy.xp).state;this.run=withRunResources(this.run,{progression,economy});
