@@ -1,424 +1,302 @@
 # As Above, Roll Below — Floor I Content Bible
 
 **Floor:** THRESHOLDS  
-**Status:** authored content pass 1; mechanics mirror the current shared core unless explicitly marked `presentation only`.
+**Status:** authored content pass 1. Mechanics mirror the current shared core unless explicitly marked provisional.
 
-The purpose of Floor I is to teach AARB by making the player repeatedly answer one question: **Which two dice do I spend on surviving, and which two do I dare leave behind?**
+Floor I teaches the game's central bargain: **Which two dice do I spend on surviving, and which two do I dare leave behind?**
 
-The world treats doors, clerks, monsters, legal paperwork, occult junk and impossible architecture as parts of the same bureaucracy. It does not stop to explain why those categories coexist.
+The Below treats doors, clerks, monsters, legal paperwork, occult junk and impossible architecture as parts of the same bureaucracy. The game does not stop to announce that these categories differ.
 
----
-
-# Player — The Delver
-
+## Player — The Delver
 A field worker who has learned that the Below is less interested in heroism than whether you brought the right tool and filled out the wrong form correctly.
 
 Starting Armor: **Work Apron**.
 
-Intrinsic: **Field Adjustment** — once per encounter, BUMP one eligible player die by ±1. **Steady Hand** can increase this to two uses.
+**Field Adjustment —** once per encounter, BUMP one eligible player die by ±1.
 
-## Level 3 Techniques
+### Level 3 Techniques
+**Steady Hand —** Field Adjustment gains one additional use each encounter.  
+*Measure once. Measure again because the wall moved.*
 
-### Steady Hand
-**Rule:** Field Adjustment gains one additional use each encounter.
+**Long Odds —** Once per encounter, when you win by exactly 1 Margin, gain +2 Spoils for that successful round, maximum 12.  
+*Close enough is where the good stuff lives.*
 
-**Intent:** reliable manipulation; introductory build-control Technique.
-
-**Flavor:** *Measure once. Measure again because the wall moved.*
-
-### Long Odds
-**Rule:** Once per encounter, when you win a round by exactly 1 Margin, gain +2 Spoils for that successful round, to a maximum of 12.
-
-**Intent:** explicitly rewards the dangerous low-Margin/high-Spoils play pattern.
-
-**Flavor:** *Close enough is where the good stuff lives.*
-
-## Level 5 Techniques — authored names, implementation remains provisional
-
-### Clean Exit
-Defensive/endurance Technique slot. Exact rule remains intentionally provisional until Floor II/full-run pacing exists.
-
-### Overrule
-Manipulation/rule-interference Technique slot. Exact rule remains intentionally provisional until Floor II/full-run pacing exists.
+### Level 5 Techniques
+**Clean Exit** and **Overrule** are reserved content slots. Their exact rules remain provisional until Floor II/full-run pacing exists; they must not be presented to players as finished content yet.
 
 ---
 
 # Normal Enemies
 
-## Latchling
-**5 HP • 2d6 • BOTH**
+### Latchling — 5 HP • 2d6 • BOTH
+No special rule. Rolls two dice and locks both. Baseline tutorial enemy for enemy-first information, Fight, Margin and Spoils.  
+*It has never opened a door. It knows exactly when you have.*  
+**Art:** squat threshold-native scavenger; seam/clasp anatomy; curious rather than grimdark.
 
-**Short rule:** No special rule. Rolls two dice and locks both.
+### Turnback — 5 HP • 3d6 • TIGHT
+**REFUSAL —** On a tie, Turnback heals 1 HP, up to maximum. Makes ties materially bad.  
+*Every sign behind it points back to the sign behind that.*  
+**Art:** repeated arrows/signage and backward visual logic without simply drawing a backward person.
 
-**Job:** baseline tutorial enemy. Teaches enemy-first information, selecting two Fight Dice, Margin and Spoils without a second rule competing for attention.
+### Unadmitted — 6 HP • 2d6 • BOTH
+**DENIED ENTRY —** At the start of each player cast, the lowest rolled player die becomes FIXED for that cast.  
+*Your name is not on the list. It has checked several times.*  
+**Art:** blank/sealed face, invented stamps/tags, institutional horror without real agency insignia.
 
-**Character:** A threshold-native scavenger built around seams, clasps and the suggestion of something that learned anatomy from door hardware.
+### Doorwake — 6 HP • 3d6 • WIDE
+No additional rule. WIDE itself is the lesson: lowest + highest enemy roll are locked.  
+*The door is gone. Something stayed awake where it used to be.*  
+**Art:** creature defined by doorway-shaped negative space.
 
-**Flavor:** *It has never opened a door. It knows exactly when you have.*
+### Toll-Eater — 6 HP • 2d6 • BOTH
+**TAKE YOUR CUT —** If current Spoils is 9+, −1 Fight this round. Directly prices greed without forbidding it.  
+*Exact change preferred. It will make change.*  
+**Art:** pouch/coin-slot mouth; consumed tokens embedded in body; funny first, creepy second.
 
-**Art brief:** squat asymmetrical creature; latch/cavity focal point; readable silhouette at 64 px; curious rather than grimdark.
+### Passage Clerk — 5 HP • 3d6 • TIGHT
+**DUPLICATE FILING —** If your Fight Dice are doubles, Passage Clerk gains +2 Enemy Fight this round.  
+*One copy for the office. One copy for the office.*  
+**Art:** impossible clerk window/body; paper stacks as anatomy.
 
-## Turnback
-**5 HP • 3d6 • TIGHT**
+### Seal Whelp — 7 HP • 2d6 • BOTH
+**REACTION SEAL —** The first time you manipulate a die each encounter, Seal Whelp gains +1 Enemy Fight for that round.  
+*Do not break the seal. It is very proud of the seal.*  
+**Art:** wax/seal morphology using invented marks, not copied occult seals.
 
-**REFUSAL —** On a tie, Turnback heals 1 HP, up to its maximum.
-
-**Job:** first enemy that makes `tie` materially bad. TIGHT produces moderate, consistent locks rather than simply taking the strongest pair.
-
-**Flavor:** *Every sign behind it points back to the sign behind that.*
-
-**Art brief:** backward-facing anatomy without literally being a person walking backward; repeated arrows/signage motifs.
-
-## Unadmitted
-**6 HP • 2d6 • BOTH**
-
-**DENIED ENTRY —** At the start of each player cast, your lowest rolled die becomes FIXED for that cast.
-
-**Job:** teaches FIXED and forces the player to solve around imperfect manipulation access.
-
-**Flavor:** *Your name is not on the list. It has checked several times.*
-
-**Art brief:** sealed/blank face, stamped tags, soft institutional horror rather than police imagery.
-
-## Doorwake
-**6 HP • 3d6 • WIDE**
-
-**Short rule:** No additional rule. WIDE locks the lowest and highest rolled enemy dice.
-
-**Job:** teaches that Instinct itself can be the enemy gimmick. Produces unusual but legible totals.
-
-**Flavor:** *The door is gone. Something stayed awake where it used to be.*
-
-**Art brief:** elongated negative-space creature shaped by a missing doorway; low/high visual asymmetry.
-
-## Toll-Eater
-**6 HP • 2d6 • BOTH**
-
-**TAKE YOUR CUT —** If your current Spoils total is 9 or more, you have −1 Fight this round.
-
-**Job:** directly attacks greed without invalidating it. High Spoils is still possible, but the player must account for its cost before COMMIT.
-
-**Flavor:** *Exact change preferred. It will make change.*
-
-**Art brief:** pouch/coin-slot mouth, consumed tokens embedded in body; funny first, unsettling second.
-
-## Passage Clerk
-**5 HP • 3d6 • TIGHT**
-
-**DUPLICATE FILING —** If your two Fight Dice match, Passage Clerk gains +2 Enemy Fight this round.
-
-**Job:** punishes an otherwise attractive doubles choice and creates item/build-specific friction.
-
-**Flavor:** *One copy for the office. One copy for the office.*
-
-**Art brief:** impossible little clerk window/body; paper stacks as anatomy; no real-world agency insignia.
-
-## Seal Whelp
-**7 HP • 2d6 • BOTH**
-
-**REACTION SEAL —** The first time you manipulate a die each encounter, Seal Whelp gains +1 Enemy Fight for that round.
-
-**Job:** teaches that manipulation can provoke reactions. Makes “free correction” a tactical decision.
-
-**Flavor:** *Do not break the seal. It is very proud of the seal.*
-
-**Art brief:** wax/seal morphology; stamped sigils are invented, not copied occult seals.
-
-## Misaddressed Visitor
-**6 HP • 3d6 • ODD**
-
-**Short rule:** No additional rule. ODD preferentially locks strong odd dice.
-
-**Job:** late-Floor Instinct literacy check. The creature itself is the convergence joke: something plainly from somewhere else has been delivered to THRESHOLDS and everyone treats this as an address problem.
-
-**Flavor:** *RETURN TO SENDER has been attempted.*
-
-**Art brief:** deliberately category-confused creature; not a direct cryptid reference; shipping/address labels integrated into silhouette.
+### Misaddressed Visitor — 6 HP • 3d6 • ODD
+No additional rule. ODD preferentially locks strong odd dice. A category-confused thing delivered to THRESHOLDS and treated as an address problem.  
+*RETURN TO SENDER has been attempted.*  
+**Art:** shipping/address labels integrated into an otherwise unclassifiable silhouette; not a direct cryptid cameo.
 
 ---
 
 # Elites
 
-## Threshold Warden
-**8 HP • 3d6 • STRONGEST • Elite reward +1 band**
+### Threshold Warden — 8 HP • 3d6 • STRONGEST • +1 reward band
+**HIGH INSPECTION —** At the start of each player cast, the highest rolled player die becomes FIXED for that cast.  
+*It is not guarding the door. It is guarding the definition of door.*  
+**Art:** tall architectural frame/keystone silhouette.
 
-**HIGH INSPECTION —** At the start of each player cast, your highest rolled die becomes FIXED for that cast.
-
-**Job:** takes the best-looking player resource away from manipulation while itself using a high-pressure Instinct.
-
-**Flavor:** *It is not guarding the door. It is guarding the definition of door.*
-
-**Art brief:** tall architectural silhouette; frame/keystone armor; clearly related to Floor I but more authoritative than normals.
-
-## Seal-Bearer
-**8 HP • 3d6 • STRONGEST • Elite reward +1 band**
-
-**COUNTERSEAL —** The first time you manipulate a die each round, BUMP Seal-Bearer's lowest locked die up by 1, to a maximum of 6.
-
-**Job:** elite version of manipulation reaction. The player can still manipulate, but must price the response into the move.
-
-**Flavor:** *The seal certifies itself.*
-
-**Art brief:** ceremonial burden rather than knight; huge invented seal carried as anatomy/object.
+### Seal-Bearer — 8 HP • 3d6 • STRONGEST • +1 reward band
+**COUNTERSEAL —** The first time you manipulate a die each round, BUMP Seal-Bearer's lowest locked die up by 1, maximum 6.  
+*The seal certifies itself.*  
+**Art:** ceremonial burden; enormous invented seal carried as object/anatomy.
 
 ---
 
 # Boss — The First Door
+**18 HP.** The encounter is the Door, not a monster standing in front of one.
 
-**18 HP • three states**
+**CLOSED • 18–13 HP • 3d6 TIGHT**  
+**SEALED —** enemy-die interference is prevented.
 
-The boss is not a giant creature standing in front of a door. **The encounter is the Door.** Its frame, aperture, hardware and whatever is behind it become increasingly active as HP falls.
+**AJAR • 12–4 HP • 3d6 STRONGEST**  
+**DRAFT —** If current Spoils is greater than raw Fight, +1 Enemy Fight this round.
 
-## CLOSED — 18–13 HP
-**3d6 • TIGHT**
+**OPEN • 3–1 HP • 4d6 STRONGEST**  
+**BOTH WAYS —** On a tie, deal 2 damage to the Door and 2 to the Delver. Simultaneous player death is defeat.
 
-**SEALED —** Enemy-die interference is prevented during this state.
-
-**Read:** establish the boss as an object with rules, not just a larger enemy.
-
-## AJAR — 12–4 HP
-**3d6 • STRONGEST**
-
-**DRAFT —** If your current Spoils total is greater than your raw Fight total, The First Door gains +1 Enemy Fight this round.
-
-**Read:** the opening actively punishes greed that outruns commitment.
-
-## OPEN — 3–1 HP
-**4d6 • STRONGEST**
-
-**BOTH WAYS —** On a tie, deal 2 damage to The First Door and 2 damage to the Delver. Simultaneous player death is defeat.
-
-**Read:** short violent finish; not a sponge phase.
-
-**Flavor:** *The first door is whichever one finally notices you.*
-
-**Art brief:** one modular boss asset with state transformation; CLOSED should look almost mundane enough to be suspicious, OPEN should reveal impossible depth rather than a generic monster mouth.
+*The first door is whichever one finally notices you.*  
+**Art:** modular door transformation; CLOSED suspiciously mundane, OPEN reveals impossible depth rather than a generic monster mouth.
 
 ---
 
 # Gear
 
-## Bent Knife — Gear • Tier I • Weapon
-**Rule:** If your two Fight Dice are different values, +1 Fight.
+### Bent Knife — Tier I Weapon
+If Fight Dice are different values, +1 Fight. Broad beginner weapon.  
+*Bent before you found it. Bent differently afterward.*
 
-**Intent:** broad beginner weapon; rewards flexible pairs rather than fishing for doubles.
+### Twin Nails — Tier I Weapon
+If Fight Dice are doubles, +2 Fight. Narrower doubles-build seed.  
+*Pulled from opposite sides of the same wall.*
 
-**Flavor:** *Bent before you found it. Bent differently afterward.*
+### Breaching Bar — Tier II Weapon
+When raw Fight is 10+ and you win, deal +2 damage. Converts high commitment into faster kills.  
+*For doors that have mistaken politeness for policy.*
 
-**Icon:** blunt utility knife with visibly wrong angle.
+### Work Apron — Tier I Armor
+Once per encounter, reduce incoming damage by 1. Starting forgiveness.  
+*Canvas, glue, chalk, three receipts and something else's key.*
 
-## Twin Nails — Gear • Tier I • Weapon
-**Rule:** If your two Fight Dice match, +2 Fight.
+### Proof Vest — Tier II Armor
+Once per encounter, reduce incoming damage by 2.  
+*Proof of what was not specified.*
 
-**Intent:** doubles build seed; stronger but narrower than Bent Knife.
+### Inside-Out Lining — Tier II Armor
+Once per encounter, when you lose by exactly 1 Margin, reduce incoming damage by 1. Supports close-margin greed.  
+*The label is on the outside. So is the pocket.*
 
-**Flavor:** *Pulled from opposite sides of the same wall.*
+### Brass Buckle — Tier I Utility
+On a tie, deal 1 damage to the enemy.  
+*Fastens nothing currently recognized as clothing.*
 
-**Icon:** two nearly identical square nails crossing without becoming heraldry.
-
-## Breaching Bar — Gear • Tier II • Weapon
-**Rule:** When your raw Fight is 10 or more and you win, deal +2 damage.
-
-**Intent:** converts high-value commitment into faster kills, sacrificing potential Spoils.
-
-**Flavor:** *For doors that have mistaken politeness for policy.*
-
-**Icon:** short wrecking/pry bar, industrial not tactical.
-
-## Work Apron — Gear • Tier I • Armor
-**Rule:** Once per encounter, reduce incoming damage by 1.
-
-**Intent:** forgiving starting Armor; makes early mistakes survivable without altering dice logic.
-
-**Flavor:** *Canvas, glue, chalk, three receipts and something else's key.*
-
-**Icon:** heavy trade apron with absurd pockets.
-
-## Proof Vest — Gear • Tier II • Armor
-**Rule:** Once per encounter, reduce incoming damage by 2.
-
-**Intent:** direct defensive upgrade with opportunity cost of the Armor slot.
-
-**Flavor:** *Proof of what was not specified.*
-
-**Icon:** padded work vest covered in stitched paper tabs, not ballistic armor.
-
-## Inside-Out Lining — Gear • Tier II • Armor
-**Rule:** Once per encounter, if you would lose a round by exactly 1 Margin, reduce that incoming damage by 1.
-
-**Intent:** specifically supports close-margin greed play.
-
-**Flavor:** *The label is on the outside. So is the pocket.*
-
-**Icon:** peeled garment lining folding through itself.
-
-## Brass Buckle — Gear • Tier I • Utility
-**Rule:** On a tie, deal 1 damage to the enemy.
-
-**Intent:** changes ties from dead rounds into slow offensive progress.
-
-**Flavor:** *Fastens nothing currently recognized as clothing.*
-
-**Icon:** oversized rectangular buckle with worn measurement marks.
-
-## Small Change Purse — Gear • Tier I • Utility
-**Rule:** The first Loot Draft you skip each run gives +2 additional Coins.
-
-**Intent:** economy/build-filtering option; rewards rejecting mediocre loot.
-
-**Flavor:** *Contains exactly the amount you were short last time.*
-
-**Icon:** tiny coin purse with too many clasps.
+### Small Change Purse — Tier I Utility
+The first Loot Draft skipped each run gives +2 additional Coins.  
+*Contains exactly the amount you were short last time.*
 
 ---
 
 # Artifacts
 
-## Mirror Shard — Artifact • Tier I
-**Rule:** Once per encounter, FLIP one eligible player die. `1↔6, 2↔5, 3↔4`.
+### Mirror Shard — Tier I
+Once per encounter, FLIP one eligible player die (`1↔6, 2↔5, 3↔4`).  
+*The reflection remembers the other result.*
 
-**Intent:** immediately understandable high-agency manipulation.
+### Loaded Question — Tier I
+On a successful round, Spoils doubles gain +2 Spoils, maximum 12.  
+*Answer yes or yes.*
 
-**Flavor:** *The reflection remembers the other result.*
+### False Bottom — Tier II
+If successful Spoils is 5 or less before this effect, +2 Spoils, maximum 12. Raises bad reward floors.  
+*Empty, unless you check whether empty has a basement.*
 
-**Icon:** irregular mirror fragment showing pips that do not match its foreground die.
+### The Hidden Hand — Tier II
+Once per encounter, lower the enemy's highest locked die by 1. Cannot bypass rules forbidding enemy-die interference.  
+*No relation to the visible hand.*
 
-## Loaded Question — Artifact • Tier I
-**Rule:** If your Spoils Dice are doubles on a successful round, +2 Spoils, maximum 12.
+### Ash Ledger — Tier I
+The first time you take damage each encounter, gain 1 Coin.  
+*Losses carried forward.*
 
-**Intent:** reward-pattern build seed.
+### Opposite Number — Tier II
+On a successful round, opposite Spoils faces (`1+6`, `2+5`, `3+4`) gain +3 Spoils, maximum 12. Synergizes with FLIP.  
+*You have never met. You have the same extension.*
 
-**Flavor:** *Answer yes or yes.*
+### Brass Caliper — Tier I
+Once per encounter after choosing Fight Dice, BUMP one eligible Spoils Die by ±1.  
+*Measures the part that isn't there yet.*
 
-**Icon:** question mark formed from paired pips / weighted plumb shape.
+### Red Thread — Tier I
+Once per encounter, when you win by exactly 1 Margin, HEAL 1.  
+*Tied to something on the other side. Do not pull to check.*
 
-## False Bottom — Artifact • Tier II
-**Rule:** If your successful Spoils score is 5 or less before this effect, +2 Spoils, maximum 12.
+### Carbon Paper — Tier II
+Once per encounter, COPY one eligible player die onto another.  
+*PRESS HARD. THIRD COPY RETAINED BELOW.*
 
-**Intent:** raises bad reward floors rather than amplifying already-great outcomes.
+### Stuck Key — Tier II
+After a successful non-final round, you may carry one Spoils face into the next cast. It enters LOCKED.  
+*It fits. That is the problem.*
 
-**Flavor:** *Empty, unless you check whether empty has a basement.*
+### Receipt From Nowhere — Tier I
+The first item bought in each Shop costs 2 fewer Coins, minimum 1.  
+*THANK YOU FOR YOUR PREVIOUS PURCHASE TOMORROW.*
 
-**Icon:** little box/drawer with a second impossible interior.
-
-## The Hidden Hand — Artifact • Tier II
-**Rule:** Once per encounter, lower the enemy's highest locked die by 1. Cannot bypass rules that forbid enemy-die interference.
-
-**Intent:** direct defensive/offensive control over enemy information.
-
-**Flavor:** *No relation to the visible hand.*
-
-**Icon:** gloved hand emerging from behind a die, deliberately pulp-conspiracy rather than occult-serious.
-
-## Ash Ledger — Artifact • Tier I
-**Rule:** The first time you take damage each encounter, gain 1 Coin.
-
-**Intent:** converts attrition into economy without making damage desirable in unlimited amounts.
-
-**Flavor:** *Losses carried forward.*
-
-**Icon:** scorched accounting book with one glowing entry.
-
-## Opposite Number — Artifact • Tier II
-**Rule:** If your two Spoils Dice are opposite d6 faces (`1+6`, `2+5`, `3+4`) on a successful round, +3 Spoils, maximum 12.
-
-**Intent:** high-value pattern recognition that synergizes with FLIP.
-
-**Flavor:** *You have never met. You have the same extension.*
-
-**Icon:** paired opposing dice connected by an old telephone cord.
-
-## Brass Caliper — Artifact • Tier I
-**Rule:** Once per encounter after choosing Fight Dice, BUMP one eligible Spoils Die by ±1.
-
-**Intent:** reward manipulation rather than combat manipulation; makes the greed layer tangible.
-
-**Flavor:** *Measures the part that isn't there yet.*
-
-**Icon:** chunky brass caliper gripping a pip.
-
-## Red Thread — Artifact • Tier I
-**Rule:** Once per encounter, when you win by exactly 1 Margin, HEAL 1.
-
-**Intent:** makes razor-thin wins sustainable and pairs naturally with Long Odds.
-
-**Flavor:** *Tied to something on the other side. Do not pull to check.*
-
-**Icon:** one red thread crossing a die and disappearing off-card.
-
-## Carbon Paper — Artifact • Tier II
-**Rule:** Once per encounter, COPY the value of one eligible player die onto another eligible player die.
-
-**Intent:** strong pattern/build tool with two-die targeting complexity.
-
-**Flavor:** *PRESS HARD. THIRD COPY RETAINED BELOW.*
-
-**Icon:** black carbon sheet duplicating one die impression onto another.
-
-## Stuck Key — Artifact • Tier II
-**Rule:** After a successful non-final round, you may carry one of that round's Spoils Dice into the next cast. The carried die enters LOCKED.
-
-**Intent:** creates round-to-round planning and lets a good unused die become future certainty.
-
-**Flavor:** *It fits. That is the problem.*
-
-**Icon:** key physically jammed through a die corner.
-
-## Receipt From Nowhere — Artifact • Tier I
-**Rule:** The first item you buy in each Shop costs 2 fewer Coins, minimum 1.
-
-**Intent:** economy Artifact with visible future value.
-
-**Flavor:** *THANK YOU FOR YOUR PREVIOUS PURCHASE TOMORROW.*
-
-**Icon:** curling thermal receipt with impossible timestamp.
-
-## Blank Face — Artifact • Tier III
-**Rule:** Once per encounter, change one eligible player die to 1 or 6.
-
-**Intent:** premium extreme-value control; supports Fight, Spoils and opposite-face builds.
-
-**Flavor:** *The missing side is whichever side you need.*
-
-**Icon:** d6 with one featureless face and ghosted 1/6 alternatives.
+### Blank Face — Tier III
+Once per encounter, change one eligible player die to 1 or 6.  
+*The missing side is whichever side you need.*
 
 ---
 
 # Contraband
 
-## Redacted Slip — Contraband • Tier I
-**Rule:** Consume: REROLL one eligible selected player die.
+### Redacted Slip — Tier I
+Consume: REROLL one eligible selected player die.  
+*The useful part has been removed for your convenience.*
 
-**Flavor:** *The useful part has been removed for your convenience.*
+### Counterfeit Seal — Tier I
+Consume: set one eligible selected player die to 4.  
+*Authenticity pending.*
 
-**Icon:** blacked-out paper strip wrapped around a die.
+### Wire Cutter — Tier I
+Consume: lower the enemy's highest locked die by 1. Cannot bypass interference immunity.  
+*There is always a wire if you call something a wire.*
 
-## Counterfeit Seal — Contraband • Tier I
-**Rule:** Consume: set one eligible selected player die to 4.
+### Carbon Copy — Tier I
+Consume: COPY one eligible selected player die onto another. Select SOURCE, then TARGET.  
+*The copy is legally the original until noticed.*
 
-**Flavor:** *Authenticity pending.*
+### Emergency Key — Tier II
+Consume outside combat: HEAL 4 HP.  
+*BREAK GLASS. THERE IS NO GLASS.*
 
-**Icon:** cheap rubber stamp imprint reading an invented approval mark.
+### Temporary Injunction — Tier II
+Consume before manipulating this cast: suppress ordinary enemy special rules for the round. Boss phase rules cannot be enjoined.  
+*Effective immediately, pending the existence of the issuing authority.*
 
-## Wire Cutter — Contraband • Tier I
-**Rule:** Consume: lower the enemy's highest locked die by 1. Cannot bypass rules that forbid enemy-die interference.
+---
 
-**Flavor:** *There is always a wire if you call something a wire.*
+# Events
 
-**Icon:** ordinary cutters biting a glowing line connected to an enemy die.
+## The Unnumbered Door
+A door occupies a section of wall whose numbering skips cleanly around it.
 
-## Carbon Copy — Contraband • Tier I
-**Rule:** Consume: COPY one eligible selected player die onto another. Select SOURCE, then TARGET.
+**FORCE IT —** Take 3 damage; receive a random Tier II Artifact offer.  
+**KNOCK —** Roll d6: 1–2 take 2 damage; 3–4 gain 4 Coins; 5–6 receive a random Tier I Artifact offer.  
+**LEAVE —** Nothing happens.
 
-**Flavor:** *The copy is legally the original until noticed.*
+Writing tone: the event never confirms what is behind it. The joke is the administrative certainty that this door is not supposed to count.
 
-**Icon:** cheap duplicate form / doubled die silhouette.
+## Talking Board, 1891
+A commercially styled talking board appears in the Below as if filed with the rest of the lost property. `1891` refers to the historical commercial Ouija-board patent era; player-facing text should avoid making unsupported supernatural-history claims.
 
-## Emergency Key — Contraband • Tier II
-**Rule:** Consume outside combat: HEAL 4 HP.
+**ASK WHAT WAITS AHEAD —** Reveal the next encounter.  
+**MOVE THE POINTER —** Take 1 damage and receive a forced random Tier I Contraband offer.  
+**PUT IT BACK —** Gain 2 Coins.
 
-**Flavor:** *BREAK GLASS. THERE IS NO GLASS.*
+Writing tone: historically literate prop, not a lore lecture.
 
-**Icon:** red-tagged industrial key.
+## Lost Property Office
+An attended-looking counter with no visible attendant. Every object behind it has a claim tag. Some tags have your handwriting.
 
-## Temporary Injunction — Contraband • Tier II
+**FILE AN ITEM —** Select an eligible owned item; remove it for 75% of its defined value.  
+**MAKE A CLAIM —** Spend 4 Coins; receive a random Tier I Gear/Artifact offer.  
+**NOTHING OF MINE —** Leave.
+
+Writing tone: bureaucracy as supernatural mechanism.
+
+---
+
+# Shop — The Counter
+The Shop is a state of the same descent, not a separate town/menu.
+
+Current systems stock is seeded from the eligible item registry plus healing. Production presentation must show complete item rules before purchase, current Coins, occupied slots/capacity, replacement consequence, and Receipt From Nowhere discount when active.
+
+**Field Dressing —** spend the defined healing price to recover the defined HP amount (current core value is authoritative).
+
+Shopkeeper presentation is deliberately deferred; the Counter may initially appear unattended so the UI does not require a dialogue character before the world has earned one.
+
+---
+
+# Reward cards
+
+A reward object is not just a name. Compact offer format:
+
+**NAME**  
+`CATEGORY • TIER [• SLOT]`  
+`Complete one-sentence rule.`
+
+Expanded inspect adds keyword definitions, exact timing/limits, capacity/replacement warning, interaction notes and flavor.
+
+The Final-Blow Spoils dice should remain visible through the start of the reward reveal so the player understands why this reward quality appeared.
+
+---
+
+# Floor I build seeds
+
+Floor I should naturally expose, without guaranteeing, several understandable directions:
+
+- **Different-value Fight:** Bent Knife + general manipulation.
+- **Doubles:** Twin Nails + Loaded Question; Passage Clerk provides a counterexample enemy.
+- **Close Margin:** Long Odds + Red Thread + Inside-Out Lining.
+- **Spoils patterns:** Loaded Question / Opposite Number / Brass Caliper / Mirror Shard.
+- **High commitment:** Breaching Bar; faster kills but fewer high dice left for Spoils.
+- **Enemy control:** Hidden Hand / Wire Cutter / Temporary Injunction.
+- **Economy:** Ash Ledger / Small Change Purse / Receipt From Nowhere.
+- **Cross-round planning:** Stuck Key.
+
+No Floor I item should exist only as `+X%`. Each should change a decision, a pattern the player notices, or the economy of saying no.
+
+---
+
+# Content audit rule
+
+Before any Floor I object is considered production-complete, verify:
+1. its short rule is understandable without this document;
+2. every keyword is inspectable;
+3. its effect is implemented in shared core;
+4. simulator/client do not silently ignore it;
+5. its art silhouette communicates category/function at small size;
+6. its flavor line does not contradict mechanics or claim dubious real-world history;
+7. it has at least one useful interaction and, where appropriate, one meaningful tension/counterexample.
