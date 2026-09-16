@@ -1,683 +1,335 @@
 # As Above, Roll Below — Game Design Bible
 
-**Version:** 0.2 — preproduction canon  
+**Version:** 0.3 — preproduction canon  
 **Genre:** solo dice roguelite / turn-based dungeon crawler  
 **Primary platform:** browser, desktop + mobile  
-**Target full run:** ~25–35 minutes  
-**Vertical slice:** one finished 8–12 minute floor
+**Target successful run:** ~25–35 minutes  
+**Vertical Slice:** one replayable 8–12 minute Floor
+
+This document defines the game's identity and design pillars. Exact systems numbers live in `MASTER_SYSTEMS_SPEC.md` and the specialist specs. This separation is intentional: the Bible should not drift every time a shop price changes.
 
 ---
 
-## 1. The game in one sentence
+# 1. The game in one sentence
 
-Roll four dice, commit two to the fight, and leave two behind as potential loot.
+**Roll four dice, commit two to the fight, and leave two behind as potential loot.**
 
 Everything else exists to make that decision increasingly interesting.
 
 ---
 
-## 2. Player promise
+# 2. Player promise
 
-As Above, Roll Below has traditional roguelike bones: HP, monsters, gear, consumables, shops, branching routes, elites, bosses, run-ending death, procedural variation, and build synergies.
+**As Above, Roll Below** has recognizable roguelite/dungeon-crawler bones:
 
-The unusual system is the combat roll. The player always rolls four ordinary d6. Exactly two are committed to combat. The remaining two become potential Spoils. The monster also rolls visible dice and locks its own combat pair before the player commits.
+- persistent HP across a run;
+- monsters with distinct behavior;
+- Gear;
+- rule-changing Artifacts;
+- single-use Contraband;
+- Shops;
+- Events;
+- branching routes;
+- optional Elites;
+- authored Bosses;
+- run-ending death;
+- seeded procedural variation;
+- horizontal unlocks;
+- builds that can become gloriously unreasonable.
 
-High dice are simultaneously valuable for survival and for rewards. The game repeatedly asks:
+The unusual center is the contested dice roll.
 
-> How greedy can you afford to be?
+Enemy casts first and visibly locks dice. Player rolls four d6. Exactly two are committed to Fight. The other two are potential Spoils.
+
+The best die for staying alive is therefore often the die the player most wants to keep.
+
+The recurring question is:
+
+> **How greedy can you afford to be?**
 
 ---
 
-## 3. Design pillars
+# 3. Core design pillars
 
-### 3.1 Four dice. Two choices.
-A new player must understand the core interaction almost immediately.
+## 3.1 Four dice. Two choices.
+A new player should understand the fundamental interaction almost immediately.
 
 **ROLL FOUR. COMMIT TWO. WHAT REMAINS MAY BECOME YOURS.**
 
-The complete game may become strategically deep. The basic interaction may not become difficult to understand.
+The game may become strategically deep. The basic action may not become difficult to understand.
 
-### 3.2 Greed is gameplay
-Loot is not merely awarded after combat. The player helps determine its quality during combat by deciding which dice not to spend on fighting.
+## 3.2 Greed is gameplay
+Loot quality is not detached from combat. The player helps create the reward by deciding which dice not to spend on survival.
 
-### 3.3 Builds bend the dice, not replace them
-Artifacts, gear, and character abilities may alter, preserve, reinterpret, or reward dice. They should rarely make the four-dice decision irrelevant.
+The reward is determined by **Final-Blow Spoils**: the uncommitted pair on the damaging player win that kills the enemy.
 
-### 3.4 Traditional roguelike bones
-Novelty comes from the dice economy and world, not from deliberately making every RPG convention strange.
+Earlier successful rounds do not bank better rewards. This simulation-backed rule keeps the decisive roll meaningful and prevents premium-loot farming through intentional fight extension.
 
-### 3.5 Broken builds are a reward
-Powerful synergies are allowed. Bosses are not generated to invalidate the player’s strongest strategy.
+## 3.3 Builds bend the roll; they do not replace it
+Artifacts, Gear and Techniques may alter values, change pattern meaning, create manipulation opportunities, reinterpret Spoils, modify margin consequences, interfere with enemy dice, create economy engines, and connect multiple triggers.
 
-### 3.6 Knowledge adds depth, never required comprehension
-Deeply researched occult, Fortean, folkloric, conspiracy, and historical references may make content funnier or stranger, but are never required to understand mechanics.
+A strong build should make the player think:
 
-### 3.7 The presentation takes everything seriously
-The game does not stop to announce jokes. Ridiculous things receive the same artistic and mechanical dignity as frightening things.
+> "Look what I can do with this roll."
+
+Not:
+
+> "My build no longer needs the roll."
+
+## 3.4 Traditional roguelite bones underneath
+The game should still satisfy familiar expectations:
+
+- combat matters because HP persists;
+- optional danger offers premium value;
+- Shops create spending pressure;
+- inventory limits create replacement decisions;
+- Bosses are climactic authored encounters;
+- death restarts the run quickly;
+- unlocks broaden future possibilities.
+
+Novelty belongs at the center, not in making every surrounding convention deliberately alien.
+
+## 3.5 Broken builds are a reward
+Powerful synergies are desirable. The game should occasionally make the player feel as if they discovered something slightly illegal.
+
+Bosses do not dynamically inspect and disable the player's strongest engine. A developed build is something the player should be excited to unleash.
+
+## 3.6 Knowledge adds depth; it is never required comprehension
+The world can contain carefully researched material from folklore, Forteana, occult/esoteric history, public records, cryptid culture, intelligence/conspiracy lore, strange objects and architecture, and wholly original Below material.
+
+Recognizing a deep reference may make something funnier or stranger. It may never be required to understand the mechanic.
+
+## 3.7 The joke gets production value
+The game does not constantly announce that it is joking.
+
+An absurd subject can receive serious creature design, polished animation, exact rules, excellent sound, and careful historical specificity.
+
+Comedy often comes from disproportionate seriousness and specificity.
 
 ---
 
-## 4. Non-goals
+# 4. What the game is not
 
-The game is not:
+AARB is not:
 
-- a deckbuilder;
-- a tabletop simulator;
 - a Munchkin clone;
+- a deckbuilder with dice pasted on;
+- a tabletop simulator;
 - Dicey Dungeons with different art;
 - a conspiracy trivia game;
 - an idle game;
-- a five-currency economy;
-- a crafting or durability game;
-- a procedural affix spreadsheet;
-- a visual novel interrupted by combat.
+- a crafting game;
+- an inventory-hoarding RPG;
+- a traditional stat-sheet RPG;
+- a visual novel interrupted by fights.
 
-No baseline system for mana, stamina, crafting materials, durability, encumbrance, or permanent stat-grind metaprogression.
+Baseline design explicitly rejects unnecessary universal systems such as Mana, Stamina, Stress/Sanity, Hunger, Durability, Encumbrance, Crit Chance, Accuracy/Evasion, elemental-resistance sheets and procedural affix soup.
 
----
-
-## 5. Run structure
-
-A complete run is planned around **four Floors**.
-
-Each Floor contains approximately **4 route nodes + 1 Boss**. Not every room is combat.
-
-Expected full-run composition:
-
-- 8–11 normal combats;
-- 1–3 elites;
-- 2–4 events;
-- 2–4 shops;
-- 4 bosses.
-
-The map shows room categories, not exact contents.
-
-Core room types:
-
-- **Combat**
-- **Elite**
-- **Event**
-- **Shop**
-- **Boss**
-
-New room types must create a genuinely different decision rather than merely reskin an existing room.
+See `DECISION_LEDGER.md`.
 
 ---
 
-## 6. Player state
+# 5. Combat identity
 
-### HP
-The player has one persistent numerical HP bar. No parallel heart/life system.
+Canonical combat:
 
-Initial balance target: **~20 Max HP**, subject to simulation and playtesting.
+1. enemy rolls;
+2. enemy locks by visible deterministic Instinct;
+3. player rolls 4d6;
+4. legal manipulation;
+5. player commits exactly 2 Fight Dice;
+6. remaining 2 are the current Spoils Pair;
+7. deterministic preview;
+8. confirm;
+9. damage equals winning margin;
+10. repeat if both survive;
+11. killing player win resolves Final-Blow Spoils and reward.
 
-At 0 HP, the run ends immediately.
+There is no fixed monster Threat target, baseline monster Damage stat, hidden accuracy roll, or parallel heart/Resolve system.
 
-### Coins
-One run currency. No secondary crafting currency.
+The dice determine attack, defense, damage pressure and reward opportunity.
 
-### Inventory
-Planned baseline:
-
-- 3 Gear slots: Weapon / Armor / Utility
-- 4 Artifact slots
-- 2 Contraband slots
-
-Items beyond capacity require immediate replacement. No backpack hoarding.
-
----
-
-## 7. Canonical combat loop
-
-### Step 1 — Monster rolls
-The monster rolls its visible dice pool.
-
-### Step 2 — Monster locks
-The monster locks dice according to a visible deterministic **Instinct**. The player sees the resulting Monster Total before making a decision.
-
-### Step 3 — Player rolls
-The player rolls exactly **4d6**.
-
-### Step 4 — Manipulate
-The player may use build-granted manipulation. There is no universal reroll button.
-
-### Step 5 — Commit
-The player chooses exactly **2 Fight Dice**. The remaining two become the current **Spoils Pair**.
-
-### Step 6 — Compare
-Let:
-
-`Player Total = Fight Die A + Fight Die B + applicable effects`
-
-`Monster Total = monster's locked total + applicable effects`
-
-### Step 7 — Margin damage
-
-- If Player Total > Monster Total, the monster loses HP equal to the difference.
-- If Monster Total > Player Total, the player loses HP equal to the difference.
-- A tie deals 0 damage to both sides.
-
-There is no separate baseline Damage stat. The dice determine how badly the loser was hit.
-
-### Step 8 — Spoils qualification
-A Spoils Pair only qualifies on a round where the player actually damages the monster.
-
-A loss or tie generates no Spoils result.
-
-### Step 9 — Continue
-If both remain alive, begin another round.
+Detailed timing/math: `MASTER_SYSTEMS_SPEC.md` and `COMBAT_MODEL.md`.
 
 ---
 
-## 8. Why margin damage is canonical
+# 6. Enemy identity
 
-Margin damage collapses several redundant systems into one:
+Enemies use the same dice language as the player while following visible deterministic **Instincts** such as BOTH, STRONGEST, WIDE, TIGHT and ODD.
 
-- no fixed Threat target;
-- no fixed baseline monster Damage stat;
-- no Resolve/heart counter separate from HP;
-- no generic life system.
+Difficulty should emerge from dice pool, Instinct, HP, one readable primary rule, and Boss state changes—not from hidden scaling.
 
-The same contested dice determine attack, defense, damage, greed, and reward opportunity.
-
-Example:
-
-Monster locks `6 + 4 = 10`.
-
-Player rolls `6, 5, 3, 2`.
-
-Safe commitment: `6 + 5 = 11` → deal 1 damage, Spoils = `3 + 2 = 5`.
-
-Greedy commitment: `5 + 3 = 8` → lose 2 HP, Spoils do not qualify.
-
-The player always knows the consequence before committing unless a clearly disclosed monster rule changes resolution.
+Normal enemies should usually have one primary rule. Elites get stronger authored pressure. Bosses receive stateful custom dice engines.
 
 ---
 
-## 9. Monster dice and Instinct
+# 7. Progression philosophy
 
-Monster difficulty is expressed partly through dice pool and lock behavior rather than hidden scaling.
+> **Levels keep you alive. Loot makes you weird.**
 
-Provisional tiers:
+Level provides predictable endurance growth plus only a small number of character Techniques.
 
-### Baseline normal
-`2d6`, lock both.
+Loot provides the actual build through:
 
-### Dangerous normal / specialist
-Usually `3d6` with a nontrivial Instinct.
+- Gear — how you fight/survive;
+- Artifacts — what your dice mean;
+- Contraband — how you solve one specific dangerous state.
 
-### Elite pressure
-Often `3d6, keep highest 2` or a comparably strong authored rule.
+This separation prevents ordinary leveling from flattening the Fight-vs-Spoils tradeoff.
 
-### Boss / exceptional enemy
-Custom dice engine. `4d6 keep highest 2` is already extremely strong and should not be treated as ordinary baseline pressure.
-
-Visible Instinct examples:
-
-- **STRONGEST** — lock highest two.
-- **LOWEST** — lock lowest two.
-- **WIDE** — prefer highest + lowest.
-- **DOUBLES** — prefer a matching pair when possible, otherwise highest two.
-- **ODD** — prefer odd values.
-- **EVEN** — prefer even values.
-- **TIGHT** — prefer the closest-valued pair.
-
-Monster behavior must be deterministic from visible information. No opaque AI cheating.
+Exact progression/economy: `SYSTEMS_ARCHITECTURE.md` and `LOOT_AND_ECONOMY_SPEC.md`.
 
 ---
 
-## 10. Monster HP
-
-Monsters use numerical HP bars, not hearts.
-
-Initial balance envelope, not final content values:
-
-- normal: roughly 3–6 HP;
-- tough normal: roughly 5–8 HP;
-- elite: roughly 6–10 HP;
-- bosses: authored and materially higher.
-
-The exact values are controlled by the Combat Model document and later Floor I balancing.
-
-Normal fights should generally resolve quickly. Longer battles must justify their additional rounds through identity, mechanics, or reward.
-
----
-
-## 11. Spoils
-
-The two uncommitted player dice form the current **Spoils Pair**.
-
-Only successful damaging rounds qualify.
-
-Current candidate rule for multi-round combat:
-
-> The game automatically remembers the best successful Spoils Pair achieved during the encounter and uses that pair for the encounter reward.
-
-This rule is simple and creates a strong safety-vs-greed tradeoff, but remains explicitly under validation because deliberately extending fights can increase the number of chances to improve Spoils. The Combat Model document contains the anti-stall analysis.
-
-Base Spoils score is the sum of the two dice, range 2–12.
-
-Provisional reward bands:
-
-- 2–4: scraps / small Coin reward
-- 5–7: common find / Contraband access
-- 8–10: strong find / Gear or Artifact choice
-- 11–12: premium find / broader high-tier choice
-
-Final names and exact reward tables belong in the Vertical Slice Content Sheet.
-
----
-
-## 12. Gear
-
-Gear is the relatively traditional portion of the build.
-
-Gear primarily affects:
-
-- combat totals;
-- margin damage;
-- incoming damage;
-- conditional bonuses;
-- item capacity;
-- encounter-specific protections.
-
-Examples of mechanical forms:
-
-- `+1 Fight Total after locking.`
-- `If Fight Dice match, +2 Fight.`
-- `Reduce the first incoming damage each encounter by 1.`
-- `If you win by 4+, deal +2 additional damage.`
-
-Gear should feel like equipment interacting with combat rather than passive spreadsheet inflation.
-
----
-
-## 13. Artifacts
-
-Artifacts are the primary build-defining system.
-
-Artifacts may:
-
-- alter die values;
-- reinterpret faces;
-- preserve dice;
-- reward patterns;
-- modify Spoils;
-- interact with HP;
-- create conditional triggers;
-- rarely interfere with enemy dice.
-
-Maximum planned equipped Artifacts: **4**.
-
-A player should be able to inspect four icons and understand the engine they built.
-
----
-
-## 14. Contraband
-
-Contraband is single-use tactical intervention.
-
-Maximum carried: **2**.
-
-Potential roles:
-
-- reroll one die;
-- change one die to a specified face;
-- prevent incoming damage;
-- temporarily ignore a monster rule;
-- interfere with one enemy die;
-- preserve a valuable roll.
-
-The old prototype's universal CHEAT button is removed. Cheating may return as specific content, not a baseline action.
-
----
-
-## 15. Dice-manipulation vocabulary
-
-The game should teach a small reusable language.
-
-### BUMP
-Increase or decrease a die by 1, staying within 1–6.
-
-### FLIP
-Turn to the opposite physical face:
-`1↔6`, `2↔5`, `3↔4`.
-
-### LOCK
-Preserve a die's value for a later round rather than rerolling it.
-
-### COPY
-Change one die so it matches another visible die.
-
-### TRANSMUTE
-Replace a specified face with another specified face.
-
-### MARK
-Give a die a temporary property recognized by another effect. Advanced keyword; not required in the first tutorial.
-
-Enemy-dice interference uses the same language but should be rarer and more expensive than self-manipulation.
-
----
-
-## 16. Characters
-
-Characters change how the same core system is approached.
-
-Each receives:
-
-- one simple defining ability;
-- one starting Gear item;
-- one mechanical bias.
-
-Initial archetype space:
-
-- **Manipulator** — teaches BUMP/FLIP style control.
-- **Pattern seeker** — rewards doubles, sequences, exact totals, odd/even structure.
-- **Anomaly build** — gains value from rare outcomes.
-- **Mundane build** — stronger conventional equipment capacity, fewer supernatural tricks.
-
-Final identities and writing belong in the Content Bible.
-
----
-
-## 17. Build archetypes
-
-These are overlapping strategy families, not hard classes:
-
-- Greed
-- Certainty
-- Pattern
-- Low-face
-- High-face
-- Lock / preservation
-- Damage control
-- Contraband
-- Enemy interference
-
-Strong runs should frequently combine two archetypes.
-
-Synergy must emerge from individually understandable effects. Avoid explicit `if Artifact #37 is equipped` combo text.
-
----
-
-## 18. Boss philosophy
-
-Bosses are traditional identity-driven RPG bosses expressed through the dice system.
-
-A boss should have:
-
-- a clear identity;
-- an authored dice engine;
-- multiple stages or meaningful behavior changes;
-- recognizable attacks;
-- escalating pressure;
-- mechanics unique to that boss.
-
-Bosses do not inspect the player's build and automatically disable its strongest mechanic.
-
-The player should be excited to unleash a broken build on the boss.
-
----
-
-## 19. Economy and shops
-
-One run currency: Coins.
-
-A shop should display a compact selection such as:
-
-- 1 Gear
-- 2 Artifacts
-- 1 Contraband
-- healing service
-
-Initial price bands remain provisional until the Vertical Slice is numerically populated.
-
-The desired economy tension:
-
-- safe combat preserves HP but produces weaker rewards;
-- greedy combat improves reward quality but tends to increase exposure, fight duration, and attrition.
-
----
-
-## 20. Events
-
-Events are short and decision-driven.
-
-Typical structures:
-
-- lose HP → gain Artifact;
-- pay Coins → remove a negative condition;
-- accept a die roll → live with the result;
-- sacrifice Gear → receive an unknown replacement.
-
-Events are not long dialogue trees.
-
----
-
-## 21. Procedural generation
-
-A run seed determines:
-
-- Floor layouts;
-- room categories;
-- enemies;
-- elites;
-- bosses;
-- item offers;
-- shop inventory;
-- events;
-- combat dice.
-
-The same seed plus the same sequence of player actions should reproduce the same run.
-
-Use separate deterministic RNG streams for map generation, encounters, rewards, shops, events, and combat dice so unrelated implementation changes do not perturb every future roll.
-
----
-
-## 22. UI information rule
-
-Before the player commits dice, the interface must clearly show:
-
-- player HP;
-- monster HP;
-- monster rolled dice;
-- monster locked dice and total;
-- monster Instinct;
-- player rolled dice;
-- selected Fight total;
-- predicted damage outcome;
-- current Spoils Pair;
-- relevant active effects.
-
-The interface performs arithmetic. The player makes decisions.
-
----
-
-## 23. Input and accessibility
-
-Required:
-
-- mouse playable;
-- touch playable;
-- keyboard playable;
-- no fast-reaction mechanics;
-- reduced-motion option;
-- numeric labels on dice in addition to pips;
-- color never used as the only state indicator;
-- scalable text;
-- high-contrast selection states;
-- separate music/SFX controls;
-- faster animation option.
-
-Dice should feel tactile but standard roll animation should remain under roughly one second.
-
----
-
-## 24. Metaprogression
-
-Permanent progression is horizontal.
-
-Runs may unlock:
-
-- characters;
-- Artifacts;
-- Gear;
-- Contraband;
-- enemies;
-- bosses;
-- Events;
-- difficulty rules;
-- visual environments.
-
-No permanent `+10% damage`, `+5 HP`, or equivalent stat grind.
-
-Run 100 should contain more possibilities, not merely superior starting math.
-
----
-
-## 25. Anti-complexity rules
-
-Before adding any system, ask:
-
-> Does this improve the four-dice decision?
-
-Hard constraints for the vertical slice:
-
-- exactly 4 player Core Dice;
-- exactly 2 committed Fight Dice;
-- 4 Artifact slots max;
-- 3 Gear slots max;
-- 2 Contraband slots max;
-- one run currency;
-- one player HP pool;
-- no mana;
-- no crafting;
-- no durability;
-- no encumbrance stat;
-- no universal reroll;
-- normal enemies should generally have one primary rule.
-
----
-
-## 26. Desired emotional rhythm
-
-A strong encounter repeatedly produces:
-
-1. **Anticipation** — monster rolls.
-2. **Assessment** — player sees what must be beaten.
-3. **Roll** — four dice land.
-4. **Temptation** — the safest dice are also valuable Spoils.
-5. **Search** — what can the build do with this state?
+# 8. Run rhythm
+
+Intended emotional/systemic rhythm:
+
+1. **Anticipation** — enemy cast.
+2. **Assessment** — visible locked threat.
+3. **Roll** — four possibilities land.
+4. **Temptation** — good Fight dice are also good potential Spoils.
+5. **Search** — what does the current build allow?
 6. **Commitment** — choose two.
 7. **Consequence** — margin damage.
-8. **Reward pressure** — successful leftovers may improve Spoils.
-9. **Next round / next room.**
+8. **Escalation** — another round or kill.
+9. **Final greed decision** — killing commitment determines Spoils.
+10. **Reward choice** — Loot Draft.
+11. **Build changes**.
+12. **Route choice**.
+
+Then repeat quickly.
 
 ---
 
-## 27. Vertical slice scope
+# 9. Run structure
 
-The first production-quality slice contains:
+Full-run target:
 
-### Playable content
-- 1 complete Floor
-- 1 playable character
-- 8 normal enemies
-- 2 elites
-- 1 boss
-- branching route map
-- 3 Events
-- 1 Shop system
+- 4 Floors;
+- 4 visited pre-boss rooms + Boss each;
+- ~25–35 minute successful run;
+- roughly 8–11 normal combats;
+- 1–3 Elites;
+- 2–4 Events;
+- 2–4 Shops;
+- 4 Bosses.
 
-### Build content
-- 12 Artifacts
-- 8 Gear items
-- 6 Contraband
+The route map reveals room category, not exact normal-enemy identity.
 
-### Systems
-- contested monster/player rolls
-- margin damage
-- HP
-- Spoils
-- Coins
-- deterministic seed
-- reward drafting
-- inventory replacement
-- run death
-- Floor victory
-- local save/resume
+Procedural generation exists to create different decisions, not arbitrary noise.
 
-### Presentation
-- finished UI
-- finished dice
-- finished player character
-- finished enemy and boss art
-- finished Floor environment
-- combat animation and VFX
-- sound design
-- music
-- victory/death presentation
-
-No placeholder visuals in the final vertical-slice review build.
+Exact generator constraints: `RUN_STRUCTURE_AND_GENERATION_SPEC.md`.
 
 ---
 
-## 28. Vertical slice success criteria
+# 10. World premise
 
-The slice succeeds if:
+The Below is not proof that every conspiracy, legend or fiction was literally true.
 
-1. a new player understands the core interaction within the first encounter;
-2. choosing Fight Dice repeatedly creates real greed decisions;
-3. Artifacts materially change how rolls are evaluated;
-4. the player can describe their build after one run;
-5. the boss feels like a boss rather than a larger normal enemy;
-6. a Floor takes roughly 8–12 minutes;
-7. restarting after death is immediate;
-8. the player voluntarily starts another run.
+> **The Below preserves versions. It does not certify them.**
 
-Criterion 8 matters most.
+The Below accumulates residues of things narrated, classified, ritualized, fictionalized, denied, remembered, misremembered or otherwise forced into incompatible versions.
+
+This permits a researched historical object, folklore, a fantasy monster, bureaucratic nightmare and original native creature to coexist without flattening their real-world provenance.
+
+Detailed taxonomy and sourcing: `CONTENT_RESEARCH_BIBLE.md`, `BELOW_ECOLOGY.md`, `TERMINOLOGY.md`.
 
 ---
 
-## 29. Current locked core
+# 11. Visual identity
 
-Treat these as canonical unless testing demonstrates a fundamental problem:
+Lead direction:
 
-- **Title:** As Above, Roll Below
-- **Genre:** solo dice roguelite
-- **Player roll:** 4d6
-- **Player commitment:** exactly 2 Fight Dice
-- **Leftovers:** exactly 2 potential Spoils Dice
-- **Monster action:** monster rolls and visibly locks before player commitment
-- **Combat:** contested totals
-- **Damage:** winning margin
-- **Health:** numerical HP bars; no parallel heart system
-- **Death:** run-ending permadeath
-- **Build categories:** Gear + Artifacts + Contraband
-- **Primary build system:** rule/dice manipulation
-- **Boss philosophy:** authored traditional bosses, not automated build counters
-- **Metaprogression:** horizontal unlocks
-- **Complexity rule:** every major system must strengthen the four-dice decision
+**pixel-first, dark-fun-creepy, highly readable, dice-forward.**
+
+Not grimdark sludge. Not cute chibi. Not Giger imitation. Not generic occult-black-and-gold.
+
+The dice are a signature object and use front-facing single-face gameplay presentation for logical correctness and instant readability.
+
+Production rule:
+
+> **If an asset cannot be isolated, cleaned, exported, animated and used in the browser game, it is concept art—not production art.**
+
+Detailed production rules: `ART_BIBLE.md`, `DICE_DESIGN_BIBLE.md`, `ASSET_PRODUCTION_SPEC.md`.
 
 ---
 
-## 30. Production order
+# 12. Accessibility / fairness
 
-A. Game Design Bible  
-A1. Combat validation  
-B. Content / Research Bible  
-C. Art Bible  
-D. Vertical Slice Content Sheet  
-Then: asset production → implementation → automated testing → playtesting → balance → polish.
+The game is turn-based. No rule requires reaction speed.
+
+Before irreversible COMMIT, deterministic consequences should be understandable from the interface.
+
+Required support includes mouse, touch, keyboard, reduced motion, scalable text, numeric dice labels in addition to pips, color-independent state language, separate music/SFX controls, and faster animation settings.
+
+The interface performs routine arithmetic. The player makes decisions.
 
 ---
 
-## Core design test
+# 13. Metaprogression
 
-Strip away the names, artwork, references, and jokes.
+Baseline metaprogression is horizontal.
+
+Unlocks may add characters, items, enemies, Bosses, Events, modifiers/difficulty, challenge modes and cosmetic dice/material families.
+
+Run 100 should contain more possibilities than run 1, not simply better starting numbers.
+
+---
+
+# 14. Simulation and validation
+
+AARB is designed to be headlessly simulatable because the rules are deterministic and renderer-independent.
+
+Simulation Gate V1 supported three production conclusions:
+
+1. Final-Blow Spoils replaced Best Successful Spoils.
+2. Seal-Bearer required stronger Elite pressure.
+3. First Door OPEN needed a shorter, sharper final state.
+
+Simulation informs tuning; it does not replace human playtesting.
+
+Current results: `simulation/floor1/SIMULATION_GATE_REPORT.md`.
+
+---
+
+# 15. Vertical Slice definition
+
+The first production-quality Floor contains:
+
+- The Delver;
+- 8 normal enemies;
+- 2 Elites;
+- The First Door;
+- 8 Gear;
+- 12 Artifacts;
+- 6 Contraband;
+- 3 Events;
+- Shop;
+- route map;
+- Level / XP;
+- Final-Blow Spoils / Loot Draft;
+- inventory replacement;
+- deterministic seed;
+- death / victory / restart;
+- finished Floor I art/audio/UI at review gate.
+
+The authored current content lives in `VERTICAL_SLICE_CONTENT.md`.
+
+---
+
+# 16. The core test
+
+Strip away the research, art, names and jokes.
 
 Put four dice on the screen.
 
 Ask the player to choose two.
 
-If that decision is not interesting, the rest of the game cannot save it.
+If the choice is not interesting, nothing else can save the game.
+
+If the player reaches the killing roll, sees two beautiful high dice sitting in potential Spoils, and thinks:
+
+> **"Fuck. Can I afford not to use those?"**
+
+then the game is doing what it is supposed to do.
