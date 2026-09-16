@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>As Above, Roll Below — Dice V1 QA</title>
+<style>
+:root { --bg:#11151a; --panel:#191f25; --line:#39444f; --text:#eee8dc; --muted:#9aa8b3; --mag:#eb366a; --cyan:#36c6c2; --gold:#dca439; }
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#1a2630 0,#11151a 48%,#0c0f12 100%);color:var(--text);font-family:ui-monospace,Consolas,monospace;min-height:100vh}main{max-width:980px;margin:auto;padding:22px}h1{font-family:Georgia,serif;font-weight:500;letter-spacing:.05em;margin:0;font-size:clamp(28px,5vw,52px)}.sub{color:var(--muted);margin:4px 0 24px}.panel{border:1px solid var(--line);background:#12171cd9;padding:16px;margin:12px 0;box-shadow:0 12px 40px #0006}.row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}.die-unit{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:86px}.stack{position:relative;width:96px;height:96px;image-rendering:pixelated;cursor:pointer}.sprite{position:absolute;inset:0;background-repeat:no-repeat;image-rendering:pixelated}.value{font-size:12px;color:var(--muted)}.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}button{background:#202932;color:var(--text);border:1px solid #56626d;padding:10px 13px;font:inherit;cursor:pointer}button:hover{border-color:#9aa8b3}button.hot{border-color:var(--mag);color:#ffd7e2}button.gold{border-color:var(--gold);color:#ffe6a9}button.cyan{border-color:var(--cyan);color:#c9ffff}.small .stack{width:48px;height:48px}.big .stack{width:144px;height:144px}.note{color:#b8c2c9;line-height:1.55;font-size:13px}.badge{display:inline-block;border:1px solid var(--line);padding:3px 7px;color:#c8d2d8;margin-right:6px}@media(max-width:620px){main{padding:14px}.stack{width:72px;height:72px}.die-unit{min-width:74px}}
+</style>
+</head>
+<body>
+<main>
+<h1>AS ABOVE, ROLL BELOW</h1><div class="sub">Dice V1 — runtime QA harness • front-facing canonical gameplay view</div>
+<section class="panel"><div><span class="badge">48×48 native</span><span class="badge">nearest-neighbor</span><span class="badge">single-face</span></div><p class="note">This repo version loads the committed V1 atlas. Click a player die, change its state, BUMP it, or FLIP it. No alternate die drawing is used for Fight, Spoils, Focus, Lock, or Disabled states.</p></section>
+<section class="panel"><h2>Player cast</h2><div class="row" id="playerDice"></div><div class="controls"><button onclick="rollPlayers()">ROLL FOUR</button><button class="hot" onclick="setSelectedState('fight')">FIGHT</button><button class="gold" onclick="setSelectedState('spoils')">SPOILS</button><button class="cyan" onclick="setSelectedState('focus')">FOCUS</button><button onclick="bump(1)">BUMP +1</button><button onclick="bump(-1)">BUMP −1</button><button onclick="flipSelected()">FLIP</button><button onclick="setSelectedState('disabled')">DISABLE</button><button onclick="clearStates()">CLEAR STATE</button></div></section>
+<section class="panel"><h2>Enemy cast</h2><div class="row" id="enemyDice"></div><div class="controls"><button onclick="rollEnemies()">ROLL ENEMY</button><button class="cyan" onclick="toggleEnemyLocks()">LOCK / UNLOCK</button></div></section>
+<section class="panel"><h2>Native-size face test</h2><div class="row small" id="faceTest"></div><p class="note">Rendered at the actual 48×48 source resolution.</p></section>
+<section class="panel"><h2>3× integer scale stress test</h2><div class="row big" id="bigTest"></div><p class="note">The enlarged examples use the exact same atlas sprites with nearest-neighbor scaling.</p></section>
+</main>
+<script>
+const ATLAS='../../assets/preproduction/dice/v1_front/dice_v1_atlas.png';const TILE=48;const frames={};for(let i=1;i<=6;i++)frames[`player_${i}`]={col:i-1,row:0};for(let i=1;i<=6;i++)frames[`enemy_${i}`]={col:i-1,row:1};Object.assign(frames,{focus:{col:0,row:2},fight:{col:1,row:2},spoils:{col:2,row:2},enemy_locked:{col:3,row:2},persistent:{col:4,row:2},disabled:{col:5,row:2},bump_up:{col:0,row:3},bump_down:{col:1,row:3},flip_mid:{col:2,row:3},spoils_fx:{col:3,row:3}});const opposites={1:6,2:5,3:4,4:3,5:2,6:1};let selected=0;let players=[1,3,4,6].map((v,i)=>({value:v,state:i===0?'focus':null}));let enemies=[4,2].map(v=>({value:v,locked:true}));
+function spriteStyle(frame,display=96){const f=frames[frame],scale=display/TILE;return `background-image:url('${ATLAS}');background-size:${288*scale}px ${192*scale}px;background-position:${-f.col*TILE*scale}px ${-f.row*TILE*scale}px;width:${display}px;height:${display}px;`;}
+function unitHtml(base,overlay,label,index,kind,display=96){return `<div class="die-unit"><div class="stack" style="width:${display}px;height:${display}px" onclick="${kind==='player'?`selectDie(${index})`:''}"><div class="sprite" style="${spriteStyle(base,display)}"></div>${overlay?`<div class="sprite" style="${spriteStyle(overlay,display)}"></div>`:''}</div><div class="value">${label}</div></div>`;}
+function renderPlayers(){playerDice.innerHTML=players.map((d,i)=>unitHtml(`player_${d.value}`,d.state,`D${i+1} • ${d.value}`,i,'player')).join('');}
+function renderEnemies(){enemyDice.innerHTML=enemies.map((d,i)=>unitHtml(`enemy_${d.value}`,d.locked?'enemy_locked':null,`E${i+1} • ${d.value}`,i,'enemy')).join('');}
+function renderTests(){faceTest.innerHTML=[1,2,3,4,5,6].map((v,i)=>unitHtml(`player_${v}`,null,String(v),i,'x',48)).join('');bigTest.innerHTML=[1,3,5,6].map((v,i)=>unitHtml(`enemy_${v}`,i===2?'enemy_locked':null,String(v),i,'x',144)).join('');}
+function selectDie(i){selected=i;players.forEach(d=>{if(d.state==='focus')d.state=null});if(!players[i].state)players[i].state='focus';renderPlayers();}
+function rollPlayers(){players=players.map(()=>({value:1+Math.floor(Math.random()*6),state:null}));selected=0;players[0].state='focus';renderPlayers();}
+function rollEnemies(){enemies=enemies.map(()=>({value:1+Math.floor(Math.random()*6),locked:true}));renderEnemies();}
+function setSelectedState(s){players[selected].state=s;renderPlayers();}function clearStates(){players.forEach(d=>d.state=null);players[selected].state='focus';renderPlayers();}
+function bump(delta){let d=players[selected];d.value=Math.max(1,Math.min(6,d.value+delta));d.state='focus';renderPlayers();}
+function flipSelected(){let d=players[selected];d.value=opposites[d.value];d.state='focus';renderPlayers();}
+function toggleEnemyLocks(){enemies.forEach(d=>d.locked=!d.locked);renderEnemies();}renderPlayers();renderEnemies();renderTests();
+</script>
+</body></html>
