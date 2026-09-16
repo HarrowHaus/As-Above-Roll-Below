@@ -27,3 +27,4 @@ export * from "./content/floor1-items.js";
 export * from "./content/floor1-item-actions.js";
 export * from "./content/floor1-enemies.js";
 export * from "./content/floor1-events.js";
+export * from "./content/floor1-rewards.js";
