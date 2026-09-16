@@ -13,28 +13,19 @@ export const floor1NormalEnemies: readonly EnemyDefinition[] = [
 
 export const floor1Elites: readonly EnemyDefinition[] = [
   {id:"thresholds:threshold-warden",maxHp:8,dicePool:3,instinct:"STRONGEST",xp:2,coins:4,elite:true,rewardBandUplift:1,tags:["enemy:native","enemy:elite","pressure:p4"],ruleIds:["rule:threshold-warden:fix-highest"]},
-  // Simulation-driven candidate revision: STRONGEST and 8 HP. COUNTERSEAL remains identity.
   {id:"thresholds:seal-bearer",maxHp:8,dicePool:3,instinct:"STRONGEST",xp:2,coins:4,elite:true,rewardBandUplift:1,tags:["enemy:native","enemy:elite","pressure:p4"],ruleIds:["rule:seal-bearer:counterseal"]},
 ];
 
 export const firstDoor: BossDefinition = {
-  id:"thresholds:first-door",
-  maxHp:18,
-  xp:3,
-  coins:6,
-  clearHeal:2,
-  tags:["boss","enemy:native","floor:thresholds"],
+  id:"thresholds:first-door",maxHp:18,xp:3,coins:6,clearHeal:2,tags:["boss","enemy:native","floor:thresholds"],
   phases:[
     {id:"closed",minHp:13,maxHp:18,dicePool:3,instinct:"TIGHT",ruleIds:["rule:first-door:sealed"]},
     {id:"ajar",minHp:4,maxHp:12,dicePool:3,instinct:"STRONGEST",ruleIds:["boss:first-door:ajar-draft"]},
-    // Simulation-driven candidate revision: a short, dangerous finish instead of a long 4d6 grind.
     {id:"open",minHp:1,maxHp:3,dicePool:4,instinct:"STRONGEST",ruleIds:["rule:first-door:both-ways"]},
   ],
 };
 
-export const floor1EnemyRegistry: Readonly<Record<string,EnemyDefinition>> = Object.fromEntries(
-  [...floor1NormalEnemies,...floor1Elites].map((enemy)=>[enemy.id,enemy]),
-);
+export const floor1EnemyRegistry: Readonly<Record<string,EnemyDefinition>> = Object.fromEntries([...floor1NormalEnemies,...floor1Elites].map((enemy)=>[enemy.id,enemy]));
 
 export function bossPhaseAtHp(boss: BossDefinition, hp: number): BossPhaseDefinition {
   if (hp <= 0 || hp > boss.maxHp) throw new Error(`Invalid boss HP ${hp} for ${boss.id}`);
@@ -46,13 +37,8 @@ export function bossPhaseAtHp(boss: BossDefinition, hp: number): BossPhaseDefini
 export function bossPhaseAsEnemy(boss: BossDefinition, hp: number): EnemyDefinition {
   const phase=bossPhaseAtHp(boss,hp);
   return {
-    id:boss.id,
-    maxHp:boss.maxHp,
-    dicePool:phase.dicePool,
-    instinct:phase.instinct,
-    xp:boss.xp,
-    coins:boss.coins,
-    tags:boss.tags,
-    ruleIds:phase.ruleIds,
+    id:boss.id,maxHp:boss.maxHp,dicePool:phase.dicePool,instinct:phase.instinct,xp:boss.xp,coins:boss.coins,
+    ...(boss.tags ? {tags:boss.tags} : {}),
+    ...(phase.ruleIds ? {ruleIds:phase.ruleIds} : {}),
   };
 }
