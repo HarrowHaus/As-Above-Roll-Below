@@ -4,7 +4,7 @@ const items: ItemDefinition[] = [
   {id:"bent-knife",displayName:"Bent Knife",category:"GEAR",gearSlot:"WEAPON",tier:1,basePrice:5,unique:true,effectSourceIds:["gear:bent-knife"]},
   {id:"twin-nails",displayName:"Twin Nails",category:"GEAR",gearSlot:"WEAPON",tier:1,basePrice:6,unique:true,effectSourceIds:["gear:twin-nails"]},
   {id:"breaching-bar",displayName:"Breaching Bar",category:"GEAR",gearSlot:"WEAPON",tier:2,basePrice:9,unique:true,effectSourceIds:["gear:breaching-bar"]},
-  {id:"work-apron",displayName:"Work Apron",category:"GEAR",gearSlot:"ARMOR",tier:1,basePrice:5,unique:true},
+  {id:"work-apron",displayName:"Work Apron",category:"GEAR",gearSlot:"ARMOR",tier:1,basePrice:5,unique:true,effectSourceIds:["gear:work-apron"]},
   {id:"proof-vest",displayName:"Proof Vest",category:"GEAR",gearSlot:"ARMOR",tier:2,basePrice:9,unique:true,effectSourceIds:["gear:proof-vest"]},
   {id:"inside-out-lining",displayName:"Inside-Out Lining",category:"GEAR",gearSlot:"ARMOR",tier:2,basePrice:8,unique:true},
   {id:"brass-buckle",displayName:"Brass Buckle",category:"GEAR",gearSlot:"UTILITY",tier:1,basePrice:5,unique:true},
