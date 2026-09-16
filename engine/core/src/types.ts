@@ -102,6 +102,7 @@ export type CombatEvent =
   | { readonly type: "player_cast"; readonly dice: readonly DieState[] }
   | { readonly type: "player_commit"; readonly preview: CombatPreview }
   | { readonly type: "damage"; readonly target: "player" | "enemy"; readonly amount: number }
+  | { readonly type: "healing"; readonly target: "player" | "enemy"; readonly amount: number }
   | { readonly type: "tie" }
   | { readonly type: "spoils_qualified"; readonly values: readonly [DieValue, DieValue]; readonly score: number }
   | { readonly type: "round_end"; readonly round: number }
