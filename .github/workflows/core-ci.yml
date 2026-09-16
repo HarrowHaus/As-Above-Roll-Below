@@ -54,7 +54,15 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Build Phaser client
         working-directory: engine/client
-        run: npm run build
+        shell: bash
+        run: set -o pipefail; npm run build 2>&1 | tee client-build.log
+      - name: Upload client build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-build-log-${{ github.sha }}
+          path: engine/client/client-build.log
+          if-no-files-found: warn
       - name: Upload browser build
         uses: actions/upload-artifact@v4
         with:
