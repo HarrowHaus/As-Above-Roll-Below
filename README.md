@@ -1,6 +1,6 @@
 # As Above, Roll Below
 
-**As Above, Roll Below** is a solo browser dice roguelite in formal preproduction.
+**As Above, Roll Below** is a solo browser dice roguelite built around a deterministic shared-core engine and procedural Floor content packages.
 
 ## Core interaction
 
@@ -11,58 +11,105 @@
 5. Remaining **2 dice are potential Spoils**.
 6. Compare totals.
 7. **Damage equals the winning margin.**
+8. **Final-Blow Spoils** determines encounter reward quality.
 
 The same good die that keeps you alive is also the die you want to leave behind for better loot.
 
 ---
 
-## Current production status
+# Current production status
 
-The project has moved past mechanics-toy iteration into formal preproduction and engine-definition work.
+The project has moved through systems preproduction, deterministic engine construction, shared-core simulation, and into a **playable Phaser Floor I run shell**.
 
-### Combat
-Validated enough to treat contested rolls + margin damage as working canon.
+## Shared production core
 
-### Run systems
-Leveling, XP, Loot Drafts, Gear/Artifacts/Contraband, Coins, Shop, Elite/Boss rewards, route generation, item duplication rules, meta progression, timing windows, effect architecture, balance metrics, and UI information rules have implementation-facing specifications.
+`engine/core/` is the authoritative TypeScript rules engine used by both browser play and headless simulation.
 
-### Engine / procedural generation
-`docs/ENGINE_VISION_AND_PROCGEN.md` defines the AARB engine direction:
+It currently owns:
 
-- one deterministic TypeScript core shared by browser play and headless simulation;
-- N-Floor support rather than a hard-coded four-Floor engine;
+- seeded named RNG streams;
+- dice and physical d6 transformations;
+- contested combat and persistent HP;
+- effect timing/resolution;
+- enemy Instincts;
+- player-cast constraints;
+- manipulation reactions;
+- active item actions;
+- Gear / Artifact / Contraband inventory;
+- XP / Levels / Technique gates;
+- Coins and healing economy;
+- Loot Draft generation;
+- Boss Draft generation;
+- Shop stock;
+- Events;
+- Encounter Director selection;
 - constrained procedural Floor graphs;
-- independent RNG streams;
-- encounter, reward, event, Shop and environment generation;
-- data-driven content/effects;
-- seeded saves/replays/regression runs;
-- Phaser as the current preferred browser presentation shell, not the owner of gameplay rules.
+- generic N-Floor RunState and route legality.
 
-The current Python/HTML simulators remain reference implementations until the production core reproduces their approved behavior.
+There is no separate browser-game combat implementation. The client consumes this core.
 
-### Floor I content
-`docs/VERTICAL_SLICE_CONTENT.md` contains the first full authored content pass for **Floor I — THRESHOLDS**:
+## Headless simulation
 
-- The Delver + Techniques
-- 8 normal enemies
-- 2 Elites
-- The First Door boss
-- 8 Gear
-- 12 Artifacts
-- 6 Contraband
-- 3 Events
-- Shop rules
-- Boss Draft
-- map/content constraints
-- simulation questions
+`engine/sim/` imports the compiled production core rather than reimplementing the rules.
 
-This content is ready for production-core encoding and continued validation, not yet declared balanced/final.
+CI runs a **3,000-Floor regression** on every relevant engine change: 1,000 seeds each for Safe, Opportunist, and diagnostic Greedy policies.
 
-### World / research
-The Below premise, provenance rules, humor/tone, original ecology, terminology, research candidate pool, and verified-reference workflow are established.
+The full-item E6 gate preserved the intended reward/risk shape. Opportunist raw Final-Blow Band IV landed at approximately **11.9%**, inside the provisional 5–15% target, while Greedy achieved more premium loot at materially higher damage and much lower clear rate.
 
-### Art
-Pixel-first, dark-fun-creepy direction is active. Front-facing gameplay dice are canonical and the asset-production pipeline requires actual game-ready outputs rather than presentation art.
+Architecture and Final-Blow Spoils are stable enough to build against. Exact human-facing balance remains provisional until playtesting.
+
+## Phaser browser client
+
+`engine/client/` is a Phaser 4 / Vite / TypeScript presentation layer over the same core.
+
+The current playable Floor I shell contains:
+
+- procedural Map;
+- Combat / Elite / Boss rooms;
+- Events;
+- seeded Shop;
+- Loot Draft;
+- inventory replacement + salvage;
+- XP / Levels;
+- Level 3 Technique choice;
+- Boss Draft;
+- run victory/death;
+- active Artifact controls;
+- combat Contraband;
+- Emergency Key outside combat;
+- Ash Ledger;
+- Small Change Purse;
+- Receipt From Nowhere;
+- Brass Caliper;
+- Stuck Key carry-forward choice;
+- Talking Board encounter reveal;
+- production front-facing Dice V1 atlas.
+
+See `docs/E7_CLIENT_STATUS.md` for the exact implementation boundary.
+
+## Floor I content
+
+`docs/VERTICAL_SLICE_CONTENT.md` contains the authored first content package, **Floor I — THRESHOLDS**:
+
+- The Delver + Techniques;
+- 8 normal enemies;
+- 2 Elites;
+- The First Door boss;
+- 8 Gear;
+- 12 Artifacts;
+- 6 Contraband;
+- 3 Events;
+- Shop;
+- Boss Draft;
+- procedural map/content constraints.
+
+The content is encoded far enough to run through the shared engine. Numbers remain playtest-tunable.
+
+## Art
+
+Pixel-first, dark-fun-creepy direction is active. Front-facing gameplay dice are canonical and already integrated.
+
+Character sprites, enemy sprites, modular Floor I environments, final UI frames, animation, VFX, SFX and music are still intentionally behind placeholder presentation. The existing vector combatants are not a new art direction; they are systems-playtest stand-ins.
 
 ---
 
@@ -71,24 +118,25 @@ Pixel-first, dark-fun-creepy direction is active. Front-facing gameplay dice are
 Read approximately in this order.
 
 ## Foundation
-- `docs/DECISION_LEDGER.md` — what is LOCKED / PROVISIONAL / DEFERRED / REJECTED.
-- `docs/GAME_DESIGN_BIBLE.md` — overall design pillars and game promise.
+- `docs/DECISION_LEDGER.md` — LOCKED / PROVISIONAL / DEFERRED / REJECTED decisions.
+- `docs/GAME_DESIGN_BIBLE.md` — overall design pillars and promise.
 - `docs/MASTER_SYSTEMS_SPEC.md` — authoritative baseline rules contract.
 - `docs/COMBAT_MODEL.md` — contested-roll math and combat validation.
 
 ## Engine / systems
-- `docs/ENGINE_VISION_AND_PROCGEN.md` — what the AARB engine owns, N-Floor procedural architecture, shared simulation/game core, renderer boundary.
-- `docs/REFERENCE_GAME_RESEARCH.md` — comparative research across relevant roguelikes/dice/loot games.
-- `docs/SYSTEMS_ARCHITECTURE.md` — leveling, Spoils, inventory, Shop and reward architecture.
-- `docs/LOOT_AND_ECONOMY_SPEC.md` — exact Loot Draft generation, tier weights, shop prices, salvage and Elite/Boss reward rules.
-- `docs/RUN_STRUCTURE_AND_GENERATION_SPEC.md` — Floor graph, route constraints, seeded generation, Events/Shops/Elites.
-- `docs/BALANCE_AND_TELEMETRY_SPEC.md` — numerical targets, simulation policies and metrics.
+- `docs/ENGINE_VISION_AND_PROCGEN.md` — AARB engine ownership, N-Floor procedural architecture and renderer boundary.
+- `docs/REFERENCE_GAME_RESEARCH.md` — comparative systems research.
+- `docs/SYSTEMS_ARCHITECTURE.md` — Leveling, Spoils, inventory, Shop and reward architecture.
+- `docs/LOOT_AND_ECONOMY_SPEC.md` — Loot Draft, tier weights, Shop, salvage, Elite/Boss rewards.
+- `docs/RUN_STRUCTURE_AND_GENERATION_SPEC.md` — Floor graph and route constraints.
+- `docs/BALANCE_AND_TELEMETRY_SPEC.md` — simulation targets and policy metrics.
 - `docs/UI_UX_FLOW_SPEC.md` — screen/state flow and information contract.
-- `docs/IMPLEMENTATION_ARCHITECTURE.md` — deterministic simulation modules, effect engine, schemas and tests.
-- `docs/CONTENT_SCOPE_AND_AUTHORING_SPEC.md` — vertical-slice/full-game content targets and authoring order.
+- `docs/IMPLEMENTATION_ARCHITECTURE.md` — deterministic modules, effect engine and schemas.
+- `docs/CONTENT_SCOPE_AND_AUTHORING_SPEC.md` — vertical-slice/full-game content scope.
+- `docs/E7_CLIENT_STATUS.md` — current playable implementation boundary and next gate.
 
 ## Floor I authoring
-- `docs/VERTICAL_SLICE_CONTENT.md` — authored Floor I rules/content pass ready for shared-core encoding and simulation.
+- `docs/VERTICAL_SLICE_CONTENT.md`
 
 ## World / content research
 - `docs/CONTENT_RESEARCH_BIBLE.md`
@@ -117,22 +165,35 @@ Read approximately in this order.
 
 > **If an art asset cannot be isolated, cleaned, exported and used in the browser game, it is concept art—not production art.**
 
-> **The simulator and the shipping game must use the same deterministic rules core.**
+> **The simulator and the shipping game use the same deterministic rules core.**
 
 ---
 
-# Next production sequence
+# Production sequence
 
-1. Create the production TypeScript core package skeleton: deterministic RNG, content schemas/validation, IDs/tags/enums and tests.
-2. Port Dice + Combat + Effect resolution into that core.
-3. Encode Floor I content as validated data rather than special-case branches.
-4. Implement run systems: inventory, Loot Drafts, XP/Levels, Coins, Shops and Events.
-5. Implement the generic N-Floor procedural Run/Floor generator and validation constraints.
-6. Recreate Safe / Balanced / Opportunist simulation policies against the production core.
-7. Run thousands of seeded Floors and freeze regression seeds.
-8. Tune Floor I numbers without changing the core architecture casually.
-9. Produce only the runtime art/audio required by approved content.
-10. Build the Phaser client shell as a presentation layer over the shared core.
-11. Human playtest → balance → polish.
+Completed foundation:
 
-The next implementation is **not another exploratory toy**. It is the first production form of the AARB engine.
+- [x] production TypeScript core;
+- [x] deterministic RNG / dice / combat;
+- [x] data-driven effect resolver;
+- [x] inventory / Loot / XP / economy / Shops / Events;
+- [x] generic N-Floor procedural Run/Floor generation;
+- [x] Floor I content encoding;
+- [x] shared-core headless simulator;
+- [x] thousands of seeded regression Floors;
+- [x] Phaser 4 browser client shell;
+- [x] playable Floor I systems loop;
+- [x] active Floor I item interactions and Boss Draft flow.
+
+Next gate:
+
+1. human-playtest the real Floor I shell;
+2. log UX friction, degenerate choices and actual difficulty failures;
+3. change rules only where evidence requires it;
+4. produce the minimal production Floor I character/enemy/environment/UI asset pack;
+5. replace placeholder presentation;
+6. add animation, VFX, audio and game-feel feedback;
+7. repeat human playtest + telemetry;
+8. then author additional Floor packages on top of the same engine.
+
+The project is no longer an exploratory mechanics toy. The current code is the production form of the AARB engine and its first playable content package.
