@@ -1,0 +1,9 @@
+{
+  "runs_per_policy": 5000,
+  "spoils_mode": "final",
+  "summary": {
+    "safe": {"runs":5000,"clear_rate":0.9838,"mean_final_hp":20.2924,"mean_rounds":16.5826,"mean_hp_loss":5.3616,"mean_coins":15.9236,"mean_level":2.9146,"mean_xp":6.8636,"mean_elites":0,"loot_band_frequency":{"1":0.3857164766627473,"2":0.4644956801799499,"3":0.14099483666479218,"4":0.008793006492510608}},
+    "balanced": {"runs":5000,"clear_rate":0.8996,"mean_final_hp":14.2688,"mean_rounds":28.0736,"mean_hp_loss":11.6214,"mean_coins":17.569,"mean_level":2.848,"mean_xp":8.1288,"mean_elites":1.5894,"loot_band_frequency":{"1":0.2425326695706285,"2":0.3438601949802945,"3":0.26586807716241445,"4":0.1477390582866625}},
+    "greedy": {"runs":5000,"clear_rate":0.5914,"mean_final_hp":7.8244,"mean_rounds":35.8762,"mean_hp_loss":16.507,"mean_coins":16.3896,"mean_level":2.5364,"mean_xp":7.247,"mean_elites":1.723,"loot_band_frequency":{"1":0.216173858530979,"2":0.3608818305297252,"3":0.2718629192351896,"4":0.15108139170410614}}
+  }
+}
