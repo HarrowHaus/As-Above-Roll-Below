@@ -75,7 +75,7 @@ export function commit(state: CombatState,fightDieIds: readonly [DieId,DieId]): 
   else if(preview.predictedMargin<0){const damage=preview.predictedPlayerDamage;playerHp=Math.max(0,playerHp-damage);events.push({type:"damage",target:"player",amount:damage});}
   else events.push({type:"tie"});
   let phase:CombatState["phase"]="ROUND_END";
-  if(enemyHp===0){phase="ENCOUNTER_VICTORY";events.push({type:"victory"});}else if(playerHp===0){phase="ENCOUNTER_DEFEAT";events.push({type:"defeat"});}else events.push({type:"round_end",round:state.round});
+  if(playerHp===0){phase="ENCOUNTER_DEFEAT";events.push({type:"defeat"});}else if(enemyHp===0){phase="ENCOUNTER_VICTORY";events.push({type:"victory"});}else events.push({type:"round_end",round:state.round});
   return {preview,events,state:{...state,player:{...state.player,hp:playerHp},enemy:{...state.enemy,hp:enemyHp},committedDieIds:fightDieIds,phase}};
 }
 
@@ -112,8 +112,8 @@ export function commitWithEffects(state:CombatState,fightDieIds:readonly[DieId,D
   if(preview.margin>0) events.push({type:"spoils_qualified",values:base.spoilsValues,score:preview.finalSpoilsScore});
 
   let phase:CombatState["phase"]="ROUND_END";
-  if(enemyHp===0){phase="ENCOUNTER_VICTORY";events.push({type:"victory"});}
-  else if(playerHp===0){phase="ENCOUNTER_DEFEAT";events.push({type:"defeat"});}
+  if(playerHp===0){phase="ENCOUNTER_DEFEAT";events.push({type:"defeat"});}
+  else if(enemyHp===0){phase="ENCOUNTER_VICTORY";events.push({type:"victory"});}
   else events.push({type:"round_end",round:state.round});
 
   return {preview,effectState:resolved.effectState,events,state:{...state,player:{...state.player,hp:playerHp},enemy:{...state.enemy,hp:enemyHp},committedDieIds:fightDieIds,phase}};
