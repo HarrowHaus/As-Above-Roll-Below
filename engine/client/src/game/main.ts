@@ -1,4 +1,4 @@
-import { AUTO, Game, Scale } from "phaser";
+import { AUTO, CANVAS, Game, Scale } from "phaser";
 import { MapScene } from "./scenes/MapScene.js";
 import { CombatScene } from "./scenes/CombatScene.js";
 import { LootScene } from "./scenes/LootScene.js";
@@ -6,8 +6,12 @@ import { ShopScene } from "./scenes/ShopScene.js";
 import { EventScene } from "./scenes/EventScene.js";
 import { TechniqueScene } from "./scenes/TechniqueScene.js";
 
+const localDocument = ["file:", "content:"].includes(window.location.protocol);
+
 const config: Phaser.Types.Core.GameConfig = {
-  type: AUTO,
+  // Android local-file/content:// WebGL can render sprite textures as black quads.
+  // Hosted HTTPS builds keep AUTO/WebGL; local fallback uses Canvas for reliable testing.
+  type: localDocument ? CANVAS : AUTO,
   width: 1280,
   height: 720,
   parent: "game-container",
