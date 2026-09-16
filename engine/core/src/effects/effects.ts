@@ -1,6 +1,6 @@
 import type { DieValue } from "../types.js";
 
-export type EffectTiming = "FIGHT_MODIFICATION" | "DAMAGE_MODIFICATION" | "SPOILS_MODIFICATION";
+export type EffectTiming = "FIGHT_MODIFICATION" | "TIE_RESOLUTION" | "DAMAGE_MODIFICATION" | "SPOILS_MODIFICATION";
 export type CombatOutcome = "win" | "loss" | "tie";
 
 export type EffectCondition =
@@ -20,7 +20,10 @@ export type EffectAction =
   | { readonly type: "add_fight"; readonly value: number }
   | { readonly type: "add_enemy_fight"; readonly value: number }
   | { readonly type: "add_damage_to_enemy"; readonly value: number }
+  | { readonly type: "add_damage_to_player"; readonly value: number }
   | { readonly type: "reduce_player_damage"; readonly value: number }
+  | { readonly type: "heal_player"; readonly value: number }
+  | { readonly type: "heal_enemy"; readonly value: number }
   | { readonly type: "add_spoils_score"; readonly value: number; readonly cap?: number };
 
 export interface EffectDefinition {
@@ -33,9 +36,7 @@ export interface EffectDefinition {
   readonly maxUsesPerEncounter?: number;
 }
 
-export interface EffectState {
-  readonly uses: Readonly<Record<string, number>>;
-}
+export interface EffectState { readonly uses: Readonly<Record<string, number>>; }
 
 export interface CombatEffectContext {
   readonly fightValues: readonly [DieValue, DieValue];
@@ -47,25 +48,16 @@ export interface CombatEffectContext {
   readonly outcome: CombatOutcome;
   readonly damageToEnemy: number;
   readonly damageToPlayer: number;
+  readonly healingToEnemy: number;
+  readonly healingToPlayer: number;
   readonly baseSpoilsScore: number;
   readonly finalSpoilsScore: number;
 }
 
-export interface EffectLogEntry {
-  readonly effectId: string;
-  readonly sourceId: string;
-  readonly timing: EffectTiming;
-  readonly actions: readonly EffectAction[];
-}
-
-export interface EffectResolution {
-  readonly context: CombatEffectContext;
-  readonly effectState: EffectState;
-  readonly log: readonly EffectLogEntry[];
-}
+export interface EffectLogEntry { readonly effectId: string; readonly sourceId: string; readonly timing: EffectTiming; readonly actions: readonly EffectAction[]; }
+export interface EffectResolution { readonly context: CombatEffectContext; readonly effectState: EffectState; readonly log: readonly EffectLogEntry[]; }
 
 const opposite: Record<DieValue, DieValue> = {1:6,2:5,3:4,4:3,5:2,6:1};
-
 export function createEffectState(): EffectState { return { uses: {} }; }
 
 function conditionMatches(condition: EffectCondition, context: CombatEffectContext): boolean {
@@ -81,10 +73,7 @@ function conditionMatches(condition: EffectCondition, context: CombatEffectConte
     case "spoils_opposites": return opposite[context.spoilsValues[0]] === context.spoilsValues[1];
     case "margin_exact": return context.margin === condition.value;
     case "outcome": return context.outcome === condition.value;
-    default: {
-      const exhaustive: never = condition;
-      throw new Error(`Unhandled effect condition ${String(exhaustive)}`);
-    }
+    default: { const exhaustive: never = condition; throw new Error(`Unhandled effect condition ${String(exhaustive)}`); }
   }
 }
 
@@ -93,15 +82,15 @@ function applyAction(context: CombatEffectContext, action: EffectAction): Combat
     case "add_fight": return { ...context, finalFight: context.finalFight + action.value };
     case "add_enemy_fight": return { ...context, enemyFight: context.enemyFight + action.value };
     case "add_damage_to_enemy": return { ...context, damageToEnemy: context.damageToEnemy + action.value };
+    case "add_damage_to_player": return { ...context, damageToPlayer: context.damageToPlayer + action.value };
     case "reduce_player_damage": return { ...context, damageToPlayer: Math.max(0, context.damageToPlayer - action.value) };
+    case "heal_player": return { ...context, healingToPlayer: context.healingToPlayer + action.value };
+    case "heal_enemy": return { ...context, healingToEnemy: context.healingToEnemy + action.value };
     case "add_spoils_score": {
       const value = context.finalSpoilsScore + action.value;
       return { ...context, finalSpoilsScore: action.cap === undefined ? value : Math.min(action.cap, value) };
     }
-    default: {
-      const exhaustive: never = action;
-      throw new Error(`Unhandled effect action ${String(exhaustive)}`);
-    }
+    default: { const exhaustive: never = action; throw new Error(`Unhandled effect action ${String(exhaustive)}`); }
   }
 }
 
@@ -133,6 +122,10 @@ export function resolveCombatEffects(base: CombatEffectContext,effects: readonly
   const log: EffectLogEntry[] = [];
   let step = resolveTiming(context,effects,"FIGHT_MODIFICATION",effectState,consumeUses);
   context = withDerivedCombat(step.context); effectState = step.effectState; log.push(...step.log);
+  if (context.outcome === "tie") {
+    step = resolveTiming(context,effects,"TIE_RESOLUTION",effectState,consumeUses);
+    context = step.context; effectState = step.effectState; log.push(...step.log);
+  }
   step = resolveTiming(context,effects,"DAMAGE_MODIFICATION",effectState,consumeUses);
   context = step.context; effectState = step.effectState; log.push(...step.log);
   if (context.outcome === "win") {
