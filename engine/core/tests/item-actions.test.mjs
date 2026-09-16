@@ -34,6 +34,7 @@ test("outside-combat healing and carried dice are core primitives",()=>{
   const carried=injectCarriedDie(state(),6);
   assert.equal(carried.playerRoll[0].value,6);
   assert.equal(carried.playerRoll[0].locked,true);
+  assert.throws(()=>applyCombatItemAction(carried,{type:"SET_PLAYER_DIE",value:4},{targetDieId:"a"}),/LOCKED/);
 });
 
 test("Brass Caliper exposes legal one-step Spoils options",()=>{
