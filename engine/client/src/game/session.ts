@@ -1,6 +1,7 @@
 import {
   RngService,
   addCoins,
+  applyOutsideCombatItemAction,
   applyTakeItem,
   availableRunNodes,
   bossPhaseAsEnemy,
@@ -11,10 +12,12 @@ import {
   defeatRun,
   enterRunNode,
   firstDoor,
+  firstShopPurchasePrice,
   floor1BossDraftItemIds,
   floor1EffectRegistry,
   floor1Elites,
   floor1Events,
+  floor1ItemActionRegistry,
   floor1ItemRegistry,
   floor1NormalEnemies,
   generateBossDraft,
@@ -27,6 +30,7 @@ import {
   resolveTechniqueChoice,
   selectEncounter,
   selectEvent,
+  skippedDraftCoinAward,
   spendCoins,
   thresholdsFloor,
   withEncounterHistory,
@@ -56,6 +60,8 @@ class ClientRunSession {
   private shopSold=new Set<string>();
   private preparedEncounters=new Map<string,EnemyDefinition>();
   private revealNextRequested=false;
+  private purseBonusUsed=false;
+  private receiptDiscountUsed=false;
 
   currentEnemy:EnemyDefinition|null=null;
   currentEvent:EventDefinition|null=null;
@@ -71,6 +77,7 @@ class ClientRunSession {
   get pendingTechniqueLevel():number|null{return this.run.progression.pendingTechniqueLevels[0]??null;}
   get lootCanSkip():boolean{return this.pendingLootKind!=="BOSS";}
   get technique():TechniqueId|null{return this.techniques[0]??null;}
+  get hasEmergencyKey():boolean{return this.run.inventory.contraband.includes("emergency-key");}
 
   stream(name:string):RngStream{return this.rng.stream(name);}
   hasTechnique(id:TechniqueId):boolean{return this.techniques.includes(id);}
@@ -79,7 +86,7 @@ class ClientRunSession {
 
   reset(newSeed=this.seed+1):void {
     this.seed=newSeed;this.rng=new RngService(this.seed);this.run=createRunState(this.seed,[thresholdsFloor],{startingGear:{ARMOR:"work-apron"}});
-    this.currentEnemy=null;this.currentEvent=null;this.currentShop=null;this.pendingLoot=null;this.pendingLootKind=null;this.pendingEventOffers=[];this.techniques=[];this.shopSold.clear();this.preparedEncounters.clear();this.revealNextRequested=false;
+    this.currentEnemy=null;this.currentEvent=null;this.currentShop=null;this.pendingLoot=null;this.pendingLootKind=null;this.pendingEventOffers=[];this.techniques=[];this.shopSold.clear();this.preparedEncounters.clear();this.revealNextRequested=false;this.purseBonusUsed=false;this.receiptDiscountUsed=false;
   }
 
   enterNode(nodeId:string):FloorNode {
@@ -104,6 +111,15 @@ class ClientRunSession {
   consumeContrabandItem(itemId:string):void {this.run=withRunResources(this.run,{inventory:consumeContraband(this.run.inventory,itemId)});}
   grantCoins(amount:number):void {this.run=withRunResources(this.run,{economy:addCoins(this.run.economy,amount)});}
 
+  useEmergencyKey():void {
+    if(!this.hasEmergencyKey)throw new Error("No Emergency Key carried");
+    if(this.run.progression.hp>=this.run.progression.maxHp)throw new Error("Already at full HP");
+    const action=floor1ItemActionRegistry["emergency-key"]?.outsideCombat;if(!action)throw new Error("Emergency Key action is missing");
+    const progression=applyOutsideCombatItemAction(this.run.progression,action);
+    const inventory=consumeContraband(this.run.inventory,"emergency-key");
+    this.run=withRunResources(this.run,{progression,inventory});
+  }
+
   finishCombatVictory(playerHp:number,finalSpoils:number|null):"LOOT"|"MAP"|"VICTORY" {
     if(!this.currentEnemy)throw new Error("Cannot finish combat without an enemy");let progression={...this.run.progression,hp:playerHp};const economy=addCoins(this.run.economy,this.currentEnemy.coins);progression=grantXp(progression,this.currentEnemy.xp).state;this.run=withRunResources(this.run,{progression,economy});
     if(this.run.phase==="BOSS"){this.run=withRunResources(this.run,{progression:heal(this.run.progression,firstDoor.clearHeal)});this.pendingLoot=generateBossDraft(floor1BossDraftItemIds,floor1ItemRegistry,this.run.inventory,this.rng.stream("boss:reward"));this.pendingLootKind="BOSS";return "LOOT";}
@@ -112,11 +128,21 @@ class ClientRunSession {
   finishCombatDefeat(playerHp:number):void {this.run=withRunResources(this.run,{progression:{...this.run.progression,hp:playerHp}});this.run=defeatRun(this.run);}
   planLootItem(itemId:string):InventoryTakePlan {const item=floor1ItemRegistry[itemId];if(!item)throw new Error(`Unknown item ${itemId}`);return planTakeItem(this.run.inventory,item);}
   takeLootOffer(offer:LootOffer,replacementItemId?:string):void {if(offer.type==="COINS")this.run=withRunResources(this.run,{economy:addCoins(this.run.economy,offer.amount)});else this.takeItem(offer.itemId,replacementItemId);this.pendingLoot=null;this.pendingLootKind=null;this.run=completeRunNode(this.run);}
-  skipLoot():void {if(!this.lootCanSkip)throw new Error("Boss Draft cannot be skipped");this.run=withRunResources(this.run,{economy:addCoins(this.run.economy,2)});this.pendingLoot=null;this.pendingLootKind=null;this.run=completeRunNode(this.run);}
+  skipLoot():void {
+    if(!this.lootCanSkip)throw new Error("Boss Draft cannot be skipped");
+    const award=skippedDraftCoinAward(this.run.inventory.gear.UTILITY==="small-change-purse",this.purseBonusUsed);this.purseBonusUsed=award.bonusUsed;
+    this.run=withRunResources(this.run,{economy:addCoins(this.run.economy,award.coins)});this.pendingLoot=null;this.pendingLootKind=null;this.run=completeRunNode(this.run);
+  }
   chooseTechnique(id:TechniqueId):void {const level=this.pendingTechniqueLevel;if(level===null)throw new Error("No pending Technique choice");const allowed=level===3?["steady-hand","long-odds"]:level===5?["clean-exit","overrule"]:[];if(!allowed.includes(id))throw new Error(`${id} is not available at Level ${level}`);this.techniques.push(id);this.run=withRunResources(this.run,{progression:resolveTechniqueChoice(this.run.progression,level)});}
 
   private takeItem(itemId:string,replacementItemId?:string):void {const item=floor1ItemRegistry[itemId];if(!item)throw new Error(`Unknown item ${itemId}`);const result=applyTakeItem(this.run.inventory,item,floor1ItemRegistry,replacementItemId);const economy=result.salvageCoins>0?addCoins(this.run.economy,result.salvageCoins):this.run.economy;this.run=withRunResources(this.run,{inventory:result.inventory,economy});}
-  buyShopItem(offer:ShopItemOffer,replacementItemId?:string):void {if(this.shopSold.has(offer.itemId))throw new Error(`${offer.itemId} is already sold`);if(this.run.economy.coins<offer.price)throw new Error("Insufficient Coins");this.run=withRunResources(this.run,{economy:spendCoins(this.run.economy,offer.price)});this.takeItem(offer.itemId,replacementItemId);this.shopSold.add(offer.itemId);}
+
+  shopPrice(offer:ShopItemOffer):number {return firstShopPurchasePrice(offer.price,this.run.inventory.artifacts.includes("receipt-from-nowhere"),this.receiptDiscountUsed).price;}
+  buyShopItem(offer:ShopItemOffer,replacementItemId?:string):void {
+    if(this.shopSold.has(offer.itemId))throw new Error(`${offer.itemId} is already sold`);
+    const priced=firstShopPurchasePrice(offer.price,this.run.inventory.artifacts.includes("receipt-from-nowhere"),this.receiptDiscountUsed);if(this.run.economy.coins<priced.price)throw new Error("Insufficient Coins");
+    this.run=withRunResources(this.run,{economy:spendCoins(this.run.economy,priced.price)});this.takeItem(offer.itemId,replacementItemId);this.receiptDiscountUsed=priced.discountUsed;this.shopSold.add(offer.itemId);
+  }
   buyShopHealing():void {const result=buyHealing(this.run.economy,this.run.progression);this.run=withRunResources(this.run,result);}
   leaveShop():void {this.currentShop=null;this.shopSold.clear();this.run=completeRunNode(this.run);}
 
