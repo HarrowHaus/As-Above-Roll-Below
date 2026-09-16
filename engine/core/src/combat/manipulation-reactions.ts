@@ -1,4 +1,4 @@
-import type { CombatState } from "../types.js";
+import type { CombatState, DieValue } from "../types.js";
 import type { EffectDefinition } from "../effects/effects.js";
 import { bump } from "../dice/dice.js";
 
@@ -70,8 +70,8 @@ export function reactToPlayerManipulation(
         persistentEffects.push(effect);
       }else if(action.type==="BUMP_LOWEST_ENEMY_LOCKED"){
         if(nextCombat.enemyLocked.length!==2)throw new Error("Manipulation reaction requires two locked enemy dice");
-        const locked=[...nextCombat.enemyLocked];
-        const low=Math.min(...locked);const index=locked.indexOf(low);
+        const locked=[...nextCombat.enemyLocked] as [DieValue,DieValue];
+        const index=locked[0]<=locked[1]?0:1;
         locked[index]=bump(locked[index],action.delta);
         nextCombat={...nextCombat,enemyLocked:locked};
       }
