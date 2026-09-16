@@ -3,6 +3,7 @@ import {
   floor1NormalEnemies, floor1Elites, firstDoor, bossPhaseAsEnemy, bossPhaseAtHp, floor1Events,
   createCombatFromPlayerState, startRound, updatePlayerDie, withFixed, withValue,
   bump, flip, previewCommitWithEffects, commitWithEffects, createEffectState,
+  createManipulationReactionState, reactToPlayerManipulation, floor1ManipulationReactionRegistry,
   floor1EffectRegistry, floor1ItemRegistry, createInventory, ownedItemIds,
   planTakeItem, applyTakeItem, createProgression, grantXp, resolveTechniqueChoice,
   createEconomy, addCoins, spendCoins, buyHealing,
@@ -33,6 +34,7 @@ function activePassiveEffects(run,enemy){
   for(const ruleId of enemy.ruleIds??[]){const effect=floor1EffectRegistry[ruleId];if(effect)effects.push(effect);}
   return effects;
 }
+function manipulationReactions(enemy){return (enemy.ruleIds??[]).map((id)=>floor1ManipulationReactionRegistry[id]).filter(Boolean);}
 
 function objective(policy,preview,run,enemyHp){
   const m=preview.margin,s=preview.finalSpoilsScore,damage=preview.damageToEnemy;
@@ -68,25 +70,23 @@ function manipulationOptions(state,run,uses,enemy){
 }
 
 function optimizeManipulations(state,run,uses,enemy,effects,effectState){
-  let current=state,currentUses=uses,currentBest=bestPair(state,effects,effectState,run),reactiveTriggered=false;
-  const actions=[];
+  let current=state,currentUses=uses,currentEffects=effects,currentBest=bestPair(state,effects,effectState,run);
+  let reactionState=createManipulationReactionState(state.round);
+  const reactionDefs=manipulationReactions(enemy);const actions=[];
   for(let step=0;step<4;step+=1){
     let winner=null;
     for(const option of manipulationOptions(current,run,currentUses,enemy)){
-      let candidateState=option.state,candidateEffects=effects;
-      if(!reactiveTriggered&&(enemy.ruleIds??[]).includes("rule:seal-whelp:reaction-on-manipulation")){
-        const base=floor1EffectRegistry["enemy:seal-whelp:reaction-seal"];candidateEffects=[...effects,{...base,maxUsesPerEncounter:undefined}];
-      }
-      if(!reactiveTriggered&&(enemy.ruleIds??[]).includes("rule:seal-bearer:counterseal")){
-        const locked=[...candidateState.enemyLocked];const low=Math.min(...locked);const i=locked.indexOf(low);locked[i]=bump(low,1);candidateState={...candidateState,enemyLocked:locked};
-      }
-      const candidateBest=bestPair(candidateState,candidateEffects,effectState,run);
-      if(candidateBest.score>currentBest.score&&(!winner||candidateBest.score>winner.best.score))winner={...option,state:candidateState,effects:candidateEffects,best:candidateBest};
+      const reaction=reactToPlayerManipulation(option.state,reactionDefs,reactionState,false);
+      const candidateEffects=[...currentEffects,...reaction.addedEffects];
+      const candidateBest=bestPair(reaction.combatState,candidateEffects,effectState,run);
+      if(candidateBest.score>currentBest.score&&(!winner||candidateBest.score>winner.best.score))winner={option,reaction,best:candidateBest};
     }
     if(!winner)break;
-    current=winner.state;currentUses=winner.uses;currentBest=winner.best;effects=winner.effects;actions.push(winner.kind);reactiveTriggered=true;
+    const consumed=reactToPlayerManipulation(winner.option.state,reactionDefs,reactionState,true);
+    current=consumed.combatState;reactionState=consumed.reactionState;currentEffects=[...currentEffects,...consumed.addedEffects];currentUses=winner.option.uses;currentBest=bestPair(current,currentEffects,effectState,run);actions.push(winner.option.kind);
+    for(const entry of consumed.log)increment(run.stats.reactionTriggers,entry.sourceId);
   }
-  return{state:current,uses:currentUses,best:currentBest,effects,actions};
+  return{state:current,uses:currentUses,best:currentBest,effects:currentEffects,actions};
 }
 
 function recordEffectTriggers(run,log){for(const entry of log)increment(run.stats.effectTriggers,entry.sourceId);}
@@ -102,8 +102,7 @@ function combat(run,baseEnemy,{boss=false}={}){
   let enemy=baseEnemy;let state=createCombatFromPlayerState({hp:run.progression.hp,maxHp:run.progression.maxHp},enemy);let effectState=createEffectState(),uses={},finalSpoils=null,rounds=0,playerDamage=0,enemyDamage=0;
   const entryHp=state.player.hp;const phasesReached=new Set();
   while(state.player.hp>0&&state.enemy.hp>0&&rounds<40){
-    rounds+=1;
-    if(boss){const phase=bossPhaseAtHp(firstDoor,state.enemy.hp);phasesReached.add(phase.id);enemy=bossPhaseAsEnemy(firstDoor,state.enemy.hp);}
+    rounds+=1;if(boss){const phase=bossPhaseAtHp(firstDoor,state.enemy.hp);phasesReached.add(phase.id);enemy=bossPhaseAsEnemy(firstDoor,state.enemy.hp);}
     const round=startRound(state,enemy,run.rng.stream("combat:enemy"),run.rng.stream("combat:player"));state=fixedDiceForEnemy(round.state,enemy);
     let effects=activePassiveEffects(run,enemy);const optimized=optimizeManipulations(state,run,uses,enemy,effects,effectState);state=optimized.state;uses=optimized.uses;effects=optimized.effects;
     for(const action of optimized.actions)increment(run.stats.activeUses,action);
@@ -113,76 +112,40 @@ function combat(run,baseEnemy,{boss=false}={}){
     if(state.player.hp<=0||state.enemy.hp<=0)break;
   }
   run.progression={...run.progression,hp:state.player.hp};run.stats.rounds+=rounds;run.stats.damageTaken+=playerDamage;
-  const result={win:state.enemy.hp<=0&&state.player.hp>0,spoils:finalSpoils,rounds,playerDamage,enemyDamage,entryHp,exitHp:state.player.hp,boss,phasesReached:[...phasesReached]};
-  recordEncounter(run,baseEnemy.id,result);return result;
+  const result={win:state.enemy.hp<=0&&state.player.hp>0,spoils:finalSpoils,rounds,playerDamage,enemyDamage,entryHp,exitHp:state.player.hp,boss,phasesReached:[...phasesReached]};recordEncounter(run,baseEnemy.id,result);return result;
 }
 
 function chooseReplacement(run,candidates){return candidates.toSorted((a,b)=>utility(run.policy,a)-utility(run.policy,b))[0];}
-function acquire(run,itemId){
-  const item=floor1ItemRegistry[itemId];if(!item)return false;const plan=planTakeItem(run.inventory,item);const replacement=plan.requiresReplacement?chooseReplacement(run,plan.replacementCandidates):undefined;const result=applyTakeItem(run.inventory,item,floor1ItemRegistry,replacement);run.inventory=result.inventory;if(result.salvageCoins)run.economy=addCoins(run.economy,result.salvageCoins);increment(run.stats.itemsTaken,itemId);return true;
-}
-function takeDraft(run,draft){
-  const scored=draft.offers.map((offer)=>({offer,score:offer.type==="COINS"?offer.amount*1.1:utility(run.policy,offer.itemId)})).sort((a,b)=>b.score-a.score);const best=scored[0];
-  if(!best||best.score<3){run.economy=addCoins(run.economy,2);run.stats.draftSkips+=1;return;}
-  if(best.offer.type==="COINS")run.economy=addCoins(run.economy,best.offer.amount);else acquire(run,best.offer.itemId);
-}
+function acquire(run,itemId){const item=floor1ItemRegistry[itemId];if(!item)return false;const plan=planTakeItem(run.inventory,item);const replacement=plan.requiresReplacement?chooseReplacement(run,plan.replacementCandidates):undefined;const result=applyTakeItem(run.inventory,item,floor1ItemRegistry,replacement);run.inventory=result.inventory;if(result.salvageCoins)run.economy=addCoins(run.economy,result.salvageCoins);increment(run.stats.itemsTaken,itemId);return true;}
+function takeDraft(run,draft){const scored=draft.offers.map((offer)=>({offer,score:offer.type==="COINS"?offer.amount*1.1:utility(run.policy,offer.itemId)})).sort((a,b)=>b.score-a.score);const best=scored[0];if(!best||best.score<3){run.economy=addCoins(run.economy,2);run.stats.draftSkips+=1;return;}if(best.offer.type==="COINS")run.economy=addCoins(run.economy,best.offer.amount);else acquire(run,best.offer.itemId);}
 function rewardCombat(run,enemy,spoils){
-  run.economy=addCoins(run.economy,enemy.coins);const xp=grantXp(run.progression,enemy.xp);run.progression=xp.state;
-  if(xp.levelsGained.includes(3)&&!run.technique){run.technique=run.policy==="greedy"?"long-odds":"steady-hand";run.progression=resolveTechniqueChoice(run.progression,3);}
-  const score=spoils??2;if(spoils===null)run.stats.fallbackSpoils+=1;
-  const raw=rewardBand(score);increment(run.stats.rawBands,raw);
-  const draft=generateLootDraft(score,floor1ItemRegistry,run.inventory,run.rng.stream("loot"),enemy.rewardBandUplift??0);increment(run.stats.rewardBands,draft.band);increment(enemy.elite?run.stats.eliteRewardBands:run.stats.normalRewardBands,draft.band);run.stats.spoils.push(score);takeDraft(run,draft);
+  run.economy=addCoins(run.economy,enemy.coins);const xp=grantXp(run.progression,enemy.xp);run.progression=xp.state;if(xp.levelsGained.includes(3)&&!run.technique){run.technique=run.policy==="greedy"?"long-odds":"steady-hand";run.progression=resolveTechniqueChoice(run.progression,3);}
+  const score=spoils??2;if(spoils===null)run.stats.fallbackSpoils+=1;const raw=rewardBand(score);increment(run.stats.rawBands,raw);const draft=generateLootDraft(score,floor1ItemRegistry,run.inventory,run.rng.stream("loot"),enemy.rewardBandUplift??0);increment(run.stats.rewardBands,draft.band);increment(enemy.elite?run.stats.eliteRewardBands:run.stats.normalRewardBands,draft.band);run.stats.spoils.push(score);takeDraft(run,draft);
 }
 function visitShop(run){
-  run.stats.shops+=1;const threshold=run.policy==="safe"?.82:run.policy==="opportunist"?.55:.30;
-  if(hpRatio(run)<threshold&&run.economy.coins>=4&&run.progression.hp<run.progression.maxHp){const result=buyHealing(run.economy,run.progression);run.economy=result.economy;run.progression=result.progression;run.stats.shopHeals+=1;}
-  const stock=generateShopStock(floor1ItemRegistry,run.inventory,run.rng.stream("shop"));const offers=[stock.gear,...stock.artifacts,stock.contraband].filter(o=>o.price<=run.economy.coins&&SUPPORTED_ITEMS.has(o.itemId)).sort((a,b)=>(utility(run.policy,b.itemId)-b.price*.12)-(utility(run.policy,a.itemId)-a.price*.12));
-  if(offers[0]&&utility(run.policy,offers[0].itemId)>=6){run.economy=spendCoins(run.economy,offers[0].price);acquire(run,offers[0].itemId);run.stats.shopItems+=1;}
+  run.stats.shops+=1;const threshold=run.policy==="safe"?.82:run.policy==="opportunist"?.55:.30;if(hpRatio(run)<threshold&&run.economy.coins>=4&&run.progression.hp<run.progression.maxHp){const result=buyHealing(run.economy,run.progression);run.economy=result.economy;run.progression=result.progression;run.stats.shopHeals+=1;}
+  const stock=generateShopStock(floor1ItemRegistry,run.inventory,run.rng.stream("shop"));const offers=[stock.gear,...stock.artifacts,stock.contraband].filter(o=>o.price<=run.economy.coins&&SUPPORTED_ITEMS.has(o.itemId)).sort((a,b)=>(utility(run.policy,b.itemId)-b.price*.12)-(utility(run.policy,a.itemId)-a.price*.12));if(offers[0]&&utility(run.policy,offers[0].itemId)>=6){run.economy=spendCoins(run.economy,offers[0].price);acquire(run,offers[0].itemId);run.stats.shopItems+=1;}
 }
+function eventChoice(run,event){if(event.id.endsWith("unnumbered-door")){if(run.policy==="safe")return hpRatio(run)>.9?"knock":"leave";if(run.policy==="opportunist")return hpRatio(run)>=.8?"force":"knock";return run.progression.hp>3?"force":"knock";}if(event.id.endsWith("talking-board-1891"))return run.policy==="safe"||hpRatio(run)<.55?"put-back":"move-pointer";if(event.id.endsWith("lost-property-office"))return run.economy.coins>=4&&run.policy!=="safe"?"claim":"nothing";return event.choices[0].id;}
+function visitEvent(run){run.stats.events+=1;const event=selectEvent(floor1Events,run.eventHistory,run.rng.stream("event:select"));run.eventHistory.push(event.id);const choice=eventChoice(run,event);increment(run.stats.eventChoices,`${event.id}:${choice}`);const beforeHp=run.progression.hp;const resolved=resolveEventChoice(event,choice,{progression:run.progression,economy:run.economy,inventory:run.inventory},floor1ItemRegistry,run.rng.stream("event:outcome"));run.progression=resolved.state.progression;run.economy=resolved.state.economy;run.inventory=resolved.state.inventory;run.stats.damageTaken+=Math.max(0,beforeHp-run.progression.hp);for(const offer of resolved.itemOffers){if(offer.forced||utility(run.policy,offer.itemId)>=4)acquire(run,offer.itemId);}}
 
-function eventChoice(run,event){
-  if(event.id.endsWith("unnumbered-door")){if(run.policy==="safe")return hpRatio(run)>.9?"knock":"leave";if(run.policy==="opportunist")return hpRatio(run)>=.8?"force":"knock";return run.progression.hp>3?"force":"knock";}
-  if(event.id.endsWith("talking-board-1891"))return run.policy==="safe"||hpRatio(run)<.55?"put-back":"move-pointer";
-  if(event.id.endsWith("lost-property-office"))return run.economy.coins>=4&&run.policy!=="safe"?"claim":"nothing";
-  return event.choices[0].id;
-}
-function visitEvent(run){
-  run.stats.events+=1;const event=selectEvent(floor1Events,run.eventHistory,run.rng.stream("event:select"));run.eventHistory.push(event.id);increment(run.stats.eventChoices,`${event.id}:${eventChoice(run,event)}`);const choice=eventChoice(run,event);const beforeHp=run.progression.hp;
-  const resolved=resolveEventChoice(event,choice,{progression:run.progression,economy:run.economy,inventory:run.inventory},floor1ItemRegistry,run.rng.stream("event:outcome"));run.progression=resolved.state.progression;run.economy=resolved.state.economy;run.inventory=resolved.state.inventory;run.stats.damageTaken+=Math.max(0,beforeHp-run.progression.hp);
-  for(const offer of resolved.itemOffers){if(offer.forced||utility(run.policy,offer.itemId)>=4)acquire(run,offer.itemId);}
-}
-
-function roomPriority(run,type){
-  if(run.policy==="greedy")return({ELITE:100,COMBAT:80,EVENT:30,SHOP:hpRatio(run)<.3?90:10})[type]??0;
-  if(run.policy==="safe")return({SHOP:hpRatio(run)<.82?100:55,EVENT:70,COMBAT:60,ELITE:5})[type]??0;
-  return({ELITE:hpRatio(run)>=.74?100:20,SHOP:hpRatio(run)<.56?95:45,COMBAT:75,EVENT:55})[type]??0;
-}
+function roomPriority(run,type){if(run.policy==="greedy")return({ELITE:100,COMBAT:80,EVENT:30,SHOP:hpRatio(run)<.3?90:10})[type]??0;if(run.policy==="safe")return({SHOP:hpRatio(run)<.82?100:55,EVENT:70,COMBAT:60,ELITE:5})[type]??0;return({ELITE:hpRatio(run)>=.74?100:20,SHOP:hpRatio(run)<.56?95:45,COMBAT:75,EVENT:55})[type]??0;}
 function chooseReachable(run,graph,current,row){const candidates=graph.nodes.filter(n=>n.row===row&&(row===0||graph.edges.some(e=>e.from===current.id&&e.to===n.id)));return candidates.toSorted((a,b)=>roomPriority(run,b.type)-roomPriority(run,a.type)||a.id.localeCompare(b.id))[0];}
-function makeRun(seed,policy){return{seed,policy,rng:new RngService(seed),progression:createProgression(20),economy:createEconomy(0),inventory:createInventory({ARMOR:"work-apron"}),technique:null,history:[],eventHistory:[],stats:{rounds:0,damageTaken:0,rawBands:{},rewardBands:{},normalRewardBands:{},eliteRewardBands:{},spoils:[],itemsTaken:{},shops:0,shopHeals:0,shopItems:0,draftSkips:0,events:0,elites:0,fallbackSpoils:0,encounters:{},effectTriggers:{},activeUses:{},eventChoices:{},boss:{attempts:0,wins:0,entryHp:0,rounds:0,playerDamage:0,phaseReached:{}}}};}
+function makeRun(seed,policy){return{seed,policy,rng:new RngService(seed),progression:createProgression(20),economy:createEconomy(0),inventory:createInventory({ARMOR:"work-apron"}),technique:null,history:[],eventHistory:[],stats:{rounds:0,damageTaken:0,rawBands:{},rewardBands:{},normalRewardBands:{},eliteRewardBands:{},spoils:[],itemsTaken:{},shops:0,shopHeals:0,shopItems:0,draftSkips:0,events:0,elites:0,fallbackSpoils:0,encounters:{},effectTriggers:{},reactionTriggers:{},activeUses:{},eventChoices:{},boss:{attempts:0,wins:0,entryHp:0,rounds:0,playerDamage:0,phaseReached:{}}}};}
 
 export function simulateFloor(seed,policy="opportunist"){
   const run=makeRun(seed,policy);const graph=generateRun(seed,[thresholdsFloor]).floors[0];let current=null;
-  for(let row=0;row<thresholdsFloor.rows.length&&run.progression.hp>0;row+=1){
-    const node=chooseReachable(run,graph,current,row);if(!node)throw new Error(`No reachable row ${row}`);current=node;
-    if(node.type==="COMBAT"||node.type==="ELITE"){
-      const pool=node.type==="ELITE"?floor1Elites:floor1NormalEnemies;const enemy=selectEncounter(pool,run.history,run.rng.stream("encounter"));run.history.push({enemyId:enemy.id,instinct:enemy.instinct});if(enemy.elite)run.stats.elites+=1;const result=combat(run,enemy);if(!result.win)break;rewardCombat(run,enemy,result.spoils);
-    }else if(node.type==="SHOP")visitShop(run);else if(node.type==="EVENT")visitEvent(run);
-  }
-  let clear=false;
-  if(run.progression.hp>0){const result=combat(run,bossPhaseAsEnemy(firstDoor,firstDoor.maxHp),{boss:true});clear=result.win;if(clear){run.economy=addCoins(run.economy,firstDoor.coins);run.progression=grantXp(run.progression,firstDoor.xp).state;run.progression={...run.progression,hp:Math.min(run.progression.maxHp,run.progression.hp+firstDoor.clearHeal)};}}
-  return{seed,policy,clear,hp:run.progression.hp,maxHp:run.progression.maxHp,level:run.progression.level,xp:run.progression.xp,coins:run.economy.coins,rounds:run.stats.rounds,damageTaken:run.stats.damageTaken,rawBands:run.stats.rawBands,rewardBands:run.stats.rewardBands,normalRewardBands:run.stats.normalRewardBands,eliteRewardBands:run.stats.eliteRewardBands,spoils:run.stats.spoils,shops:run.stats.shops,events:run.stats.events,elites:run.stats.elites,fallbackSpoils:run.stats.fallbackSpoils,itemsTaken:run.stats.itemsTaken,encounters:run.stats.encounters,effectTriggers:run.stats.effectTriggers,activeUses:run.stats.activeUses,boss:run.stats.boss};
+  for(let row=0;row<thresholdsFloor.rows.length&&run.progression.hp>0;row+=1){const node=chooseReachable(run,graph,current,row);if(!node)throw new Error(`No reachable row ${row}`);current=node;if(node.type==="COMBAT"||node.type==="ELITE"){const pool=node.type==="ELITE"?floor1Elites:floor1NormalEnemies;const enemy=selectEncounter(pool,run.history,run.rng.stream("encounter"));run.history.push({enemyId:enemy.id,instinct:enemy.instinct});if(enemy.elite)run.stats.elites+=1;const result=combat(run,enemy);if(!result.win)break;rewardCombat(run,enemy,result.spoils);}else if(node.type==="SHOP")visitShop(run);else if(node.type==="EVENT")visitEvent(run);}
+  let clear=false;if(run.progression.hp>0){const result=combat(run,bossPhaseAsEnemy(firstDoor,firstDoor.maxHp),{boss:true});clear=result.win;if(clear){run.economy=addCoins(run.economy,firstDoor.coins);run.progression=grantXp(run.progression,firstDoor.xp).state;run.progression={...run.progression,hp:Math.min(run.progression.maxHp,run.progression.hp+firstDoor.clearHeal)};}}
+  return{seed,policy,clear,hp:run.progression.hp,maxHp:run.progression.maxHp,level:run.progression.level,xp:run.progression.xp,coins:run.economy.coins,rounds:run.stats.rounds,damageTaken:run.stats.damageTaken,rawBands:run.stats.rawBands,rewardBands:run.stats.rewardBands,normalRewardBands:run.stats.normalRewardBands,eliteRewardBands:run.stats.eliteRewardBands,spoils:run.stats.spoils,shops:run.stats.shops,events:run.stats.events,elites:run.stats.elites,fallbackSpoils:run.stats.fallbackSpoils,itemsTaken:run.stats.itemsTaken,encounters:run.stats.encounters,effectTriggers:run.stats.effectTriggers,reactionTriggers:run.stats.reactionTriggers,activeUses:run.stats.activeUses,boss:run.stats.boss};
 }
 
 function mergeCounts(target,source){for(const[k,v]of Object.entries(source))increment(target,k,v);}
 function bandFrequency(counts){const total=Object.values(counts).reduce((a,b)=>a+b,0)||1;return Object.fromEntries([1,2,3,4].map(k=>[k,(counts[k]??0)/total]));}
-function aggregateEncounters(rows){
-  const out={};for(const row of rows)for(const[id,rec]of Object.entries(row.encounters)){const dst=out[id]??{attempts:0,wins:0,rounds:0,playerDamage:0,spoilsTotal:0,spoilsCount:0};for(const key of Object.keys(dst))dst[key]+=rec[key]??0;out[id]=dst;}
-  return Object.fromEntries(Object.entries(out).map(([id,r])=>[id,{...r,winRate:r.attempts?r.wins/r.attempts:0,avgRounds:r.attempts?r.rounds/r.attempts:0,avgPlayerDamage:r.attempts?r.playerDamage/r.attempts:0,avgSpoils:r.spoilsCount?r.spoilsTotal/r.spoilsCount:0}]));
-}
+function aggregateEncounters(rows){const out={};for(const row of rows)for(const[id,rec]of Object.entries(row.encounters)){const dst=out[id]??{attempts:0,wins:0,rounds:0,playerDamage:0,spoilsTotal:0,spoilsCount:0};for(const key of Object.keys(dst))dst[key]+=rec[key]??0;out[id]=dst;}return Object.fromEntries(Object.entries(out).map(([id,r])=>[id,{...r,winRate:r.attempts?r.wins/r.attempts:0,avgRounds:r.attempts?r.rounds/r.attempts:0,avgPlayerDamage:r.attempts?r.playerDamage/r.attempts:0,avgSpoils:r.spoilsCount?r.spoilsTotal/r.spoilsCount:0}]));}
 export function summarize(rows){
-  const raw={},reward={},normalReward={},eliteReward={},effectTriggers={},activeUses={};const spoils=[];const boss={attempts:0,wins:0,entryHp:0,rounds:0,playerDamage:0,phaseReached:{}};
-  for(const row of rows){mergeCounts(raw,row.rawBands);mergeCounts(reward,row.rewardBands);mergeCounts(normalReward,row.normalRewardBands);mergeCounts(eliteReward,row.eliteRewardBands);mergeCounts(effectTriggers,row.effectTriggers);mergeCounts(activeUses,row.activeUses);spoils.push(...row.spoils);boss.attempts+=row.boss.attempts;boss.wins+=row.boss.wins;boss.entryHp+=row.boss.entryHp;boss.rounds+=row.boss.rounds;boss.playerDamage+=row.boss.playerDamage;mergeCounts(boss.phaseReached,row.boss.phaseReached);}
-  const avg=(f)=>rows.reduce((s,r)=>s+f(r),0)/rows.length;
-  return{runs:rows.length,clearRate:avg(r=>r.clear?1:0),avgFinalHp:avg(r=>r.hp),avgDamageTaken:avg(r=>r.damageTaken),avgRounds:avg(r=>r.rounds),avgLevel:avg(r=>r.level),avgCoins:avg(r=>r.coins),avgElites:avg(r=>r.elites),avgShops:avg(r=>r.shops),avgEvents:avg(r=>r.events),avgSpoils:spoils.length?spoils.reduce((a,b)=>a+b,0)/spoils.length:0,rawBandFrequency:bandFrequency(raw),rewardBandFrequency:bandFrequency(reward),normalRewardBandFrequency:bandFrequency(normalReward),eliteRewardBandFrequency:bandFrequency(eliteReward),avgFallbackSpoils:avg(r=>r.fallbackSpoils),encounters:aggregateEncounters(rows),effectTriggers,activeUses,boss:{...boss,clearRate:boss.attempts?boss.wins/boss.attempts:0,avgEntryHp:boss.attempts?boss.entryHp/boss.attempts:0,avgRounds:boss.attempts?boss.rounds/boss.attempts:0,avgPlayerDamage:boss.attempts?boss.playerDamage/boss.attempts:0}};
+  const raw={},reward={},normalReward={},eliteReward={},effectTriggers={},reactionTriggers={},activeUses={};const spoils=[];const boss={attempts:0,wins:0,entryHp:0,rounds:0,playerDamage:0,phaseReached:{}};
+  for(const row of rows){mergeCounts(raw,row.rawBands);mergeCounts(reward,row.rewardBands);mergeCounts(normalReward,row.normalRewardBands);mergeCounts(eliteReward,row.eliteRewardBands);mergeCounts(effectTriggers,row.effectTriggers);mergeCounts(reactionTriggers,row.reactionTriggers);mergeCounts(activeUses,row.activeUses);spoils.push(...row.spoils);boss.attempts+=row.boss.attempts;boss.wins+=row.boss.wins;boss.entryHp+=row.boss.entryHp;boss.rounds+=row.boss.rounds;boss.playerDamage+=row.boss.playerDamage;mergeCounts(boss.phaseReached,row.boss.phaseReached);}
+  const avg=(f)=>rows.reduce((s,r)=>s+f(r),0)/rows.length;return{runs:rows.length,clearRate:avg(r=>r.clear?1:0),avgFinalHp:avg(r=>r.hp),avgDamageTaken:avg(r=>r.damageTaken),avgRounds:avg(r=>r.rounds),avgLevel:avg(r=>r.level),avgCoins:avg(r=>r.coins),avgElites:avg(r=>r.elites),avgShops:avg(r=>r.shops),avgEvents:avg(r=>r.events),avgSpoils:spoils.length?spoils.reduce((a,b)=>a+b,0)/spoils.length:0,rawBandFrequency:bandFrequency(raw),rewardBandFrequency:bandFrequency(reward),normalRewardBandFrequency:bandFrequency(normalReward),eliteRewardBandFrequency:bandFrequency(eliteReward),avgFallbackSpoils:avg(r=>r.fallbackSpoils),encounters:aggregateEncounters(rows),effectTriggers,reactionTriggers,activeUses,boss:{...boss,clearRate:boss.attempts?boss.wins/boss.attempts:0,avgEntryHp:boss.attempts?boss.entryHp/boss.attempts:0,avgRounds:boss.attempts?boss.rounds/boss.attempts:0,avgPlayerDamage:boss.attempts?boss.playerDamage/boss.attempts:0}};
 }
 export function batch({runs=1000,seedBase=100000}={}){const output={};for(const policy of["safe","opportunist","greedy"]){const offset=policy==="safe"?0:policy==="opportunist"?1_000_000:2_000_000;const rows=Array.from({length:runs},(_,i)=>simulateFloor(seedBase+offset+i,policy));output[policy]=summarize(rows);}return output;}
