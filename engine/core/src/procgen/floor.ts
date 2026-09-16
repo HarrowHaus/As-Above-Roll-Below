@@ -11,41 +11,35 @@ function countTypes(nodes: readonly FloorNode[]): Map<RoomType, number> {
   return counts;
 }
 
-function patchGuarantees(definition: FloorDefinition, nodes: FloorNode[], rng: RngStream): void {
-  const requiredMinimum = (type: RoomType): number => {
-    if (type === "COMBAT") return definition.guarantees.minCombatOpportunities;
-    if (type === "EVENT") return definition.guarantees.eventOpportunity ? 1 : 0;
-    if (type === "SHOP") return definition.guarantees.shopOpportunity ? 1 : 0;
-    if (type === "ELITE") return definition.guarantees.eliteOptional ? 1 : 0;
-    return 0;
-  };
+function satisfiesGuarantees(definition: FloorDefinition, nodes: readonly FloorNode[]): boolean {
+  const counts = countTypes(nodes);
+  if ((counts.get("COMBAT") ?? 0) < definition.guarantees.minCombatOpportunities) return false;
+  if (definition.guarantees.eventOpportunity && (counts.get("EVENT") ?? 0) < 1) return false;
+  if (definition.guarantees.shopOpportunity && (counts.get("SHOP") ?? 0) < 1) return false;
+  // Historical name: eliteOptional means the generated graph must contain an optional
+  // Elite opportunity somewhere. Sequential descent definitions use their own max/min rules.
+  if (definition.guarantees.eliteOptional && (counts.get("ELITE") ?? 0) < 1) return false;
+  return true;
+}
 
-  const requiredTypes: readonly RoomType[] = ["EVENT", "SHOP", "ELITE", "COMBAT"];
-
-  for (let pass = 0; pass < 32; pass += 1) {
-    const counts = countTypes(nodes);
-    const missing = requiredTypes.find((type) => (counts.get(type) ?? 0) < requiredMinimum(type));
-    if (!missing) return;
-
-    const candidates = nodes.filter((node) => {
-      if (node.type === "BOSS") return false;
-      if (!definition.rows[node.row]!.allowedTypes.includes(missing)) return false;
-      if (node.type === missing) return true;
-      const currentMinimum = requiredMinimum(node.type);
-      const currentCount = counts.get(node.type) ?? 0;
-      return currentCount > currentMinimum;
-    });
-
-    if (candidates.length === 0) {
-      throw new Error(`Floor ${definition.id} cannot satisfy ${missing} without breaking another guarantee`);
+/**
+ * Assign room types as one constrained draw rather than greedily repairing one missing
+ * guarantee at a time. Greedy repair can satisfy EVENT by consuming the only node that
+ * could later become SHOP, especially in narrow one-node-per-row graphs.
+ *
+ * The retry loop remains deterministic because every attempt consumes only this Floor's
+ * named RNG stream. A definition that cannot satisfy its own grammar fails loudly.
+ */
+function assignTypesSatisfyingGuarantees(definition: FloorDefinition, nodes: FloorNode[], rng: RngStream): void {
+  for (let attempt = 0; attempt < 1024; attempt += 1) {
+    for (let index = 0; index < nodes.length; index += 1) {
+      const node = nodes[index]!;
+      const rule = definition.rows[node.row]!;
+      nodes[index] = { ...node, type: chooseRoomType(rng, rule.allowedTypes) };
     }
-
-    const chosen = rng.pick(candidates);
-    const index = nodes.findIndex((node) => node.id === chosen.id);
-    nodes[index] = { ...chosen, type: missing };
+    if (satisfiesGuarantees(definition, nodes)) return;
   }
-
-  throw new Error(`Floor ${definition.id} guarantee solver exceeded repair limit`);
+  throw new Error(`Floor ${definition.id} could not satisfy its room guarantees after 1024 deterministic attempts`);
 }
 
 function connectRows(rows: readonly FloorNode[][], boss: FloorNode): { from: string; to: string }[] {
@@ -71,23 +65,24 @@ export function generateFloor(definition: FloorDefinition, rng: RngStream): Floo
   const rows: FloorNode[][] = definition.rows.map((rule, row) => {
     if (rule.allowedTypes.length === 0) throw new Error(`Row ${row} has no allowed room types`);
     const count = rng.int(rule.minNodes, rule.maxNodes);
+    // Type is assigned below as part of one constrained draw.
     return Array.from({ length: count }, (_, index) => ({
       id: `${definition.id}:r${row}:n${index}`,
       row,
-      type: chooseRoomType(rng, rule.allowedTypes),
+      type: rule.allowedTypes[0]!,
     }));
   });
 
   const flat = rows.flat();
-  patchGuarantees(definition, flat, rng);
+  assignTypesSatisfyingGuarantees(definition, flat, rng);
 
-  const patchedRows = definition.rows.map((_, row) => flat.filter((node) => node.row === row));
+  const assignedRows = definition.rows.map((_, row) => flat.filter((node) => node.row === row));
   const boss: FloorNode = {
     id: `${definition.id}:boss`,
     row: definition.rows.length,
     type: "BOSS",
   };
-  const edges = connectRows(patchedRows, boss);
+  const edges = connectRows(assignedRows, boss);
   return {
     definitionId: definition.id,
     nodes: [...flat, boss],
