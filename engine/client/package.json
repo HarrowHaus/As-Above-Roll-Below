@@ -1,0 +1,23 @@
+{
+  "name": "@aarb/client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "npm --prefix ../core run build",
+    "dev": "vite --host 0.0.0.0",
+    "prebuild": "npm --prefix ../core run build",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "phaser": "4.2.1"
+  },
+  "devDependencies": {
+    "typescript": "~5.7.2",
+    "vite": "^6.3.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
