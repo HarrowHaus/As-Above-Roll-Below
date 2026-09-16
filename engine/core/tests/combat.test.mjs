@@ -9,3 +9,14 @@ test("preview exposes fight margin and Spoils",()=>{const p=previewCommit(state(
 test("positive margin damages enemy and qualifies Spoils",()=>{const r=commit(state([6,5,3,2],[5,5]),["d0","d1"]);assert.equal(r.state.enemy.hp,4);assert.ok(r.events.some(e=>e.type==="spoils_qualified"&&e.score===5));});
 test("negative margin damages player",()=>{const r=commit(state([2,3,6,5],[5,5]),["d0","d1"]);assert.equal(r.state.player.hp,15);assert.ok(!r.events.some(e=>e.type==="spoils_qualified"));});
 test("ties deal no damage",()=>{const r=commit(state([5,5,6,1],[5,5]),["d0","d1"]);assert.equal(r.state.player.hp,20);assert.equal(r.state.enemy.hp,5);assert.ok(r.events.some(e=>e.type==="tie"));});
+
+test("effectful COMMIT uses the same resolver for preview and authoritative damage", async()=>{
+  const { commitWithEffects, bentKnifeEffect, loadedQuestionEffect } = await import("../dist/index.js");
+  const s=state([6,4,3,3],[5,5],8);
+  const r=commitWithEffects(s,["d0","d1"],[bentKnifeEffect,loadedQuestionEffect]);
+  assert.equal(r.preview.finalFight,11);
+  assert.equal(r.preview.margin,1);
+  assert.equal(r.state.enemy.hp,7);
+  assert.equal(r.preview.finalSpoilsScore,8);
+  assert.ok(r.events.some(e=>e.type==="spoils_qualified"&&e.score===8));
+});
