@@ -33,7 +33,7 @@ Statuses:
 - **Final-Blow Spoils:** the two uncommitted dice on the final damaging player win determine encounter reward quality.
 
 ## Dice presentation
-- Settled gameplay dice are front-facing single-face sprites.
+- Settled gameplay dice are front-facing single-face presentations.
 - No readable side-face values during decision state.
 - Opposites: 1↔6, 2↔5, 3↔4.
 - Isometric dice are marketing/reference only.
@@ -52,6 +52,17 @@ Statuses:
 - Level does not automatically provide universal Fight inflation.
 - One ordinary run currency: Coins.
 - Meta progression is horizontal by default.
+
+## Run presentation
+- Baseline play is a **continuous single-screen descent**, not map navigation with combat attached.
+- A macro **Floor** is a biome/chapter/content package.
+- A **Depth** is one encounter step inside a Floor.
+- Baseline cadence is `Encounter → Resolution/Reward → DESCEND → next encounter`.
+- The player is not required to choose a map node or level between every encounter.
+- Procedural generation remains engine-owned; the baseline player-facing client does not expose the full graph.
+- If future content offers a branch, it appears in place as a direct next-encounter/door choice rather than requiring a separate map screen.
+- Portrait mobile is a first-class layout. Landscape is supported through responsive reflow, not by forcing rotation.
+- The production client should converge toward one persistent responsive Run Shell with combat/reward/event/shop/technique states.
 
 ## World / writing
 - The Below preserves versions; it does not certify them.
@@ -79,7 +90,7 @@ These are current targets and should be tuned with simulation/playtesting.
 ## Spoils / Loot
 - Spoils bands: 2–4 / 5–7 / 8–10 / 11–12.
 - Standard Loot Draft: 3 offers.
-- Skip whole draft: +2 Coins.
+- Skip whole ordinary draft: +2 Coins before item modifiers.
 - Individual Spoils-modifying items remain balance-tunable.
 
 ## Economy
@@ -93,10 +104,11 @@ These are current targets and should be tuned with simulation/playtesting.
 - Boss gives premium three-offer Boss Draft and small fixed heal.
 
 ## Run structure
-- 4 Floors.
-- 4 visited pre-boss rooms + Boss per Floor.
+- full release target: 4 macro Floors.
 - successful full run target: 25–35 min.
 - vertical slice target: 8–12 min.
+- vertical-slice Floor I currently targets roughly **5–7 pre-boss Depths + Boss**, subject to new shared-core simulation and human timing.
+- Floor I descent should contain at least 3 combats, 1 Event, 1 Shop, and 0–1 Elite before Boss, with seed-driven ordering inside authored constraints.
 
 ## Content scope
 - launch target: ~4 characters, 32–40 normals, ~8 elites, up to ~8 bosses, 48–60 Artifacts, 24–30 Gear, 18–24 Contraband, 28–40 Events.
@@ -112,6 +124,9 @@ These are current targets and should be tuned with simulation/playtesting.
 
 Not required before the vertical slice proves baseline systems.
 
+- exact title screen / New Run / Continue UX.
+- exact character-selection flow and whether first-launch Delver selection is implicit.
+- rare in-place route forks / two-door choices.
 - Shop rerolls / Shop item locking.
 - item upgrading/forging.
 - stackable persistent Artifacts/Gear.
@@ -119,10 +134,9 @@ Not required before the vertical slice proves baseline systems.
 - challenge modifiers / high-difficulty system.
 - alternate cosmetic dice families beyond baseline.
 - sophisticated codex/collection UX.
-- special Floor room categories beyond Combat / Elite / Event / Shop / Boss.
+- special encounter categories beyond Combat / Elite / Event / Shop / Boss.
 - retreat/flee system.
 - complex persistent statuses.
-- reward bias icons on map.
 - exact full-launch counts.
 - Level 5 Delver Technique wording until Level 3 choices are tested.
 - Spoils pattern directly biasing loot category.
@@ -142,7 +156,15 @@ Do not reintroduce without formal design amendment.
 - boss dynamically countering the player's strongest build.
 - hidden hit/miss roll after COMMIT.
 - giant traditional RPG stat sheet.
-- **Best Successful Spoils** as the encounter reward-capture rule; simulation caused premium-band flooding in multi-round fights.
+- **Best Successful Spoils** as encounter reward capture; simulation caused premium-band flooding in multi-round fights.
+
+## Run/presentation rejects
+- mandatory branching map screen between every encounter.
+- default `choose a node` interaction after every fight.
+- fixed 1280×720 desktop canvas merely shrunk into portrait.
+- landscape-only mobile play.
+- separate full-screen navigation for every reward/Event/Shop/Technique state.
+- avatar walking/connective traversal added only to communicate progression.
 
 ## Universal resource rejects
 - Mana.
