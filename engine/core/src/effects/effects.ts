@@ -14,6 +14,7 @@ export type EffectCondition =
   | { readonly type: "spoils_greater_than_raw_fight" }
   | { readonly type: "spoils_opposites" }
   | { readonly type: "margin_exact"; readonly value: number }
+  | { readonly type: "player_damage_at_least"; readonly value: number }
   | { readonly type: "outcome"; readonly value: CombatOutcome };
 
 export type EffectAction =
@@ -72,6 +73,7 @@ function conditionMatches(condition: EffectCondition, context: CombatEffectConte
     case "spoils_greater_than_raw_fight": return context.baseSpoilsScore > context.rawFight;
     case "spoils_opposites": return opposite[context.spoilsValues[0]] === context.spoilsValues[1];
     case "margin_exact": return context.margin === condition.value;
+    case "player_damage_at_least": return context.damageToPlayer >= condition.value;
     case "outcome": return context.outcome === condition.value;
     default: { const exhaustive: never = condition; throw new Error(`Unhandled effect condition ${String(exhaustive)}`); }
   }
