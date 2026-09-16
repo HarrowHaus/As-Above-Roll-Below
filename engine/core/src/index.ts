@@ -6,6 +6,7 @@ export * from "./combat/combat.js";
 export * from "./combat/persistent.js";
 export * from "./procgen/floor.js";
 export * from "./procgen/run.js";
+export * from "./procgen/encounter.js";
 export * from "./content/thresholds.js";
 export * from "./effects/effects.js";
 export * from "./content/floor1-effects.js";
