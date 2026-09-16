@@ -1,9 +1,11 @@
 # As Above, Roll Below — Run Structure & Generation Spec
 
-**Version:** 0.1  
-**Status:** canonical preproduction route/generation contract
+**Version:** 0.2  
+**Status:** canonical preproduction descent/generation contract
 
-Procedural generation exists to create different decisions, not arbitrary noise.
+Procedural generation exists to create different decisions and pressure curves, not arbitrary noise.
+
+The baseline player experience is a **continuous descent through Depths**, not repeated map navigation.
 
 ---
 
@@ -11,393 +13,373 @@ Procedural generation exists to create different decisions, not arbitrary noise.
 
 Successful run target: **25–35 minutes**.
 
-Baseline structure:
+Macro structure:
 
-- 4 Floors
-- 4 visited pre-boss rooms per Floor
-- 1 Boss per Floor
-- approximately 20 visited rooms in a winning run
+- 4 Floors at initial full-release target;
+- each Floor is a biome/chapter/content package;
+- each Floor contains a generated sequence of Depths;
+- each Floor ends in a Boss encounter.
 
-Not every pre-boss room is combat.
-
-Target run composition across all Floors:
-
-- 8–11 Normal/Tough combats
-- 1–3 Elites
-- 2–4 Events
-- 2–4 Shops
-- 4 Bosses
-
-The exact mix varies by route and seed.
+The engine must support an arbitrary ordered list of Floor definitions. Four Floors is content scope, not an engine constant.
 
 ---
 
-# 2. Floor graph
+# 2. Depth sequence
 
-Each Floor contains:
+A Floor resolves into an ordered **Descent Sequence**.
 
-- Start
-- 4 decision rows
-- Boss endpoint
+A Depth is one encountered state:
 
-Each row normally contains 2–3 nodes.
+- Combat
+- Elite
+- Event
+- Shop
+- Boss
 
-Nodes connect forward only.
+The player experiences one Depth at a time.
 
-A node normally connects to 1–2 nodes in the next row.
+Baseline transition:
 
-The generator must ensure:
+`Depth N → resolution/reward → DESCEND → Depth N+1`
 
-- every visible node lies on at least one path to the Boss;
-- no path dead-ends;
-- route choices meaningfully diverge for at least part of the Floor;
-- the graph does not collapse into one forced path except during a deliberately authored special Floor/boss sequence.
-
----
-
-# 3. Room categories
-
-Baseline node types:
-
-## Combat
-Normal/tough enemy.
-
-## Elite
-Optional premium-danger encounter.
-
-## Event
-2–3 choice system event.
-
-## Shop
-Spend Coins / heal / adjust build.
-
-## Boss
-Floor endpoint.
-
-Future room types require a design amendment. Do not add `Rest`, `Treasure`, `Shrine`, `Forge`, etc. merely because another roguelike has them; their function must not already be covered by Event, Shop, or combat rewards.
+There is no mandatory player-facing graph/map between these states.
 
 ---
 
-# 4. What the map reveals
+# 3. Internal graph tooling
 
-Before choosing a route, player sees:
+The existing generic FloorGraph generator remains valid engine infrastructure for:
 
-- room category icon;
-- Elite marker when applicable;
-- Shop marker;
-- Event marker;
-- Boss identity silhouette/name only when the content design wants that information revealed.
+- generation QA;
+- alternate modes;
+- future rare forks;
+- route-space analysis;
+- debug visualization.
 
-Exact normal enemy identity remains hidden until entry.
+It is **not** the baseline production UI.
 
-Possible later feature:
+The production run layer may either:
 
-- broad reward-bias icon on special combat/event nodes.
+1. generate a Descent Sequence directly from a Floor definition; or
+2. generate a hidden graph and deterministically resolve a valid path from it.
 
-This is not required in the vertical slice.
-
----
-
-# 5. Floor I generation rules
-
-Floor I teaches the complete basic run grammar.
-
-Constraints:
-
-- Row 1: Combat only. No Shop, Elite, or Event.
-- At least 2 visited Combat rooms are possible on every route.
-- At least 1 Event opportunity appears somewhere in Rows 2–4.
-- At least 1 Shop opportunity appears somewhere in Rows 3–4.
-- Elite may appear as an optional path in Row 3 or 4, but no Floor I route requires it.
-- Boss fixed to Floor I boss pool.
-
-Purpose:
-
-The first reward/build decision happens before the player is asked to interpret more exotic room types.
+Whichever implementation survives testing, the player-facing contract remains sequential descent.
 
 ---
 
-# 6. Floor II generation rules
+# 4. Descent-definition requirements
 
-Constraints:
+A Floor definition should be able to constrain:
 
-- at least 1 Combat in Rows 1–2;
-- at least 1 Shop opportunity on the graph;
-- at least 1 Event opportunity;
-- at least 1 optional Elite opportunity;
-- no route may contain more than 3 consecutive combats unless a difficulty modifier explicitly permits it.
+- total pre-boss Depth envelope;
+- allowed room types by Depth window;
+- minimum Combat count;
+- maximum consecutive Combat count;
+- Event count/window;
+- Shop count/window;
+- Elite count/window;
+- pressure-band progression;
+- duplicate suppression;
+- Boss endpoint;
+- special authored sequence rules.
 
-Floor II begins testing the build assembled on Floor I.
+Random generation must satisfy these constraints before a run begins or before the relevant Floor is entered, according to save/stream architecture.
 
 ---
 
-# 7. Floor III generation rules
+# 5. Floor I — THRESHOLDS target
 
-Constraints:
+Floor I teaches the complete baseline run grammar without a map.
 
-- at least 1 optional Elite opportunity;
-- at least 1 Shop or high-value Event opportunity;
+Current provisional vertical-slice envelope:
+
+- 5–7 pre-boss Depths;
+- opening Depth is always Normal Combat;
+- at least 3 total Combat encounters;
+- exactly or at least 1 Event during the slice target;
+- exactly or at least 1 Shop during the slice target;
+- 0–1 Elite;
+- Boss endpoint: The First Door.
+
+Example valid seed shape:
+
+`Combat → Combat → Event → Combat → Shop → Elite → Boss`
+
+Another:
+
+`Combat → Event → Combat → Shop → Combat → Combat → Boss`
+
+The exact count/order remains PROVISIONAL until the shared-core simulator is rerun under the descent model and human run-time is measured.
+
+---
+
+# 6. Later Floor progression
+
+## Floor II
+- stronger P2/P3 normal weighting;
+- at least one Shop;
+- at least one Event;
+- 0–1 Elite baseline;
+- no excessive early combat streaks.
+
+## Floor III
 - stronger Tough-normal weighting;
-- Event pool may use more build-conditioned options;
-- no route forced through two Elites.
+- build-conditioned Event choices increase;
+- earlier item replacement pressure;
+- Elite chance/pressure increases.
 
-Floor III is the build-pressure Floor: the player should start replacing earlier foundational items rather than only filling empty slots.
+## Floor IV
+- late-game enemy weighting;
+- guaranteed economy access before final Boss within a reasonable Depth window;
+- no low-impact tutorial Events;
+- final Boss pool fixed/seeded.
 
----
-
-# 8. Floor IV generation rules
-
-Constraints:
-
-- guaranteed Shop opportunity somewhere in Rows 2–4, but not necessarily on every path;
-- guaranteed optional Elite opportunity;
-- Tough/late-game enemy weighting increased;
-- no ordinary low-impact tutorial events;
-- final Boss fixed to final-boss pool.
-
-The player should enter the final boss with a completed build, not still waiting for the run to become interesting.
+These are content targets, not hard-coded Floor-number branches in the engine.
 
 ---
 
-# 9. Vertical-slice Floor target
+# 7. Encounter selection
 
-One Floor, 4 pre-boss visited rooms + Boss.
+Encounter Director inputs:
 
-Graph contains:
+- Floor definition/content pack;
+- Depth index;
+- Depth type;
+- run seed / named RNG stream;
+- encounter history;
+- current difficulty modifier set.
 
-- mandatory first Combat;
-- at least one second Combat;
-- one Event opportunity;
-- one Shop opportunity;
-- one optional Elite path;
-- Boss.
+The Director does **not** inspect the player's exact build to select a counter.
 
-The player will not visit all opportunities in one run.
+It may inspect only generic validity constraints such as:
 
-This matters: route choice must already exist in the vertical slice rather than being deferred to full production.
-
----
-
-# 10. Encounter selection
-
-Encounter generator inputs:
-
-- Floor number
-- node type
-- run seed
-- encounter history
-- current difficulty modifier set
-
-The generator does **not** inspect the player's exact build to select a counter.
-
-It may inspect only generic safety constraints such as:
-
-- content not yet tutorial-eligible;
-- duplicate encounter suppression;
-- encounter requires a mechanic the current mode has disabled.
+- tutorial eligibility;
+- duplicate suppression;
+- mechanic disabled in current mode;
+- encounter already overrepresented in the same Floor.
 
 Rules:
 
-- no same normal enemy twice consecutively unless an authored encounter says so;
-- avoid three encounters in a Floor with the same Instinct profile;
-- every Floor should expose at least 3 distinct tactical problems across available paths;
-- boss selection occurs at run start / Floor generation for deterministic seed behavior.
+- no same normal enemy twice consecutively unless authored;
+- avoid repetitive Instinct profiles;
+- a Floor should expose multiple distinct tactical problems;
+- Boss selection is deterministic from seed/content rules.
 
 ---
 
-# 11. Encounter pools by pressure
+# 8. Encounter pressure
 
-Content records have a `pressure_band` independent of art/lore.
+Content records retain `pressure_band` independent of art/lore.
 
-Suggested baseline:
+Suggested meaning:
 
-- P1: tutorial/easy
-- P2: normal
-- P3: tough normal
-- P4: elite
-- P5: boss/custom
+- P1 tutorial/easy
+- P2 normal
+- P3 tough normal
+- P4 Elite
+- P5 Boss/custom
 
-Floor weighting moves upward gradually.
+The Descent Director should generally increase pressure as Depth rises without simply inflating HP on the same monster forever.
 
-Do not scale the same monster's HP forever to fill every Floor. Use distinct rules/profiles/content.
-
----
-
-# 12. Event generation
-
-Events selected from Floor-eligible pool.
-
-Generator avoids:
-
-- same Event twice in one run;
-- event whose only meaningful choice is invalid under current run state;
-- event requiring an owned item/tag if no fallback choices remain.
-
-Events may detect build tags to expose additional options.
-
-Example shape:
-
-- base choice A
-- base choice B
-- conditional choice C: `[Artifact: Archive]`
-
-Conditional choices are bonuses, not mandatory solutions.
+Use distinct enemy rules/profiles/content.
 
 ---
 
-# 13. Shop generation
+# 9. Event generation
 
-Shop contents are seeded and fixed when the Shop node is generated/revealed according to implementation policy.
+Events selected from the Floor-eligible pool.
 
-Reopening the same Shop never changes inventory for free.
+Avoid:
 
-Shop generator uses Floor-tier eligibility and owned-item invalidation rules from LOOT_AND_ECONOMY_SPEC.md.
+- same Event twice in one run unless authored;
+- Event whose only meaningful choice is invalid;
+- conditional-item Event with no baseline fallback choice.
 
-Route generator aims to create an **opportunity** to use Coins; it does not guarantee the player chooses that route.
+Events may inspect build tags to reveal additional options.
 
----
-
-# 14. Route risk/value
-
-A route choice should usually contrast at least two of:
-
-- expected HP risk
-- premium loot opportunity
-- Shop access
-- Event flexibility
-- Elite reward
-- shorter/safer route profile
-
-Avoid fake choices where both branches contain functionally identical room sequences.
-
-A map-generation QA script should compare route signatures and reject near-identical branches above a similarity threshold.
+Resolving an Event continues the descent immediately unless the Event creates an item/replacement decision.
 
 ---
 
-# 15. Healing distribution
+# 10. Shop generation
 
-Healing sources baseline:
+Shop stock is deterministic and fixed once generated/revealed.
 
-- player Level: heal 2 on level-up
-- Shop service: heal 4 for Coins
-- Boss clear: heal 2
-- selected Events/Contraband/Gear may heal
+Reopening/redrawing the same Shop never gives free rerolls.
 
-There is no automatic full heal between Floors.
+Shop generator uses Floor-tier eligibility and owned-item invalidation rules from `LOOT_AND_ECONOMY_SPEC.md`.
 
-Route generation must not guarantee healing before every boss.
-
-The balance model, not the generator, determines whether expected healing is sufficient.
+The Descent Director guarantees or strongly schedules economy opportunities where the Floor contract requires them; the player does not need to navigate a map to reach the Shop in baseline mode.
 
 ---
 
-# 16. RNG streams
+# 11. Elite scheduling
 
-Use independent deterministic RNG streams derived from master seed:
+Elite is a premium-risk Depth, not a map icon by default.
 
-- map
-- encounter selection
-- enemy combat dice
-- loot offers
-- shop inventory
-- events
-- event outcomes
-- boss behavior randomization where used
-- cosmetic/non-gameplay randomness
+Floor definitions control:
 
-A cosmetic animation change must never perturb future combat rolls.
+- whether an Elite can appear;
+- earliest/latest Depth window;
+- max Elite count;
+- pressure prerequisites;
+- reward uplift.
+
+A future direct fork may offer `Normal door` versus `Elite door` in place, but this is not required for the vertical slice.
 
 ---
 
-# 17. Seed contract
+# 12. Healing distribution
 
-Run seed + player character + difficulty/mode fully determine all initial RNG streams.
+Baseline sources:
 
-Same seed and same player decisions should reproduce gameplay-relevant random outcomes.
+- Level: heal 2 on level-up;
+- Shop service: heal 4 for Coins;
+- Boss clear: heal 2;
+- selected Events/Contraband/Gear.
+
+No automatic full heal between Floors.
+
+The generator must not guarantee healing before every Boss.
+
+Balance model determines expected survivability.
+
+---
+
+# 13. Reward cadence
+
+Ordinary Combat/Elite victory:
+
+`Final-Blow Spoils → Loot Draft → descend`
+
+Boss victory:
+
+`Boss clear reward/heal → premium Boss Draft → Floor transition`
+
+Event/Shop Depths may not create a standard Loot Draft unless their authored content says so.
+
+---
+
+# 14. RNG streams
+
+Independent deterministic streams derived from master seed:
+
+- descent sequence;
+- encounter selection;
+- enemy combat dice;
+- player combat dice where generated by engine;
+- loot offers;
+- shop inventory;
+- events;
+- event outcomes;
+- boss behavior randomization where used;
+- cosmetic/non-gameplay randomness.
+
+A cosmetic animation change must never perturb future gameplay outcomes.
+
+---
+
+# 15. Seed contract
+
+Run seed + character + difficulty/mode fully determine initial gameplay RNG streams.
+
+Same seed and same player decisions reproduce gameplay-relevant random outcomes.
 
 Required for:
+- debugging;
+- simulation;
+- Daily Runs;
+- challenge seeds;
+- bug reports.
 
-- debugging
-- simulation reproduction
-- Daily Runs
-- shared Challenge Seeds
-- bug reports
-
-Run summary should expose/copy seed.
+Run summary exposes seed.
 
 ---
 
-# 18. Save/resume contract
+# 16. Save/resume contract
 
 Autosave at minimum:
 
-- entering a room;
-- after irreversible combat COMMIT resolves;
-- after choosing Loot;
+- entering a Depth;
+- after irreversible COMMIT;
+- after Loot selection;
 - after Shop transaction;
 - after Event choice;
-- after Level Technique selection;
+- after Technique selection;
 - after Floor transition.
 
-Reload must restore the exact RNG stream states so quitting cannot reroll an outcome.
+Reload restores exact RNG stream states.
+
+Quit/reload cannot reroll an outcome.
 
 ---
 
-# 19. Difficulty architecture
+# 17. Difficulty architecture
 
-Baseline first release should eventually support difficulty tiers/modifiers after normal mode is balanced.
+Later difficulty may adjust:
 
-Difficulty may adjust:
+- pressure-band weighting;
+- Elite frequency;
+- healing/economy;
+- Boss rules/phases;
+- enemy rule strength;
+- descent composition constraints.
 
-- pressure-band weights
-- Elite frequency/options
-- healing/economy
-- boss phase/rules
-- enemy special-rule strength
-- route constraints
+Difficulty should not primarily be `enemy HP × 1.5`.
 
-Difficulty should **not** primarily be `enemy HP × 1.5`.
-
-No higher difficulty implementation belongs in the vertical slice beyond debug toggles.
+No higher-difficulty implementation is required for the vertical slice.
 
 ---
 
-# 20. Daily / Challenge mode future contract
+# 18. Future forks
 
-Daily Seed uses:
+Rare route agency is allowed if it earns its complexity.
 
-- fixed seed
-- fixed character or allowed character set
-- fixed modifier package
-- comparable score metrics
+Preferred presentation:
 
-Potential score metrics:
+- two doors;
+- two next-room summaries;
+- `safer descent` vs `Elite descent`;
+- Event-authored branch.
 
-- victory
-- remaining HP
-- Coins retained/spent efficiency
-- Elite clears
-- average Spoils
-- damage taken
-- run time as secondary metric
+The choice appears in the existing Run Shell.
 
-Do not build leaderboard scoring before normal run scoring events are instrumented.
+Do not reopen the mandatory map-screen architecture merely to support occasional forks.
 
 ---
 
-# 21. Generation QA
+# 19. Generation QA
 
-Automated generated-run batch should flag:
+Automated batches should flag:
 
-- unreachable nodes
-- dead ends
-- forced Elite on forbidden Floor/difficulty
-- missing Shop opportunity where required
-- missing Event opportunity where required
-- more than allowed consecutive combats
-- duplicate consecutive enemy
-- route branches with near-identical type sequences
-- invalid shop/item pool exhaustion
-- boss missing
+- invalid/empty sequence;
+- Boss missing or not last;
+- opening Depth violates Floor rule;
+- missing minimum Combat count;
+- excessive consecutive combats;
+- missing required Event/Shop;
+- Elite outside legal window/count;
+- duplicate consecutive enemy;
+- repetitive Instinct distribution;
+- invalid Shop/item pool exhaustion;
+- invalid Event choice state;
+- pressure curve regressions.
 
 Generate thousands of seeds during balance rather than relying on hand inspection.
+
+---
+
+# 20. Migration from E7 map shell
+
+The E7 branching-map client is now **debug/reference code**, not the production UX target.
+
+Migration order:
+
+1. add/validate deterministic Descent Sequence data in `@aarb/core`;
+2. adapt headless simulator to consume the same sequence;
+3. rerun shared-core balance;
+4. build one responsive Run Shell scene/client state machine;
+5. auto-advance Depth after resolved reward/Event/Shop;
+6. keep old graph/map only for debug visualization until no longer useful.
+
+Do not discard validated combat/reward/effect code. This is a run-presentation/generation refactor, not a combat rewrite.
