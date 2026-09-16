@@ -30,6 +30,7 @@ Statuses:
 - No fixed baseline Threat target.
 - No fixed baseline enemy Damage stat.
 - Tactical deterministic arithmetic is previewed before COMMIT.
+- **Final-Blow Spoils:** the two uncommitted dice on the final damaging player win determine encounter reward quality.
 
 ## Dice presentation
 - Settled gameplay dice are front-facing single-face sprites.
@@ -75,11 +76,11 @@ These are current targets and should be tuned with simulation/playtesting.
 - each Level: Max HP +2, heal 2
 - Techniques at Levels 3 and 5
 
-## Spoils
-- Best Successful Spoils is the encounter capture rule.
+## Spoils / Loot
 - Spoils bands: 2–4 / 5–7 / 8–10 / 11–12.
 - Standard Loot Draft: 3 offers.
 - Skip whole draft: +2 Coins.
+- Individual Spoils-modifying items remain balance-tunable.
 
 ## Economy
 - Normal / Elite / Boss Coins: 2 / 4 / 6.
@@ -141,6 +142,7 @@ Do not reintroduce without formal design amendment.
 - boss dynamically countering the player's strongest build.
 - hidden hit/miss roll after COMMIT.
 - giant traditional RPG stat sheet.
+- **Best Successful Spoils** as the encounter reward-capture rule; simulation caused premium-band flooding in multi-round fights.
 
 ## Universal resource rejects
 - Mana.
