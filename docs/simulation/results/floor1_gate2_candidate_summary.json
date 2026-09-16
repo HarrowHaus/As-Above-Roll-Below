@@ -1,0 +1,16 @@
+{
+  "runs_per_policy": 3000,
+  "spoils_mode": "final",
+  "changes": [
+    "Work Apron: repeatable -1 damage on losses by 1-2",
+    "Redacted Slip: reroll with original/new result retention semantics",
+    "Counterfeit Seal: set selected die to 5",
+    "Wire Cutter: lower enemy highest locked die by 2",
+    "Temporary Injunction: tagged as tactical interference for valuation"
+  ],
+  "summary": {
+    "safe": {"clear_rate":0.9823333333333333,"mean_final_hp":20.328666666666667,"mean_rounds":16.490333333333332,"mean_hp_loss":5.278333333333333,"mean_coins":15.491,"mean_level":2.914,"mean_xp":6.861,"mean_elites":0,"loot_band_frequency":{"1":0.38528359734287176,"2":0.45826946005791175,"3":0.1488673139158576,"4":0.007579628683358882}},
+    "balanced": {"clear_rate":0.9036666666666666,"mean_final_hp":14.293,"mean_rounds":28.306333333333335,"mean_hp_loss":11.626666666666667,"mean_coins":17.471333333333334,"mean_level":2.853666666666667,"mean_xp":8.157,"mean_elites":1.5973333333333333,"loot_band_frequency":{"1":0.24262040393578457,"2":0.3470567926808217,"3":0.2667011910926981,"4":0.14362161229069567}},
+    "greedy": {"clear_rate":0.5843333333333334,"mean_final_hp":7.789,"mean_rounds":35.92333333333333,"mean_hp_loss":16.498,"mean_coins":16.447666666666667,"mean_level":2.5326666666666666,"mean_xp":7.247,"mean_elites":1.7436666666666667,"loot_band_frequency":{"1":0.21228710462287104,"2":0.36522419186652766,"3":0.2755474452554745,"4":0.14694125825512686}}
+  }
+}
