@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {castPatterns,pairPatterns,bestDecision,runLab} from '../src/pattern-impact-lab.mjs';
+test('pattern predicates classify overlapping truths',()=>{const p=castPatterns([4,4,4,4]);assert.equal(p.fourKind,true);assert.equal(p.allEven,true);assert.equal(pairPatterns(2,5).opposites,true);assert.equal(pairPatterns(3,4).consecutive,true);});
+test('jackpot distinguishes natural from manufactured through output',()=>{const natural=bestDecision([4,4,4,4],4,'jackpot','C','NONE');const manufactured=bestDecision([4,4,4,2],4,'jackpot','C','COPY');assert.ok(natural.damage>manufactured.damage);});
+test('builds can choose different fight pairs on same cast',()=>{const cast=[2,2,5,6],enemy=5;const base=bestDecision(cast,enemy,'baseline','C','NONE');const dbl=bestDecision(cast,enemy,'doubles','C','NONE');assert.notDeepEqual(base.fight,dbl.fight);});
+test('lab produces full matrix',()=>{const rows=runLab();assert.equal(rows.length,6*4*4);assert.ok(rows.every(r=>r.samples===3888));});
