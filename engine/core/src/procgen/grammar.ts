@@ -1,6 +1,7 @@
 import type { EnemyDefinition } from "../types.js";
 import type { GearSlot, ItemTier } from "../items/items.js";
 import type { RngStream } from "../rng/rng.js";
+import type { EffectAction, EffectCondition, EffectDefinition, EffectTiming } from "../effects/effects.js";
 
 export type PressureCost=1|2|3|4;
 export interface EnemyAffixDefinition {readonly id:string;readonly displayName:string;readonly pressureCost:PressureCost;readonly compatibleTags?:readonly string[];readonly incompatibleRuleIds?:readonly string[];readonly addRuleIds?:readonly string[];readonly hpDelta?:number;readonly dicePoolDelta?:number;readonly description:string;}
@@ -35,6 +36,10 @@ function legal(trigger:GeneratedGearTrigger,action:GeneratedGearAction):boolean 
 export function generateGearRecipe(rng:RngStream,slot:GearSlot,tier:ItemTier):GeneratedGearRecipe {
   for(let attempt=0;attempt<32;attempt+=1){const trigger=rng.pick(triggers),action=rng.pick(actions);if(!legal(trigger,action))continue;const cadence:("ALWAYS"|"ONCE_PER_ENCOUNTER")=(action==="HEAL_1"||action==="DAMAGE_PLUS_1")?"ONCE_PER_ENCOUNTER":"ALWAYS";const power=(tier===1?1:tier===2?2:3);const suffix=cadence==="ONCE_PER_ENCOUNTER"?", once per encounter":"";return {id:`generated:${slot.toLowerCase()}:${trigger.toLowerCase()}:${action.toLowerCase()}`,slot,tier,trigger,action,cadence,power,rulesText:`${triggerText[trigger]}, ${actionText[action]}${suffix}.`};}throw new Error("No legal generated Gear recipe after 32 attempts");
 }
+
+function triggerCondition(trigger:GeneratedGearTrigger):EffectCondition {switch(trigger){case"FIGHT_DIFFERENT":return{type:"fight_dice_different"};case"FIGHT_DOUBLES":return{type:"fight_dice_doubles"};case"RAW_FIGHT_10":return{type:"raw_fight_at_least",value:10};case"TIE":return{type:"outcome",value:"tie"};case"MARGIN_ONE":return{type:"margin_exact",value:1};case"SPOILS_DOUBLES":return{type:"spoils_doubles"};case"SPOILS_OPPOSITES":return{type:"spoils_opposites"};}}
+function actionDefinition(action:GeneratedGearAction):{timing:EffectTiming;action:EffectAction}{switch(action){case"FIGHT_PLUS_1":return{timing:"FIGHT_MODIFICATION",action:{type:"add_fight",value:1}};case"DAMAGE_PLUS_1":return{timing:"DAMAGE_MODIFICATION",action:{type:"add_damage_to_enemy",value:1}};case"SPOILS_PLUS_1":return{timing:"SPOILS_MODIFICATION",action:{type:"add_spoils_score",value:1,cap:12}};case"HEAL_1":return{timing:"DAMAGE_MODIFICATION",action:{type:"heal_player",value:1}};}}
+export function compileGeneratedGearEffect(recipe:GeneratedGearRecipe):EffectDefinition {const validation=validateGeneratedGear(recipe);if(!validation.valid)throw new Error(`Cannot compile generated Gear ${recipe.id}: ${validation.errors.join(", ")}`);const compiled=actionDefinition(recipe.action);return{id:`effect:${recipe.id}`,sourceId:recipe.id,timing:compiled.timing,priority:325,condition:triggerCondition(recipe.trigger),actions:[compiled.action],...(recipe.cadence==="ONCE_PER_ENCOUNTER"?{maxUsesPerEncounter:1}:{})};}
 
 export interface GrammarValidation {readonly valid:boolean;readonly errors:readonly string[];}
 export function validateGeneratedGear(recipe:GeneratedGearRecipe):GrammarValidation {const errors:string[]=[];if(!legal(recipe.trigger,recipe.action))errors.push("illegal trigger/action pair");if(!recipe.rulesText.trim())errors.push("missing player-facing rules text");if(recipe.power<1||recipe.power>3)errors.push("power outside v0 budget");return {valid:errors.length===0,errors};}
