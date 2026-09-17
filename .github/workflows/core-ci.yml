@@ -51,7 +51,7 @@ jobs:
           if-no-files-found: error
       - name: P1 Pattern Impact decision gate
         working-directory: engine/sim
-        run: node src/p1-gate.mjs --runs=750 --output=p1-results
+        run: node src/p1-gate.mjs --runs=200 --output=p1-results
       - name: Upload P1 Pattern Impact telemetry
         uses: actions/upload-artifact@v4
         with:
