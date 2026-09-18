@@ -70,7 +70,7 @@ function conditionMatches(condition: EffectCondition, context: CombatEffectConte
     case "fight_dice_different": return context.fightValues[0] !== context.fightValues[1];
     case "fight_dice_doubles": return context.fightValues[0] === context.fightValues[1];
     case "cast_four_kind": { const v=[...context.fightValues,...context.spoilsValues]; return v.every((x)=>x===v[0]!); }
-    case "cast_run": { const v=[...context.fightValues,...context.spoilsValues].sort((a,b)=>a-b); return new Set(v).size===4 && v[3]!-v[0]!==3; }
+    case "cast_run": { const v=[...context.fightValues,...context.spoilsValues].sort((a,b)=>a-b); return new Set(v).size===4 && (v[3]??0)-(v[0]??0)===3; }
     case "raw_fight_at_least": return context.rawFight >= condition.value;
     case "spoils_doubles": return context.spoilsValues[0] === context.spoilsValues[1];
     case "spoils_score_at_most": return context.finalSpoilsScore <= condition.value;
