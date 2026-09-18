@@ -135,7 +135,7 @@ export class CombatScene extends Scene {
     this.statusText=this.add.text(w/2,h*0.455,"",{fontFamily:"monospace",fontSize:`${Math.max(10,Math.min(13,w*0.025))}px`,color:"#cbd2d4",align:"center",wordWrap:{width:w*0.88},lineSpacing:3}).setOrigin(0.5);
 
     const metricY=h*0.705,metricW=w*0.21;
-    [["FIGHT",0.145],["ENEMY",0.38],["MARGIN",0.615],["SPOILS",0.85]].forEach(([label,xFrac])=>{
+    [["FIGHT",0.145],["ENEMY",0.38],["MARGIN/DMG",0.615],["SPOILS",0.85]].forEach(([label,xFrac])=>{
       const x=w*Number(xFrac);this.add.rectangle(x,metricY,metricW,h*0.073,0x11171d).setStrokeStyle(1,0x34404a);
       this.add.text(x,metricY-h*0.024,String(label),{fontFamily:"monospace",fontSize:"9px",color:"#8f9ba3"}).setOrigin(0.5);
     });
@@ -255,7 +255,7 @@ export class CombatScene extends Scene {
   private updatePreview():void {
     const ids=this.selectedTuple();this.enemyFightText.setText(String(this.state.enemyLocked.reduce((sum,value)=>sum+value,0)));
     if(!ids){this.fightText.setText("—");this.marginText.setText("—").setColor("#eee6d5");this.spoilsText.setText("—");return;}
-    const p=previewCommitWithEffects(this.state,ids,this.roundEffects,this.effectState);this.fightText.setText(String(p.finalFight));this.marginText.setText(p.margin>0?`+${p.margin}`:String(p.margin));this.marginText.setColor(p.margin>0?"#78d9c8":p.margin<0?"#f47c92":"#eee6d5");this.spoilsText.setText(String(p.finalSpoilsScore));
+    const p=previewCommitWithEffects(this.state,ids,this.roundEffects,this.effectState);this.fightText.setText(String(p.finalFight));const margin=p.margin>0?`+${p.margin}`:String(p.margin),impact=p.damageToEnemy>0?p.damageToEnemy:p.damageToPlayer>0?`-${p.damageToPlayer}`:"0";this.marginText.setText(`${margin}/${impact}`);this.marginText.setColor(p.margin>0?"#78d9c8":p.margin<0?"#f47c92":"#eee6d5");this.spoilsText.setText(String(p.finalSpoilsScore));
   }
 
   private reactionDefinitions(){return this.suppressEnemyRules?[]:(this.enemy.ruleIds??[]).map((id)=>floor1ManipulationReactionRegistry[id]).filter((v)=>v!==undefined);}
