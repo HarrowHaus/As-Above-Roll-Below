@@ -9,7 +9,7 @@ import {
 
 const context=(fightValues,spoilsValues,damageToEnemy)=>({
   fightValues,spoilsValues,rawFight:fightValues[0]+fightValues[1],finalFight:fightValues[0]+fightValues[1],
-  enemyFight:8,margin:Math.max(1,damageToEnemy),outcome:"win",damageToEnemy,damageToPlayer:0,
+  enemyFight:fightValues[0]+fightValues[1]-damageToEnemy,margin:damageToEnemy,outcome:"win",damageToEnemy,damageToPlayer:0,
   healingToEnemy:0,healingToPlayer:0,baseSpoilsScore:spoilsValues[0]+spoilsValues[1],
   finalSpoilsScore:spoilsValues[0]+spoilsValues[1],
 });
