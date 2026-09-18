@@ -6,7 +6,9 @@ export type CombatOutcome = "win" | "loss" | "tie";
 export type EffectCondition =
   | { readonly type: "always" }
   | { readonly type: "fight_dice_different" }
-  | { readonly type: "fight_dice_doubles" }\n  | { readonly type: "cast_four_kind" }\n  | { readonly type: "cast_run" }
+  | { readonly type: "fight_dice_doubles" }
+  | { readonly type: "cast_four_kind" }
+  | { readonly type: "cast_run" }
   | { readonly type: "raw_fight_at_least"; readonly value: number }
   | { readonly type: "spoils_doubles" }
   | { readonly type: "spoils_score_at_most"; readonly value: number }
@@ -20,7 +22,8 @@ export type EffectCondition =
 export type EffectAction =
   | { readonly type: "add_fight"; readonly value: number }
   | { readonly type: "add_enemy_fight"; readonly value: number }
-  | { readonly type: "add_damage_to_enemy"; readonly value: number }\n  | { readonly type: "multiply_damage_to_enemy"; readonly factor: number; readonly cap?: number }
+  | { readonly type: "add_damage_to_enemy"; readonly value: number }
+  | { readonly type: "multiply_damage_to_enemy"; readonly factor: number; readonly cap?: number }
   | { readonly type: "add_damage_to_player"; readonly value: number }
   | { readonly type: "reduce_player_damage"; readonly value: number }
   | { readonly type: "heal_player"; readonly value: number }
@@ -65,7 +68,9 @@ function conditionMatches(condition: EffectCondition, context: CombatEffectConte
   switch (condition.type) {
     case "always": return true;
     case "fight_dice_different": return context.fightValues[0] !== context.fightValues[1];
-    case "fight_dice_doubles": return context.fightValues[0] === context.fightValues[1];\n    case "cast_four_kind": { const v=[...context.fightValues,...context.spoilsValues]; return v.every((x)=>x===v[0]); }\n    case "cast_run": { const v=[...context.fightValues,...context.spoilsValues].sort((a,b)=>a-b); return new Set(v).size===4 && v[3]!-v[0]===3; }
+    case "fight_dice_doubles": return context.fightValues[0] === context.fightValues[1];
+    case "cast_four_kind": { const v=[...context.fightValues,...context.spoilsValues]; return v.every((x)=>x===v[0]); }
+    case "cast_run": { const v=[...context.fightValues,...context.spoilsValues].sort((a,b)=>a-b); return new Set(v).size===4 && v[3]!-v[0]===3; }
     case "raw_fight_at_least": return context.rawFight >= condition.value;
     case "spoils_doubles": return context.spoilsValues[0] === context.spoilsValues[1];
     case "spoils_score_at_most": return context.finalSpoilsScore <= condition.value;
@@ -83,7 +88,8 @@ function applyAction(context: CombatEffectContext, action: EffectAction): Combat
   switch (action.type) {
     case "add_fight": return { ...context, finalFight: context.finalFight + action.value };
     case "add_enemy_fight": return { ...context, enemyFight: context.enemyFight + action.value };
-    case "add_damage_to_enemy": return { ...context, damageToEnemy: context.damageToEnemy + action.value };\n    case "multiply_damage_to_enemy": { const value=Math.floor(context.damageToEnemy*action.factor); return { ...context, damageToEnemy: action.cap===undefined?value:Math.min(action.cap,value) }; }
+    case "add_damage_to_enemy": return { ...context, damageToEnemy: context.damageToEnemy + action.value };
+    case "multiply_damage_to_enemy": { const value=Math.floor(context.damageToEnemy*action.factor); return { ...context, damageToEnemy: action.cap===undefined?value:Math.min(action.cap,value) }; }
     case "add_damage_to_player": return { ...context, damageToPlayer: context.damageToPlayer + action.value };
     case "reduce_player_damage": return { ...context, damageToPlayer: Math.max(0, context.damageToPlayer - action.value) };
     case "heal_player": return { ...context, healingToPlayer: context.healingToPlayer + action.value };
